@@ -1,39 +1,56 @@
 const Bot = require("../Bot");
-
+const Game = require("./Game");
 
 module.exports = class Channel {
   constructor() {
-    this.client = Bot.client;
-    this.db = Bot.db;
   }
 
   async get(channel) {
-    hash = await this.db.getChannel(message.channel.id);
-    console.log(hash)
+    const hash = await Bot.db.getChannel(channel.id);
     if (hash != null) {
-      this.loadFromHash(hash);
+      this.load(hash);
     } else {
-      this.createNewFromChannel(channel);
+      this.createNew(channel);
     }
-    console.log(this)
     return this
   }
 
-  loadFromHash(hash) {
+  load(hash) {
     this.id = hash.id;
     this.name = hash.name;
     this.server = hash.server;
-    this.game = hash.game;
+    this.game = new Game().load(hash.game);
     this.oldGames = hash.oldGames;
     this.prefix = hash.prefix;
   }
 
-  createNewFromChannel(channel) {
+  createNew(channel) {
     this.id = channel.id;
     this.name = channel.name;
     this.server = channel.guild.name;
     this.game = null;
     this.oldGames = [];
     this.prefix = "r.";
-  }  
+  }
+
+  async save() {
+    Bot.db.saveChannel(this)
+  }
+
+  createNewGame(master, name) {
+    this.game = new Game().create(master, name);  
+  }
+
+  finishGame() {
+    if (this.game == null) {
+      return;
+    } 
+    this.game.finish();
+    const game = this.game;   
+    this.oldGames.unshift(this.game);
+    this.game = null;
+    return game;
+  }
+
+
 }

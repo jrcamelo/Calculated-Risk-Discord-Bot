@@ -13,6 +13,7 @@ class Parser {
   parse() {
     const Help = require("./Commands/Help")
     const NewGame = require("./Commands/NewGame")
+    const FinishGame = require("./Commands/FinishGame")
     const helpCommands = [];
 
     this.separateCommandAndArgs();
@@ -23,6 +24,9 @@ class Parser {
         break;
       case NewGame.command:
         return new NewGame(this.message, this.args)
+        break;
+      case FinishGame.command:
+        return new FinishGame(this.message, this.args)
         break;
       // case Link.command:
         // return new Link(this.message, this.args)

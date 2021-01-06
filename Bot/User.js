@@ -1,8 +1,5 @@
-const AniListNode = require("../ModifiedAniListNode/");
 const Discord = require("discord.js")
 const Bot = require("./Bot")
-
-const AniList = new AniListNode();
 
 module.exports = class User {
   constructor(channel, discord, anilist) {

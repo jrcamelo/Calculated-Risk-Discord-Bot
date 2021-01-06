@@ -1,6 +1,5 @@
 const Bot = require("../Bot");
 const User = require("../User");
-const { getGuildIdOrUserId } = require("../Utils");
 
 class BaseCommand {
   static prefix = "w.";
@@ -16,9 +15,11 @@ class BaseCommand {
   constructor(message, args) {
     this.message = message;
     this.args = args;
+    if (args) {
+      this.arg = args.join(" ");
+    }
     this.client = Bot.client;
     this.db = Bot.db;
-    this.guildId = getGuildIdOrUserId(message);
 
     this.reactionEmote = "779800410168098816";
 

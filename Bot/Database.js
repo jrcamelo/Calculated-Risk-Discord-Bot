@@ -18,6 +18,10 @@ module.exports = class Database {
     return await this.db.get(prefix + channelId);
   }
 
+  async saveChannel(channel, prefix="CHANNEL_") {
+    return await this.db.set(prefix + channel.id, channel);
+  }
+
   async getUser(discordId, channelId) {
     return await this.db.get(`USER_${discordId}_AT_CHANNEL_${channelId}`);
   }
