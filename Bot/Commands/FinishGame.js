@@ -1,5 +1,4 @@
 const BaseCommand = require("./Base.js");
-const Channel = require("../Models/Channel")
 
 class FinishGameCommand extends BaseCommand {
   static command = "finishgame";
@@ -9,8 +8,8 @@ class FinishGameCommand extends BaseCommand {
   }
 
   async execute() {
-    this.channel = await new Channel().get(this.message.channel)
-    if (this.channel.game == null) {
+    this.game.name = "AAAAA"
+    if (this.game == null) {
         return await this.reply(`There is no ongoing game in this channel.`)
     }
     const oldGame = this.channel.finishGame();

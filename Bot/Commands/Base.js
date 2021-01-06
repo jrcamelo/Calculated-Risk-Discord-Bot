@@ -1,5 +1,5 @@
 const Bot = require("../Bot");
-const User = require("../User");
+const Channel = require("../Models/Channel")
 
 class BaseCommand {
   static prefix = "w.";
@@ -11,45 +11,61 @@ class BaseCommand {
   static previousReactionEmoji = "⬅️";
   static nextReactionEmoji = "➡️";
 
-
   constructor(message, args) {
     this.message = message;
     this.args = args;
-    if (args) {
-      this.arg = args.join(" ");
-    }
+
+    this.loadBotAndDatabase();
+    this.joinArgsIntoArg();
+    this.prepareToListenForReactions();
+  }
+
+  loadBotAndDatabase() {
     this.client = Bot.client;
     this.db = Bot.db;
+  }
 
-    this.reactionEmote = "779800410168098816";
-
-    this.reactions = {
-      [BaseCommand.deleteReactionEmoji]: this.deleteReply,      
+  joinArgsIntoArg() {
+    if (this.isArgsBlank()) {
+      this.arg = "";
+    } else {
+      this.arg = args.join(" ");
     }
+  }
+  
+  isArgsBlank() {
+    return !this.args || !this.args.length;
+  }
+
+  prepareToListenForReactions() {    
+    this.reactions = {}
     this.reactionFilter = (reaction, user) => {
       console.log(reaction.emoji.name);
       return this.reactions[reaction.emoji.name] != null;
     };
   }
 
-  addWatchingReactionToMessage() {
-    this.message.react(this.reactionEmote);
-  }
-
   async tryExecute() {
-    this.message.channel.startTyping();
+    await this.loadChannelAndGameFromMessage();
+    await this.message.channel.startTyping();
     try {
       await this.execute();
+      this.message.channel.stopTyping();
     } catch(e) {
+      this.message.channel.stopTyping();
       console.log("\n" + this.message.content + " caused an error at " + new Date())
       console.log(e);
       console.log("\n")
     }
-    this.message.channel.stopTyping();
   }
 
   async execute() {
     console.log("Invalid command: " + this.message.content);
+  }
+  
+  async loadChannelAndGameFromMessage() {
+    this.channel = await new Channel().get(this.message.channel)
+    this.game = this.channel.game;
   }
 
   async waitReplyReaction() {
@@ -92,14 +108,6 @@ class BaseCommand {
       botMessage.footer.iconURL = User.makeDiscordAvatarUrl(this.message.author);
     }
     return botMessage.footer;    
-  }
-
-  addDeleteReactionToReply() {
-    return this.reply.react(BaseCommand.deleteReactionEmoji);
-  }
-  
-  isArgsBlank() {
-    return !this.args.length;
   }
 }
 module.exports = BaseCommand;
