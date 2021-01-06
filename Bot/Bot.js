@@ -2,7 +2,6 @@ require('dotenv').config()
 const Discord = require("discord.js");
 const Parser = require("./Parser.js");
 const Database = require("./Database");
-const Cron = require('node-cron');
 
 class Bot {
   static db;
@@ -19,9 +18,8 @@ class Bot {
     });
     await Bot.client.login(process.env.BOT_TOKEN);
     await Bot.setStatus();
-    Bot.scheduleCronJob();    
 
-    console.log("Bot is now watching.");
+    console.log("Bot is now calculating.");
     // Testing
     console.log(await Bot.db.getAll())
   }
@@ -30,8 +28,8 @@ class Bot {
     await Bot.client.user.setPresence({
         status: "online",
         activity: {
-            name: "w.help",
-            type: "WATCHING",
+            name: "r.help",
+            type: "PLAYING",
         }
     });
   }
@@ -47,13 +45,6 @@ class Bot {
     } catch(e) {
       console.log(e);
     }
-  }
-
-  static scheduleCronJob() {
-    Cron.schedule("0 */8 * * *", function() {
-      const NoticeManager = require("./NoticeManager");
-      NoticeManager.executeCronjobs();
-    });
   }
 
   static getProfilePicture() {

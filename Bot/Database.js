@@ -18,12 +18,13 @@ module.exports = class Database {
     return await this.db.list("USER_");
   }
 
-  async getUser(discordId, prefix = "USER_") {
-    return await this.db.get(prefix + discordId)
+  async getUser(discordId, channelId) {
+    return await this.db.get(`USER_${discordId}_AT_CHANNEL_${channelId}`);
   }
 
-  async addUser(discordId, roll, prefix = "USER_") {
-    return await this.db.set(prefix + discordId, [roll])
+  async addRoll(user, roll) {
+    user.rolls.unshift(roll);
+    return await this.db.set(user.key, user);
   }
 
   async getChannels() {
@@ -31,10 +32,10 @@ module.exports = class Database {
   }
 
   async getChannel(channelId, prefix = "CHANNEL_") {
-    return await this.db.get(prefix + channelId)
+    return await this.db.get(prefix + channelId);
   }
 
   async addChannel(channelId, roll, prefix = "CHANNEL_") {
-    return await this.db.set(prefix + channelId, [roll])
+    return await this.db.set(prefix + channelId, [roll]);
   }
 }
