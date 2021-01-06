@@ -11,7 +11,8 @@ class Parser {
   }
 
   parse() {
-    const Help = require("../AnimeBot/Commands/Help")
+    const Help = require("./Commands/Help")
+    const NewGame = require("./Commands/NewGame")
     const helpCommands = [];
 
     this.separateCommandAndArgs();
@@ -19,6 +20,9 @@ class Parser {
     switch(this.command.toLowerCase()) {
       case Help.command:
         return new Help(this.message, commands);
+        break;
+      case NewGame.command:
+        return new NewGame(this.message, this.args)
         break;
       // case Link.command:
         // return new Link(this.message, this.args)

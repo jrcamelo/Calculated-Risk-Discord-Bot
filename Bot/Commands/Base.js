@@ -21,7 +21,6 @@ class BaseCommand {
     this.guildId = getGuildIdOrUserId(message);
 
     this.reactionEmote = "779800410168098816";
-    // this.addWatchingReactionToMessage();
 
     this.reactions = {
       [BaseCommand.deleteReactionEmoji]: this.deleteReply,      
@@ -62,6 +61,7 @@ class BaseCommand {
   }
 
   async deleteReply(collected, _command) {
+    console.log(collected)
     collected.message.delete();
   }
 
@@ -74,7 +74,6 @@ class BaseCommand {
     this.reply = mention ?
       await this.message.reply(botMessage)
       : await this.message.channel.send(botMessage)
-    await this.addDeleteReactionToReply();
     await this.waitReplyReaction();
     return this.reply;    
   }
@@ -92,28 +91,6 @@ class BaseCommand {
       botMessage.footer.iconURL = User.makeDiscordAvatarUrl(this.message.author);
     }
     return botMessage.footer;    
-  }
-
-  async makeAnilistUserFromMessageOrMention() {
-    if (!this.message) { 
-      return false;
-    }
-    const user = new User();
-    if (this.isArgsBlank()) {
-      await user.setDiscordFromMessage(this.message);
-      if (!await user.setAniListFromDiscord()) {
-        await this.reply("AniList user not found, maybe you need to link your account with w.link <Your AniList username>");
-        return false;
-      }
-    } else {
-      const id = this.args.join(" ");
-      await user.setDiscordFromSearch(this.message, id);
-      if (!await user.setAniListFromDiscord()) {
-        await this.reply("AniList user not found, maybe they need to link their account with w.link <AniList username> or your mention failed.");
-        return false;
-      }
-    }
-    return user;
   }
 
   addDeleteReactionToReply() {

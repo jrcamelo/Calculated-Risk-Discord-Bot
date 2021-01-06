@@ -14,8 +14,8 @@ module.exports = class Database {
     return await this.db.get(id);
   }
 
-  async getUsers() {
-    return await this.db.list("USER_");
+  async getChannel(channelId, prefix="CHANNEL_") {
+    return await this.db.get(prefix + channelId);
   }
 
   async getUser(discordId, channelId) {
