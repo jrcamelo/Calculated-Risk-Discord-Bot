@@ -29,7 +29,7 @@ class BaseCommand {
     if (this.isArgsBlank()) {
       this.arg = "";
     } else {
-      this.arg = args.join(" ");
+      this.arg = this.args.join(" ");
     }
   }
   
@@ -47,15 +47,15 @@ class BaseCommand {
 
   async tryExecute() {
     await this.loadChannelAndGameFromMessage();
-    await this.message.channel.startTyping();
+    this.message.channel.startTyping();
     try {
       await this.execute();
       this.message.channel.stopTyping();
     } catch(e) {
-      this.message.channel.stopTyping();
       console.log("\n" + this.message.content + " caused an error at " + new Date())
       console.log(e);
       console.log("\n")
+      this.message.channel.stopTyping();
     }
   }
 
@@ -84,8 +84,8 @@ class BaseCommand {
 
   async reply(botMessage, mention=false) {
     if (botMessage && typeof(botMessage) != typeof("")) {
-      botMessage.footer = this.addCommandFooter(botMessage);
-      try { await this.message.delete(); } catch(e) { }
+      // botMessage.footer = this.addCommandFooter(botMessage);
+      // try { await this.message.delete(); } catch(e) { }
     }
     
     this.reply = mention ?

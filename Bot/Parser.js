@@ -12,21 +12,25 @@ class Parser {
 
   parse() {
     const Help = require("./Commands/Help")
-    const NewGame = require("./Commands/NewGame")
-    const FinishGame = require("./Commands/FinishGame")
+    const GameStart = require("./Commands/GameStart")
+    const GameEnd = require("./Commands/GameEnd")
+    const GameWhat = require("./Commands/GameWhat")
     const helpCommands = [];
 
     this.separateCommandAndArgs();
 
     switch(this.command.toLowerCase()) {
-      case Help.command:
+      case Help.command.toLowerCase():
         return new Help(this.message, commands);
         break;
-      case NewGame.command:
-        return new NewGame(this.message, this.args)
+      case GameStart.command.toLowerCase():
+        return new GameStart(this.message, this.args)
         break;
-      case FinishGame.command:
-        return new FinishGame(this.message, this.args)
+      case GameEnd.command.toLowerCase():
+        return new GameEnd(this.message, this.args)
+        break;
+      case GameWhat.command.toLowerCase():
+        return new GameWhat(this.message, this.args)
         break;
       // case Link.command:
         // return new Link(this.message, this.args)
