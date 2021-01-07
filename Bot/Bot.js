@@ -7,14 +7,15 @@ class Bot {
   static db;
   static client;
   static timer;
-  static lastValidChannel;
+  static messageQueue;
 
   static async initialize() {
     console.log("Initializing bot...");
     Bot.db = new Database();
     Bot.client = new Discord.Client();
+    Bot.messageQueue = [];
     Bot.client.on("message", async function(message) {
-      Bot.readMessage(message);
+      Bot.messageQueue.push(message);
     });
     await Bot.client.login(process.env.BOT_TOKEN);
     await Bot.setStatus();
@@ -22,7 +23,25 @@ class Bot {
     console.log("Bot is now calculating.");
     // Testing
     console.log(await Bot.db.getAll())
+    Bot.startMessageQueueReader();
   }
+
+  static async startMessageQueueReader() {
+    while (true) {
+      const message = Bot.messageQueue.shift();
+      if (message) {
+        await Bot.readMessage(message);
+      } else {
+        await Bot.sleep(100);
+      }
+    }
+  }
+
+  static sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+  } 
 
   static async setStatus() {
     await Bot.client.user.setPresence({
@@ -39,7 +58,7 @@ class Bot {
       if (Parser.isValidMessage(message)) {
         const command = new Parser(message).parse();
         if (command) {
-          return command.tryExecute();
+          return await command.tryExecute();
         }
       }
     } catch(e) {
