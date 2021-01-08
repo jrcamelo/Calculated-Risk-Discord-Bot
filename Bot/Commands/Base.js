@@ -2,8 +2,8 @@ const Bot = require("../Bot");
 const Channel = require("../Models/Channel")
 
 class BaseCommand {
-  static prefix = "w.";
-  static command = "Command to be used";
+  static prefix = "r.";
+  static command = ["Command to be used"];
   static helpTitle = "BaseCommand";
   static helpDescription = "Command to be extended";
 
@@ -11,9 +11,19 @@ class BaseCommand {
   static previousReactionEmoji = "⬅️";
   static nextReactionEmoji = "➡️";
 
-  constructor(message, args) {
+  static isRequestedCommand(userCommand) {
+    for (let commandInput of this.command) {
+      if (userCommand.toLowerCase() == commandInput.toLowerCase()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  constructor(message, args, userCommand) {
     this.message = message;
     this.args = args;
+    this.userCommand = userCommand;
 
     this.loadBotAndDatabase();
     this.joinArgsIntoArg();
@@ -46,7 +56,7 @@ class BaseCommand {
   }
 
   async tryExecute() {
-    await this.loadChannelAndGameFromMessage();
+    await this.loadChannelFromMessage();
     this.message.channel.startTyping();
     try {
       await this.execute();
@@ -63,9 +73,13 @@ class BaseCommand {
     console.log("Invalid command: " + this.message.content);
   }
   
-  async loadChannelAndGameFromMessage() {
-    this.channel = await new Channel().get(this.message.channel)
-    this.game = this.channel.game;
+  async loadChannelFromMessage() {
+    // await new Channel().get(this.message.channel) ||
+    this.channel =  await new Channel().get(this.message.channel) || new Channel().createNew(this.message.channel);
+  }
+
+  async save() {
+    return await this.channel.save();
   }
 
   async waitReplyReaction() {

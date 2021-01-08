@@ -17,6 +17,7 @@
     "fetch-base64": "^2.1.2",
     "html-to-text": "^6.0.0",
     "is-image-url": "^1.1.8",
+    "is-url": "^1.2.4",
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.1",
     "sagiri": "^3.1.1"

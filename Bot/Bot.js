@@ -22,7 +22,7 @@ class Bot {
 
     console.log("Bot is now calculating.");
     // Testing
-    console.log(await Bot.db.getAll())
+    //console.log(await Bot.db.getAll())
     Bot.startMessageQueueReader();
   }
 
@@ -32,7 +32,7 @@ class Bot {
       if (message) {
         await Bot.readMessage(message);
       } else {
-        await Bot.sleep(100);
+        await Bot.sleep(200);
       }
     }
   }

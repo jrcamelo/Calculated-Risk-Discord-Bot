@@ -15,28 +15,24 @@ class Parser {
     const GameStart = require("./Commands/GameStart")
     const GameEnd = require("./Commands/GameEnd")
     const GameWhat = require("./Commands/GameWhat")
-    const helpCommands = [];
+    const Claim = require("./Commands/Claim")
+    const Mup = require("./Commands/Mup")
+    const Roll = require("./Commands/Roll")
+    const RollId = require("./Commands/RollId")
+    const RollUntracked = require("./Commands/RollUntracked")
+    const RollUntrackedId = require("./Commands/RollUntrackedId")
+    const commands = [GameStart, GameEnd, GameWhat, Claim, Mup, Roll, RollId, RollUntracked, RollUntrackedId];
 
     this.separateCommandAndArgs();
 
-    switch(this.command.toLowerCase()) {
-      case Help.command.toLowerCase():
+    if (Help.isRequestedCommand(this.command)) {
         return new Help(this.message, commands);
-        break;
-      case GameStart.command.toLowerCase():
-        return new GameStart(this.message, this.args)
-        break;
-      case GameEnd.command.toLowerCase():
-        return new GameEnd(this.message, this.args)
-        break;
-      case GameWhat.command.toLowerCase():
-        return new GameWhat(this.message, this.args)
-        break;
-      // case Link.command:
-        // return new Link(this.message, this.args)
-        // break;
-      default:
-        break;
+    }
+
+    for (let botCommand of commands) {
+      if (botCommand.isRequestedCommand(this.command)) {
+        return new botCommand(this.message, this.args, this.command)
+      }
     }
   }
   

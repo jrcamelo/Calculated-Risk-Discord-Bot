@@ -3,11 +3,7 @@ const Discord = require("discord.js");
 const Bot = require("../Bot");
 
 class HelpCommand extends BaseCommand {
-  static command = "help";
-
-  constructor(message, args) {
-    super(message, args);
-  }
+  static command = ["Help", "H", "?"];
 
   async execute() {
     const fields = [];
@@ -20,8 +16,18 @@ class HelpCommand extends BaseCommand {
   }
 
   makeCommandField(command) {
+    let description = command.helpDescription;
+    if (command.command.length > 1) {
+      for (let alternative of command.command) {
+        if (alternative == command.command[0]) {
+          description += " "
+        } else {
+          description += ` | ${command.prefix}${alternative}`;
+        }
+      }
+    }
     return {
-      name: command.helpDescription,
+      name: description,
       value: command.helpTitle,
       inline: false
     };

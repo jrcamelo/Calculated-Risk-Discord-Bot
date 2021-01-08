@@ -1,20 +1,19 @@
 const BaseCommand = require("./Base.js");
 
 class GameEndCommand extends BaseCommand {
-  static command = "EndGame";
+  static command = ["EndGame", "FinishGame"];
   static helpTitle = "Finishes the current running game. Can only be used by the GM or a user with Manage Messages permission.";
-  static helpDescription = `${BaseCommand.prefix + this.command}`
-
-  constructor(message, args) {
-    super(message, args);
-  }
+  static helpDescription = `${BaseCommand.prefix + this.command[0]}`
 
   async execute() {
-    if (this.game == null) {
+    if (this.channel.game == null) {
         return await this.reply(`There is currently no game being hosted in this channel.`)
-    }        
+    }
+    if (this.channel.game.master.id != this.message.author.id) {
+        return await this.reply(`You are not the GM of this game.`)
+    }
     const oldGame = this.channel.finishGame();
-    await this.channel.save();
+    await this.save();
     return await this.reply(`${oldGame.name} has been finished.`)
   }
 

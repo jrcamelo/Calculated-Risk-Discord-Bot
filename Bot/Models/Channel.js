@@ -20,8 +20,8 @@ module.exports = class Channel {
     this.name = hash.name;
     this.server = hash.server;
     this.game = new Game().load(hash.game);
-    this.oldGames = hash.oldGames;
     this.prefix = hash.prefix;
+    return this;
   }
 
   createNew(channel) {
@@ -29,8 +29,8 @@ module.exports = class Channel {
     this.name = channel.name;
     this.server = channel.guild.name;
     this.game = null;
-    this.oldGames = [];
     this.prefix = "r.";
+    return this;
   }
 
   async save() {
@@ -47,10 +47,7 @@ module.exports = class Channel {
     } 
     this.game.finish();
     const game = this.game;   
-    this.oldGames.unshift(this.game);
     this.game = null;
     return game;
   }
-
-
 }
