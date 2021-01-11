@@ -10,6 +10,8 @@ class BaseCommand {
   static deleteReactionEmoji = "💥";
   static previousReactionEmoji = "⬅️";
   static nextReactionEmoji = "➡️";
+  static fReactionEmoji = "🇫";
+  static plusReactionEmoji = "➕";
 
   static isRequestedCommand(userCommand) {
     for (let commandInput of this.command) {
@@ -46,6 +48,13 @@ class BaseCommand {
   isArgsBlank() {
     return !this.args || !this.args.length;
   }
+  
+  getMessageAttachment() {
+    if (this.message.attachments.size > 0) {
+      return this.message.attachments.values().next().value.url;
+    }
+    return null;
+  }
 
   prepareToListenForReactions() {    
     this.reactions = {}
@@ -78,6 +87,12 @@ class BaseCommand {
     this.channel =  await new Channel().get(this.message.channel) || new Channel().createNew(this.message.channel);
   }
 
+  loadPlayer() {
+    if (this.channel.game != null) {
+      this.player = this.channel.game.getPlayer(this.message.author);
+    }
+  }
+
   async save() {
     return await this.channel.save();
   }
@@ -87,25 +102,25 @@ class BaseCommand {
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
           this.reactions[collected.first().emoji](collected.first(), this); 
-        })
-      .catch(collected => {});
+      })
+      .catch(collected => {
+          this.reply.reactions.removeAll();
+      });
+  }
+
+  async addDeleteReactionToReply() {
+    await this.reply.react(BaseCommand.deleteReactionEmoji);
+    this.reactions[BaseCommand.deleteReactionEmoji] = this.deleteReply;
   }
 
   async deleteReply(collected, _command) {
-    console.log(collected)
     collected.message.delete();
   }
 
   async reply(botMessage, mention=false) {
-    if (botMessage && typeof(botMessage) != typeof("")) {
-      // botMessage.footer = this.addCommandFooter(botMessage);
-      // try { await this.message.delete(); } catch(e) { }
-    }
-    
     this.reply = mention ?
       await this.message.reply(botMessage)
       : await this.message.channel.send(botMessage)
-    await this.waitReplyReaction();
     return this.reply;    
   }
 
@@ -116,12 +131,45 @@ class BaseCommand {
         iconURL: User.makeDiscordAvatarUrl(this.message.author) 
       }
     }
-
     botMessage.footer.text += ` - "${this.message.content}" sent by ${this.message.author.username}`;
     if (!botMessage.footer.iconURL) {
       botMessage.footer.iconURL = User.makeDiscordAvatarUrl(this.message.author);
     }
     return botMessage.footer;    
+  }
+
+  thereIsNoGame() {
+    return this.channel.game == null;
+  }
+
+  userIsNotPlaying() {
+    return this.player == null;
+  }
+
+  userIsNotMaster() {
+    return this.channel.game.master.id != this.message.author.id;
+  }
+
+  userIsNotMod() {
+    const id = this.message.author.id;
+    const member = this.message.channel.guild.members.cache.get(id);
+    return !member.hasPermission(['MANAGE_MESSAGES'])
+  }
+
+  playerIsDead() {
+    if (this.player != null) {
+      return this.player.alive == false;
+    }
+    return false;
+  }
+
+  getMentionedUser() {
+    if (this.message.mentions && 
+        this.message.mentions.users &&
+        this.message.mentions.users.size) {
+      return this.message.mentions.users.values().next().value;
+    }
+    return null;
   }
 }
 module.exports = BaseCommand;

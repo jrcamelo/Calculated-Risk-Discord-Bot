@@ -1,0 +1,19 @@
+const BaseCommand = require("./Base.js");
+
+class PlayerPingCommand extends BaseCommand {
+  static command = ["Ping", "Everyone", "All", "@"];
+  static helpTitle = "Pings every player who is alive and has not rolled.";
+  static helpDescription = `${BaseCommand.prefix + this.command[0]}`;
+
+  async execute() {
+    if (this.thereIsNoGame()) {
+        return await this.reply(`There is currently no game being hosted in this channel.`)
+    }
+    if (this.userIsNotMaster() && this.userIsNotMod()) {
+        return await this.reply(`You are not the GM of this game.`)
+    }
+    return await this.reply(this.channel.game.pingNotPlayed());
+  }
+
+}
+module.exports = PlayerPingCommand;

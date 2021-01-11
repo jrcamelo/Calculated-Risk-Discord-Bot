@@ -9,7 +9,7 @@ module.exports = class Game {
     this.name = name;
     this.master = new User().create(user);
     this.turn = 0;
-    this.mups = [];
+    this.mups = [new Mup(0, "", "")];
     this.players = {};
     this.startedAt = Date.now();
     this.endedAt = null;
@@ -52,10 +52,21 @@ module.exports = class Game {
     return this.players[discordUser.id]
   }
 
-  mup(link) {
+  deletePlayer(player) {
+    delete this.players[player.user.id]
+  }
+
+  mup(description, link) {
     this.turn += 1;
     this.changePlayersToNotRolled()
-    this.mups.push(new Mup(this.turn, link));
+    this.updateMup(description, link);
+  }
+
+  updateMup(description, link) {
+    if (!link || !Utils.isImage(link)) {
+      link = "";
+    }
+    this.mups.push(new Mup(this.turn, description, link));
   }
 
   changePlayersToNotRolled() {
@@ -71,35 +82,73 @@ module.exports = class Game {
     return null
   }
 
-  makeCurrentGameEmbed() {
+  getMup(turn) {
+    if (turn < this.mups.length) {
+      return this.mups[turn];
+    }
+    return 
+  }
+
+  getMupImage(turn) {
+    let mup = this.getMup(turn);
+    if (mup) {
+      return mup.image;
+    }
+    return "";
+  }
+
+  makeCurrentGameEmbed(index, showMupDescription=false) {
+    if (index == null) {
+      index = this.turn;
+    }
     let embed = new Discord.MessageEmbed()
       .setColor('#c90040')
       .setTitle(this.name)
       .setAuthor(`Game Master: ${this.master.username}`, this.master.avatar)
-      .addFields(this.makeGameFields())
-      .setDescription(this.makeDescriptionOfPlayers())
-    if (this.lastMupImage()) {
-      embed.setImage(this.lastMupImage());
-    }
+      .addFields(this.makeGameFields(index))
+      .setDescription(this.makeDescription(index, showMupDescription))
+      .setThumbnail(this.getMupImage(index));    
     return embed;
   }
 
-  makeGameFields() {    
+  makeDescription(index, showMupDescription) {
+    let text = "";
+    if (showMupDescription) {
+      text += `${this.getMup(index).description}\n\n`
+    }
+    text += `${this.makeDescriptionOfPlayers(index)}`
+    return text;
+  }
+
+  makeGameFields(index) {    
     return [
-        { name: `Turn`, value: this.turn, inline: true },
+        { name: `Turn`, value: index, inline: true },
         { name: "Started at", value: Utils.timestampToDate(this.startedAt), inline: true }
     ]    
   }
 
-  makeDescriptionOfPlayers() {
+  makeDescriptionOfPlayers(turn) {
     if (!Object.keys(this.players).length) {
-      return "No players"
+      return "No players."
     }
     let text = ""
     for (let player of this.playerHashToList()) {
-      text += `\n${player.describePlayer()}`
+      text += `\n${player.describePlayer(turn)}`
     }
     return text;
+  }
+
+  pingNotPlayed() {
+    if (!Object.keys(this.players).length) {
+      return "Nobody is playing yet."
+    }
+    let text = ""
+    for (let player of this.playerHashToList()) {
+      if (player.alive && !player.rolled) {
+        text += `${player.user.ping()} `
+      }
+    }
+    return text || "No players need to roll.";
   }
 
   playerHashToList() {

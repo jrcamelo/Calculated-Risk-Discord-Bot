@@ -22,20 +22,19 @@ class Bot {
 
     console.log("Bot is now calculating.");
     // Testing
-    //console.log(await Bot.db.getAll())
+    console.log(await Bot.db.getAll())
     Bot.startMessageQueueReader();
   }
 
   static async startMessageQueueReader() {
     while (true) {
       const message = Bot.messageQueue.shift();
-      if (message) {
-        await Bot.readMessage(message);
-      } else {
-        await Bot.sleep(200);
+      const response = await Bot.readMessage(message)
+      if (!response) {
+        await Bot.sleep(100);
       }
     }
-  }
+  }  
 
   static sleep(ms) {
     return new Promise((resolve) => {
@@ -58,7 +57,7 @@ class Bot {
       if (Parser.isValidMessage(message)) {
         const command = new Parser(message).parse();
         if (command) {
-          return await command.tryExecute();
+          return await command.tryExecute() || true;
         }
       }
     } catch(e) {

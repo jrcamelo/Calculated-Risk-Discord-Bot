@@ -6,7 +6,7 @@ class RollIdCommand extends RollBaseCommand {
   static helpDescription = `${RollBaseCommand.prefix + this.command[0]} <Message>`;
 
   doRoll() {
-    this.roll = this.player.roll(this.message, "ID", this.arg);
+    this.roll = this.player.roll(this.turn, this.message, "ID", this.arg);
   }
 
   validateArgs() {

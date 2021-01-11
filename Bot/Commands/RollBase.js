@@ -10,6 +10,8 @@ class RollBaseCommand extends BaseCommand {
     if (error != null) {
       return await error;
     }
+    this.getTurn();
+    this.addAttachmentToIntention();
     this.doRoll();
     if (this.roll == null) {
       return;
@@ -18,17 +20,14 @@ class RollBaseCommand extends BaseCommand {
     return this.reply(this.roll.makeText(this.player));
   }
 
+  getTurn() {
+    if (this.channel.game) {
+      this.turn = this.channel.game.turn;
+    }
+  }
 
   doRoll() {
-    this.roll = this.player.roll(this.message, "NORMAL", this.arg);
-  }
-
-  thereIsNoGame() {
-    return this.channel.game == null;
-  }
-
-  userIsNotPlaying() {
-    return this.player == null;
+    this.roll = this.player.roll(this.turn, this.message, "NORMAL", this.arg);
   }
 
   validate() {
@@ -38,14 +37,21 @@ class RollBaseCommand extends BaseCommand {
     this.loadPlayer();
     if (this.userIsNotPlaying()) {
         return this.reply(`You have not joined this game yet.`)
+    } else {
+      if (this.playerIsDead()) {
+        return this.reply(`You are dead.`)
+      }
     }
 
     return this.validateArgs();
   }
 
-  loadPlayer() {
-    if (this.channel.game != null) {
-      this.player = this.channel.game.getPlayer(this.message.author);
+  addAttachmentToIntention() {
+    if (this.getMessageAttachment() != null) {
+      if (this.arg) {
+        this.arg += " ";
+      }
+      this.arg += "{Attachment}";
     }
   }
 

@@ -1,18 +1,20 @@
 const Discord = require('discord.js');
 const Utils = require("../Utils");
 
+DEFAULT_MAX = 1000000000000;
+DATABASE_MAX = 10000000000000000;
+SAVED_ROLL_LENGTH = 6;
 module.exports = class Roll {
-  DEFAULT_MAX = 1000000000000
-  DATABASE_MAX = 10000000000000000
 
   constructor(message, type, arg, limit) {
-    this.__message = message;
+    if (message && message.id) {
+      this.messageId = message.id;
+    }
     this.type = type
     this.intention = arg;
-    if (!limit || limit < 1 || limit > this.DATABASE_MAX) {
-      this.userLimit = this.DEFAULT_MAX;
-    } else {
-      this.userLimit = limit;
+    this.userLimit = limit;
+    if (!limit || limit < 1 || limit > DATABASE_MAX) {
+      this.userLimit = DEFAULT_MAX;
     }
     this.time = Date.now()
     return this;
@@ -22,7 +24,7 @@ module.exports = class Roll {
     this.value = hash.value;
     this.type = hash.type;
     this.intention = hash.intention || "";
-    this.userLimit = this.userLimit;
+    this.userLimit = hash.userLimit;
     this.result = hash.result;
     this.time = hash.time;
     return this;
@@ -58,14 +60,21 @@ module.exports = class Roll {
   }
 
   rollId() {
-    this.value = this.__message.id;
-    this.result = this.calculateRoll();
+    this.value = this.message.id;
+    this.calculateRoll();
     return this;
   }
 
   calculateRoll() {
-    let rollString = this.value.toString()
-    return Utils.spliceFromEnd(rollString, 3, "**") + "**"
+    let str = this.value.toString();
+    let repeated = Utils.findRepeatedSize(str);
+    let pali = Utils.findPalindromeSize(str);
+    let straight = Utils.findStraightSize(str);
+    let funny = Utils.findFunnyNumberSize(str);
+    let size = Math.max(1, repeated, pali, straight, funny);
+    this.formattedResult = Utils.spliceFromEnd(str, size, "**") + "**";
+    this.result = Utils.lastCharacters(this.formattedResult, Math.max(size + 4, SAVED_ROLL_LENGTH + 4));
+    return this.result;
   }
 
 
@@ -102,7 +111,7 @@ module.exports = class Roll {
   }
 
   describeRollValue() {
-    return `${this.result}`
+    return `${this.formattedResult || this.result || "?"}`
   }
 
   describeIntentionAndDetails() {
@@ -120,7 +129,7 @@ module.exports = class Roll {
   describeDetails() {
     switch(this.type) {
       case Roll.types.NORMAL:
-        if (this.userLimit == this.DEFAULT_MAX) {
+        if (this.userLimit == DEFAULT_MAX) {
           return ""
         }
         return `Rolled for ${this.userLimit} `

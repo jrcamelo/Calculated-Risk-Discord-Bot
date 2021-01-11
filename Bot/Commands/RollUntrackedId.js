@@ -1,30 +1,18 @@
-const RollIdCommand = require("./RollId");
+const RollUntrackedCommand = require("./RollUntracked");
 const Utils = require("../Utils");
 const Player = require("../Models/Player");
 
-class RollUntrackedIdCommand extends RollIdCommand {
+class RollUntrackedIdCommand extends RollUntrackedCommand {
   static command = ["TestID", "TID", "UntrackedID", "UID"];
   static helpTitle = "Just like RollID, but the roll will not be saved.";
   static helpDescription = `${RollUntrackedIdCommand.prefix + this.command[0]}`;
 
   doRoll() {
-    this.roll = this.player.roll(this.message, "TESTID", this.arg);
+    this.roll = this.player.roll(null, this.message, "TESTID", "");
   }
 
-  save() {
-    // Don't save
-  }
-
-  thereIsNoGame() {
-    return false;
-  }
-
-  userIsNotPlaying() {
-    return false;
-  }
-
-  loadPlayer() {
-    this.player = new Player().create(this.message.author);
+  validateArgs() {
+    return;
   }
 }
 module.exports = RollUntrackedIdCommand;

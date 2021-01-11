@@ -8,7 +8,7 @@ module.exports = class Player {
     this.alive = true;
     this.allies = [];
     this.rolled = false;
-    this.rolls = [];
+    this.rolls = {};
     return this;
   }
 
@@ -22,27 +22,57 @@ module.exports = class Player {
     return this;
   }
 
-  roll(message, type, arg, limit) {
+  roll(turn, message, type, arg, limit) {
     const roll = new Roll(message, type, arg, limit).roll();
-    this.rolled = true;
-    this.rolls.unshift(roll);
+    if (turn != null) {
+      this.rolled = true;
+      if (this.rolls[turn] == null) {
+        this.rolls[turn] = [];
+      }
+      console.log(this.rolls)
+      this.rolls[turn].push(roll);
+    }
     return roll;
   }
 
-  describePlayer() {
+  describePlayer(turn = null) {
     let text = `**${this.user.username}**`
     if (this.name) {
       text += ` (${this.name})`
     }
-    text += ` ${this.describeLastRoll()}`;
+    if (this.alive) {
+      text += ` ${this.describeLastRoll(turn)}`;
+    } else {
+      text += ` is dead`;
+    }
     return text;
   }
 
-  describeLastRoll() {
-    if (!this.rolled || !this.rolls.length) {
+  describeLastRoll(turn) {
+    const turnRolls = this.rolls[turn];
+    if (turn == null || !this.rolled || !turnRolls || !turnRolls.length) {
       return "has not rolled";
     }
-    const roll = this.rolls[0];
-    return `rolled ${roll.result}`;
+    let text = `rolled ${turnRolls[0].result}`;
+    if (turnRolls.length > 1) {
+      text += ` (then +${turnRolls.length - 1})`;
+    }
+    return text;
+  }
+
+  describeTurnRolls(turn) {    
+    const turnRolls = this.rolls[turn];
+    if (turn == null || !this.rolled || !turnRolls || !turnRolls.length) {
+      return null;
+    }
+    let text = `${this.user.username} rolls this turn:\n`;
+    for (let roll of turnRolls) {
+      text += `${roll.result}`;
+      if (roll.intention) {
+        text += ` - "${roll.intention}"`
+      }
+      text += "\n";
+    }
+    return text;
   }
 }

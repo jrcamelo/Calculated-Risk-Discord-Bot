@@ -3,7 +3,7 @@ const Utils = require("../Utils");
 
 class RollCommand extends RollBaseCommand {
   static command = ["Roll", "R", "D"];
-  static helpTitle = "Choose a limit for the roll (try r.d20), state your intention and put your life on Fate's hands. Default limit is 1000000000000.";
+  static helpTitle = "Choose a limit for the roll (r.r100, r.d20), state your intention and put your life on Fate's hands. Default limit is 1000000000000.";
   static helpDescription = `${RollBaseCommand.prefix + this.command[0]}{Limit Number}`;
 
   static isRequestedCommand(input) {
@@ -30,8 +30,9 @@ class RollCommand extends RollBaseCommand {
   }
 
   doRoll() {
+    console.log(JSON.stringify(this.channel))
     this.getRollLimitInput();
-    this.roll = this.player.roll(this.message, "NORMAL", this.arg, this.rollLimit);
+    this.roll = this.player.roll(this.turn, this.message, "NORMAL", this.arg, this.rollLimit);
   }
 
   getRollLimitInput() {

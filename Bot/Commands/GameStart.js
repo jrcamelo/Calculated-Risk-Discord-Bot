@@ -14,7 +14,9 @@ class GameStartCommand extends BaseCommand {
     }
     this.channel.createNewGame(this.message.author, this.arg)
     await this.save();
-    return await this.reply(this.channel.game.makeCurrentGameEmbed())
+    await this.reply(this.channel.game.makeCurrentGameEmbed())
+    await this.addDeleteReactionToReply();
+    await this.waitReplyReaction();
   }
 
 }

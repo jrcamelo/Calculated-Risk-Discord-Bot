@@ -3,13 +3,19 @@ const Utils = require("../Utils");
 const Player = require("../Models/Player");
 
 class RollUntrackedCommand extends RollCommand {
-  static command = ["Test", "T", "Untracked", "URoll", "UR", "U"];
-  static helpTitle = "Just like roll, but will not be saved as a roll. Default limit is 1000000000000.";
+  static command = ["Test", "T", "Untracked", "U"];
+  static helpTitle = "Just like roll, but will not be saved as a roll.";
   static helpDescription = `${RollUntrackedCommand.prefix + this.command[0]}{Limit Number}`;
+
+  async execute() {
+    await super.execute();
+    await this.addDeleteReactionToReply();
+    await this.waitReplyReaction();
+  }
 
   doRoll() {
     this.getRollLimitInput();
-    this.roll = this.player.roll(this.message, "TEST", this.arg, this.rollLimit);
+    this.roll = this.player.roll(null, this.message, "TEST", "", this.rollLimit);
   }
 
   save() {
@@ -21,6 +27,10 @@ class RollUntrackedCommand extends RollCommand {
   }
 
   userIsNotPlaying() {
+    return false;
+  }
+
+  playerIsDead() {
     return false;
   }
 

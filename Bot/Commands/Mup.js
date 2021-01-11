@@ -2,19 +2,25 @@ const BaseCommand = require("./Base.js");
 
 class MupCommand extends BaseCommand {
   static command = ["Mup", "Turn", "Next"];
-  static helpTitle = "Updates the Mup image and goes to the next turn.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} <Mup Image Link>`;
+  static helpTitle = "Updates the Mup, can add an image and description, and starts the next turn.";
+  static helpDescription = `${BaseCommand.prefix + this.command[0]} <Description> {Image Attachment}`;
 
   async execute() {
-    if (this.channel.game == null) {
+    if (this.thereIsNoGame()) {
         return await this.reply(`There is currently no game being hosted in this channel.`)
     }
-    if (this.channel.game.master.id != this.message.author.id) {
+    if (this.userIsNotMaster()) {
         return await this.reply(`You are not the GM of this game.`)
     }
-    this.channel.game.mup(this.arg);
+    this.changeMup(this.arg, this.getMessageAttachment());
     this.save();
-    return await this.reply(this.channel.game.makeCurrentGameEmbed())
+    await this.reply(this.channel.game.makeCurrentGameEmbed())
+    await this.addDeleteReactionToReply();
+    await this.waitReplyReaction();
+  }
+
+  changeMup(description, attachment) {
+    this.channel.game.mup(description, attachment);
   }
 
 }

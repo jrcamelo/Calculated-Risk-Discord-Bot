@@ -5,14 +5,53 @@ const Bot = require("../Bot");
 class HelpCommand extends BaseCommand {
   static command = ["Help", "H", "?"];
 
+  constructor(message, commands) {
+    super(message, []);
+    this.playerCommands = commands.player;
+    this.masterCommands = commands.master;
+    this.pages = []
+    this.index = 0;
+  }
+
   async execute() {
-    const fields = [];
-    for (let i in this.args) {      
-      fields.push(this.makeCommandField(this.args[i]));
+    let player = []
+    for (let command of this.playerCommands) {     
+      player.push(this.makeCommandField(command));
+    }
+    let master = []
+    for (let command of this.masterCommands) {     
+      master.push(this.makeCommandField(command));
     }
 
-    const embed = this.makeEmbed(fields);
-    return this.reply(embed);
+    this.embeds = [
+      this.makeEmbed(player, "List of Player Commands"), 
+      this.makeEmbed(master, "List of Game Master Commands"),
+    ];
+    await this.reply(this.embeds[this.index]);
+    await this.addReactions();
+  }
+  
+  async editReply() {
+    const embed = this.embeds[this.index];
+    await this.reply.edit(embed);
+    await this.addReactions();
+  }
+
+  async addReactions() {
+    await this.addDeleteReactionToReply();
+    await this.addNextPageReactionToReply();
+    await this.waitReplyReaction();
+  }
+
+  async addNextPageReactionToReply() {
+    await this.reply.react(BaseCommand.nextReactionEmoji);
+    this.reactions[BaseCommand.nextReactionEmoji] = this.nextPage;
+  }
+
+  async nextPage(_collected, command) {
+    const limit = command.embeds.length
+    command.index = (limit + command.index + 1) % limit;
+    await command.editReply();
   }
 
   makeCommandField(command) {
@@ -33,14 +72,14 @@ class HelpCommand extends BaseCommand {
     };
   }
 
-  makeEmbed(fields) {
+  makeEmbed(commands, text) {
     return new Discord.MessageEmbed()
       .setColor("#26edff")
-      .setAuthor("How to use the bot", Bot.getProfilePicture())
-      .setDescription("Bot to help manage and play Risk games in Discord.")
+      .setAuthor("Calculated Risk - Bot for Risk games", Bot.getProfilePicture())
+      .setDescription(text)
       .setThumbnail("https://i.imgur.com/pIr8hmb.jpg")
       .setFooter("Made by jrlol3", "https://cdn.discordapp.com/avatars/464911746088304650/b4cf2c3e345edcfe9b329611ccce509b.png")
-      .addFields(fields);
+      .addFields(commands);
   }
 }
 module.exports = HelpCommand;
