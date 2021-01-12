@@ -42,7 +42,7 @@ class RollBaseCommand extends BaseCommand {
 
   addAttachmentToIntention() {
     if (this.getMessageAttachment() != null) {
-      this.arg = `{Attachment} ${this.arg}`;
+      this.arg = `[Attachment] ${this.arg}`;
     }
   }
 

@@ -43,13 +43,13 @@ module.exports = class Player {
   // Descriptions
 
   describeJoin() {
-    return `${this.user.username} ${this.getFactionParenthesis()} joined the game.`;
+    return `${this.user.username}${this.getFactionParenthesis()} joined the game.`;
   }
   describeDeath() {
-    return `${this.user.username} ${this.getFactionParenthesis()} is out of the game.`;
+    return `${this.user.username}${this.getFactionParenthesis()} is out of the game.`;
   }
   describeRevival() {
-    return `${this.user.username} ${this.getFactionParenthesis()} is back in the game.`;
+    return `${this.user.username}${this.getFactionParenthesis()} is back in the game.`;
   }
 
   describePlayerCompact(turn = null) {
