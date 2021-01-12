@@ -9,41 +9,39 @@ class GameWhatCommand extends BaseCommand {
     if (this.thereIsNoGame()) {
         return await this.reply(`There is currently no game being hosted in this channel.`)
     }
-    this.index = this.channel.game.turn;
+    this.index = this.getGame().currentTurn;
     this.showDescription = false;
-    await this.reply(this.channel.game.makeCurrentGameEmbed(this.index));
+    await this.reply(this.getGame().makeCurrentGameEmbed(this.index));
     await this.addDeleteReactionToReply();
     await this.addShowDescriptionReaction();
     await this.addPageReactions();
   }
   
   async editReply() {
-    const embed = this.channel.game.makeCurrentGameEmbed(this.index, this.showDescription);
+    const embed = this.getGame().makeCurrentGameEmbed(this.index, this.showDescription);
     await this.reply.edit(embed);
     await this.addPageReactions();
   }
 
   async addPageReactions() {
-    await this.addPreviousPageReactionToReply();
-    await this.addNextPageReactionToReply();
+    await this.addPrevious();
+    await this.addNext();
     await this.waitReplyReaction();
   }
 
-  async addNextPageReactionToReply() {
-    if (this.index < this.channel.game.turn) {
-      await this.reply.react(BaseCommand.nextReactionEmoji);
-      this.reactions[BaseCommand.nextReactionEmoji] = this.nextPage;
+  async addNext() {
+    if (this.index < this.getGame().currentTurn) {
+      await this.addNextReactionToReply(this.nextPage);
     } else {
-      delete this.reactions[BaseCommand.nextReactionEmoji];
+      this.cancelNextReactionToReply();
     }
   }
 
-  async addPreviousPageReactionToReply() {
+  async addPrevious() {
      if (this.index > 0) {      
-      await this.reply.react(BaseCommand.previousReactionEmoji);
-      this.reactions[BaseCommand.previousReactionEmoji] = this.previousPage;
+      await this.addPreviousReactionToReply(this.previousPage);
     } else {    
-      delete this.reactions[BaseCommand.previousReactionEmoji]
+      this.cancelPreviousReactionToReply();
     }
   }
 

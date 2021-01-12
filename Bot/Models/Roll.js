@@ -17,6 +17,7 @@ module.exports = class Roll {
       this.userLimit = DEFAULT_MAX;
     }
     this.time = Date.now()
+    this.shouldSave = true;
     return this;
   }
 
@@ -37,14 +38,19 @@ module.exports = class Roll {
     TESTID: "TESTID",
   }
 
+  // Events
+
   roll() {
     switch(this.type) {
-      case Roll.types.NORMAL:
       case Roll.types.TEST:
+        this.shouldSave = false;
+      case Roll.types.NORMAL:        
         this.rollNormal();
         break;
-      case Roll.types.ID:
+
       case Roll.types.TESTID:
+        this.shouldSave = false;
+      case Roll.types.ID:
         this.rollId();
         break;
       default:
@@ -65,18 +71,7 @@ module.exports = class Roll {
     return this;
   }
 
-  calculateRoll() {
-    let str = this.value.toString();
-    let repeated = Utils.findRepeatedSize(str);
-    let pali = Utils.findPalindromeSize(str);
-    let straight = Utils.findStraightSize(str);
-    let funny = Utils.findFunnyNumberSize(str);
-    let size = Math.max(1, repeated, pali, straight, funny);
-    this.formattedResult = Utils.spliceFromEnd(str, size, "**") + "**";
-    this.result = Utils.lastCharacters(this.formattedResult, Math.max(size + 4, SAVED_ROLL_LENGTH + 4));
-    return this.result;
-  }
-
+  // Descriptions
 
   makeText(player) {    
     let text = `${this.describeRoll(player)}\n`;
@@ -95,6 +90,14 @@ module.exports = class Roll {
     return `${player.user.ping()} ${this.describeType()}${this.describeRollValue()}`;
   }
 
+  describeHistory(player) {    
+    text += `${player.user.username} ${this.describeType()}${this.describeRollValue()}`;
+    if (this.intention) {
+      text += ` - "${this.intention}"`
+    }
+    return text;
+  }
+
   describeType() {
     switch(this.type) {
       case Roll.types.NORMAL:
@@ -102,9 +105,9 @@ module.exports = class Roll {
       case Roll.types.ID:
         return `rolled ID `
       case Roll.types.TEST:
-        return `test rolled `
+        return `**test** rolled `
       case Roll.types.TESTID:
-        return `test rolled ID `
+        return `**test** rolled ID `
       default:
         return "rolled ";
     }
@@ -132,7 +135,7 @@ module.exports = class Roll {
         if (this.userLimit == DEFAULT_MAX) {
           return ""
         }
-        return `Rolled for ${this.userLimit} `
+        return `[${this.userLimit}] `
       case Roll.types.ID:
       case Roll.types.TEST:
       case Roll.types.TESTID:
@@ -141,10 +144,24 @@ module.exports = class Roll {
     }
   }
 
+  // Utils
 
   randomNumber(min=1, max=1000000000000) {
     return Math.floor(
       Math.random() * (max - min + 1) + min
     )
   }
+  
+  calculateRoll() {
+    let str = this.value.toString();
+    let repeated = Utils.findRepeatedSize(str);
+    let pali = Utils.findPalindromeSize(str);
+    let straight = Utils.findStraightSize(str);
+    let funny = Utils.findFunnyNumberSize(str);
+    let size = Math.max(1, repeated, pali, straight, funny);
+    this.formattedResult = Utils.spliceFromEnd(str, size, "**") + "**";
+    this.result = Utils.lastCharacters(this.formattedResult, Math.max(size + 4, SAVED_ROLL_LENGTH + 4));
+    return this.result;
+  }
+
 }

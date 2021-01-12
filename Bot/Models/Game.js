@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const User = require("./User");
+const Turn = require("./Turn");
 const Player = require("./Player");
 const Mup = require("./Mup");
 const Utils = require("../Utils");
@@ -8,9 +9,8 @@ module.exports = class Game {
   create(user, name) {    
     this.name = name;
     this.master = new User().create(user);
-    this.turn = 0;
-    this.mups = [new Mup(0, "", "")];
-    this.players = {};
+    this.currentTurn = 0;
+    this.turns = [new Turn().create()];
     this.startedAt = Date.now();
     this.endedAt = null;
     return this;
@@ -22,80 +22,35 @@ module.exports = class Game {
     }
     this.name = hash.name;
     this.master = new User().load(hash.master);
-    this.turn = hash.turn;
-    this.mups = hash.mups;
-    this.players = this.loadPlayerHash(hash.players);
+    this.turns = this.loadTurns(hash.turns);
+    this.currentTurn = hash.currentTurn;
     this.startedAt = hash.startedAt;
     this.endedAt = hash.endedAt;
     return this;
   }
 
-  loadPlayerHash(players) {
-    const result = {};
-    for (const [key, value] of Object.entries(players)) {
-      const player = new Player().load(value)
-      result[key] = player;
+  loadTurns(hash) {
+    let turns = [];
+    for (turn of hash) {
+      turns.push(new Turn().load(turn));
     }
-    return result;
+    return turn;
   }
-  
+
+  // Event
+
   finish() {
     this.endedAt = Date.now();
   }
 
-  addPlayer(discordUser, factionName) {
-    const player = new Player().create(discordUser, factionName);
-    this.players[player.user.id] = player;
+  nextTurn(mup, description) {
+    oldTurn = this.getTurn();
+    this.currentTurn += 1;
+    this.turns.push(new Turn().create(mup, description, oldTurn.players));
+    return this.getTurn();
   }
 
-  getPlayer(discordUser) {
-    return this.players[discordUser.id]
-  }
-
-  deletePlayer(player) {
-    delete this.players[player.user.id]
-  }
-
-  mup(description, link) {
-    this.turn += 1;
-    this.changePlayersToNotRolled()
-    this.updateMup(description, link);
-  }
-
-  updateMup(description, link) {
-    if (!link || !Utils.isImage(link)) {
-      link = "";
-    }
-    this.mups.push(new Mup(this.turn, description, link));
-  }
-
-  changePlayersToNotRolled() {
-    for (let id of this.playerKeyList()) {
-      this.players[id].rolled = false;
-    }
-  }
-
-  lastMupImage() {
-    if (this.mups.length) {
-      return this.mups[this.mups.length - 1].image
-    }
-    return null
-  }
-
-  getMup(turn) {
-    if (turn < this.mups.length) {
-      return this.mups[turn];
-    }
-    return 
-  }
-
-  getMupImage(turn) {
-    let mup = this.getMup(turn);
-    if (mup) {
-      return mup.image;
-    }
-    return "";
-  }
+  // Descriptions
 
   makeCurrentGameEmbed(index, showMupDescription=false) {
     if (index == null) {
@@ -105,58 +60,47 @@ module.exports = class Game {
       .setColor('#c90040')
       .setTitle(this.name)
       .setAuthor(`Game Master: ${this.master.username}`, this.master.avatar)
-      .addFields(this.makeGameFields(index))
       .setDescription(this.makeDescription(index, showMupDescription))
-      .setThumbnail(this.getMupImage(index));    
+      .setThumbnail(this.getMupImage(index))
+      .setFooter(`Turn ${index} of ${this.turns.length - 1} `)
     return embed;
   }
 
   makeDescription(index, showMupDescription) {
+    const turn = this.getTurn(index);
     let text = "";
     if (showMupDescription) {
-      text += `${this.getMup(index).description}\n\n`
+      text += `${turn.description}\n\n`;
     }
-    text += `${this.makeDescriptionOfPlayers(index)}`
-    return text;
-  }
 
-  makeGameFields(index) {    
-    return [
-        { name: `Turn`, value: index, inline: true },
-        { name: "Started at", value: Utils.timestampToDate(this.startedAt), inline: true }
-    ]    
-  }
-
-  makeDescriptionOfPlayers(turn) {
-    if (!Object.keys(this.players).length) {
+    const turnPlayers = turn.playerHashToList();
+    if (!turnPlayers.length) {
       return "No players."
     }
-    let text = ""
-    for (let player of this.playerHashToList()) {
-      text += `\n${player.describePlayer(turn)}`
+    for (let player of turnPlayers) {
+      text += `\n${player.describePlayerCompact()}`
     }
     return text;
   }
 
-  pingNotPlayed() {
-    if (!Object.keys(this.players).length) {
-      return "Nobody is playing yet."
+  // makeDescriptionOfPlayers(index) {
+  //   const turn = this.getTurn();
+  //   if (!Object.keys(this.players).length) {
+  //     return "No players."
+  //   }
+  //   let text = ""
+  //   for (let player of this.playerHashToList()) {
+  //     text += `\n${player.describePlayerCompact(turn)}`
+  //   }
+  //   return text;
+  // }
+
+  // Utils
+
+  getTurn(turn=null) {
+    if (turn == null) {
+      turn = this.currentTurn;
     }
-    let text = ""
-    for (let player of this.playerHashToList()) {
-      if (player.alive && !player.rolled) {
-        text += `${player.user.ping()} `
-      }
-    }
-    return text || "No players need to roll.";
+    return this.turns[turn];
   }
-
-  playerHashToList() {
-    return Object.values(this.players);
-  }
-
-  playerKeyList() {
-    return Object.keys(this.players);
-  }
-
 }

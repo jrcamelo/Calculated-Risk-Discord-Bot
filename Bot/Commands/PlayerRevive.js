@@ -18,7 +18,7 @@ class PlayerReviveCommand extends BaseCommand {
       return await this.reply(`Try again while mentioning a Player.`)
     }
 
-    this.revivedPlayer = this.channel.game.getPlayer(this.mentionedUser);
+    this.revivedPlayer = this.channel.getPlayer(this.mentionedUser);
     if (!this.revivedPlayer) {
       return await this.reply(`This user is not playing this game.`);
     }
@@ -26,7 +26,7 @@ class PlayerReviveCommand extends BaseCommand {
       return await this.reply(`Stop! Stop! They're already alive!`);
     }
 
-    this.revivedPlayer.alive = true;
+    this.getTurn().revivePlayer(this.revivedPlayer);
     this.save();
     let name = this.revivedPlayer.factioname || this.revivedPlayer.user.ping();
     this.reply = await this.reply(`${name} is back. To live is to suffer.`);

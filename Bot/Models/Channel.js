@@ -50,4 +50,23 @@ module.exports = class Channel {
     this.game = null;
     return game;
   }
+
+  // Utils
+
+  getTurn(index=null) {
+    if (this.game) {
+      if (index <= this.game.currentTurn) {
+        return this.game.getTurn(index);
+      }
+    }
+    return null;
+  }
+
+  getPlayer(discordUser, index=null) {
+    const turn = this.getTurn(index);
+    if (turn) {
+      return turn.getPlayer(discordUser);
+    }
+    return null;
+  }
 }

@@ -18,13 +18,13 @@ class PlayerKickCommand extends BaseCommand {
       return await this.reply(`Try again while mentioning a Player.`)
     }
 
-    this.kickedPlayer = this.channel.game.getPlayer(this.mentionedUser);
+    this.kickedPlayer = this.channel.getPlayer(this.mentionedUser);
     if (!this.kickedPlayer) {
       return await this.reply(`This user is not playing this game.`);
     }
 
     let name = this.kickedPlayer.factioname || this.kickedPlayer.user.ping();
-    this.channel.game.deletePlayer(this.kickedPlayer);
+    this.getTurn().deletePlayer(this.kickedPlayer);
     this.save();
     await this.reply(`${name} has been removed from the game.`);
   }

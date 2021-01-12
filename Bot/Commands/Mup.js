@@ -20,7 +20,7 @@ class MupCommand extends BaseCommand {
   }
 
   changeMup(description, attachment) {
-    this.channel.game.mup(description, attachment);
+    this.getGame().nextTurn(description, attachment);
   }
 
 }

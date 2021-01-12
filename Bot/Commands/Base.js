@@ -22,6 +22,8 @@ class BaseCommand {
     return false;
   }
 
+  // Setup
+
   constructor(message, args, userCommand) {
     this.message = message;
     this.args = args;
@@ -32,28 +34,28 @@ class BaseCommand {
     this.prepareToListenForReactions();
   }
 
+
   loadBotAndDatabase() {
     this.client = Bot.client;
     this.db = Bot.db;
   }
 
+  async loadChannelFromMessage() {
+    this.channel =  await new Channel().get(this.message.channel) || new Channel().createNew(this.message.channel);
+  }
+
+  loadPlayer() {
+    if (this.channel.game != null) {
+      this.player = this.channel.getPlayer(this.message.author);
+    }
+  }
+  
   joinArgsIntoArg() {
     if (this.isArgsBlank()) {
       this.arg = "";
     } else {
       this.arg = this.args.join(" ");
     }
-  }
-  
-  isArgsBlank() {
-    return !this.args || !this.args.length;
-  }
-  
-  getMessageAttachment() {
-    if (this.message.attachments.size > 0) {
-      return this.message.attachments.values().next().value.url;
-    }
-    return null;
   }
 
   prepareToListenForReactions() {    
@@ -63,6 +65,8 @@ class BaseCommand {
       return this.reactions[reaction.emoji.name] != null;
     };
   }
+
+  // Discord Execution
 
   async tryExecute() {
     await this.loadChannelFromMessage();
@@ -77,25 +81,23 @@ class BaseCommand {
       this.message.channel.stopTyping();
     }
   }
-
+  
   async execute() {
     console.log("Invalid command: " + this.message.content);
-  }
-  
-  async loadChannelFromMessage() {
-    // await new Channel().get(this.message.channel) ||
-    this.channel =  await new Channel().get(this.message.channel) || new Channel().createNew(this.message.channel);
-  }
-
-  loadPlayer() {
-    if (this.channel.game != null) {
-      this.player = this.channel.game.getPlayer(this.message.author);
-    }
   }
 
   async save() {
     return await this.channel.save();
   }
+
+  async reply(botMessage, mention=false) {
+    this.reply = mention ?
+      await this.message.reply(botMessage)
+      : await this.message.channel.send(botMessage)
+    return this.reply;    
+  }
+
+  // Discord Reactions
 
   async waitReplyReaction() {
     const options = { max: 1, time: 120000, errors: ['time'] };
@@ -116,27 +118,27 @@ class BaseCommand {
   async deleteReply(collected, _command) {
     collected.message.delete();
   }
-
-  async reply(botMessage, mention=false) {
-    this.reply = mention ?
-      await this.message.reply(botMessage)
-      : await this.message.channel.send(botMessage)
-    return this.reply;    
+  
+  async addNextReactionToReply(callback) {
+    await this.reply.react(BaseCommand.nextReactionEmoji);
+    this.reactions[BaseCommand.nextReactionEmoji] = callback;
   }
 
-  addCommandFooter(botMessage) {
-    if (!botMessage.footer) {
-      return { 
-        text: `"${this.message.content}" by ${this.message.author.username}`,
-        iconURL: User.makeDiscordAvatarUrl(this.message.author) 
-      }
-    }
-    botMessage.footer.text += ` - "${this.message.content}" sent by ${this.message.author.username}`;
-    if (!botMessage.footer.iconURL) {
-      botMessage.footer.iconURL = User.makeDiscordAvatarUrl(this.message.author);
-    }
-    return botMessage.footer;    
+  async addPreviousReactionToReply(callback) {
+    
+    await this.reply.react(BaseCommand.previousReactionEmoji);
+    this.reactions[BaseCommand.previousReactionEmoji] = callback;
   }
+
+  cancelNextReactionToReply() {
+    delete this.reactions[BaseCommand.nextReactionEmoji];
+  }
+
+  cancelPreviousReactionToReply() {
+    delete this.reactions[BaseCommand.previousReactionEmoji]
+  }
+
+  // Validation
 
   thereIsNoGame() {
     return this.channel.game == null;
@@ -162,6 +164,12 @@ class BaseCommand {
     }
     return false;
   }
+  
+  isArgsBlank() {
+    return !this.args || !this.args.length;
+  }
+
+  // Discord Utils
 
   getMentionedUser() {
     if (this.message.mentions && 
@@ -170,6 +178,27 @@ class BaseCommand {
       return this.message.mentions.users.values().next().value;
     }
     return null;
+  }
+  
+  getMessageAttachment() {
+    if (this.message.attachments.size > 0) {
+      return this.message.attachments.values().next().value.url;
+    }
+    return null;
+  }
+
+  // Utils
+
+  getGame() {
+    if (this.channel) {
+      return this.channel.game;
+    }
+  }
+
+  getTurn(index=null) {
+    if (this.channel) {
+      return this.channel.getTurn(index);
+    }
   }
 }
 module.exports = BaseCommand;

@@ -12,7 +12,7 @@ class PlayerPingCommand extends BaseCommand {
     if (this.userIsNotMaster() && this.userIsNotMod()) {
         return await this.reply(`You are not the GM of this game.`)
     }
-    return await this.reply(this.channel.game.pingNotPlayed());
+    return await this.reply(this.getTurn().pingNotPlayed());
   }
 
 }

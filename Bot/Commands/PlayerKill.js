@@ -18,7 +18,7 @@ class PlayerKillCommand extends BaseCommand {
       return await this.reply(`Try again while mentioning a Player.`)
     }
 
-    this.killedPlayer = this.channel.game.getPlayer(this.mentionedUser);
+    this.killedPlayer = this.channel.getPlayer(this.mentionedUser);
     if (!this.killedPlayer) {
       return await this.reply(`This user is not playing this game.`);
     }
@@ -26,7 +26,7 @@ class PlayerKillCommand extends BaseCommand {
       return await this.reply(`Stop! Stop! They're already dead!`);
     }
 
-    this.killedPlayer.alive = false;
+    this.getTurn().killPlayer(this.killedPlayer);
     this.save();
     let name = this.killedPlayer.factioname || this.killedPlayer.user.ping();
     this.reply = await this.reply(`${name} is no more. Press F to pay respects.`);

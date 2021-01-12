@@ -27,7 +27,7 @@ class RollBaseCommand extends BaseCommand {
   }
 
   doRoll() {
-    this.roll = this.player.roll(this.turn, this.message, "NORMAL", this.arg);
+    this.roll = this.getTurn().doPlayerRoll(this.player, this.message, "NORMAL", this.arg);
   }
 
   validate() {
