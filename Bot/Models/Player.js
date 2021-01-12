@@ -90,6 +90,17 @@ module.exports = class Player {
     return text;
   }
 
+  makeHistoryText() {
+    if (this.rolls.length == 0) {
+      return "No rolls this turn"
+    }
+    let text = ""
+    for (let roll of this.rolls) {
+      text += roll + "\n";
+    }
+    return text;
+  }
+
   // Utils
 
   getFactionParenthesis() {
