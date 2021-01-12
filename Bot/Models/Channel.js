@@ -55,6 +55,7 @@ module.exports = class Channel {
 
   getTurn(index=null) {
     if (this.game) {
+      console.log(1)
       if (index <= this.game.currentTurn) {
         return this.game.getTurn(index);
       }

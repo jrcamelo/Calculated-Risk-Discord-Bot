@@ -8,7 +8,7 @@ class RollUntrackedIdCommand extends RollUntrackedCommand {
   static helpDescription = `${RollUntrackedIdCommand.prefix + this.command[0]}`;
 
   doRoll() {
-    this.roll = this.getTurn().doPlayerRoll(this.player, this.message, "TESTID", "");
+    this.roll = this.getTurn().doPlayerRoll(this.message, "TESTID", "");
   }
 
   validateArgs() {

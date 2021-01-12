@@ -30,9 +30,8 @@ class RollCommand extends RollBaseCommand {
   }
 
   doRoll() {
-    console.log(JSON.stringify(this.channel))
     this.getRollLimitInput();
-    this.roll = this.getTurn().doPlayerRoll(this.player, this.message, "NORMAL", this.arg, this.rollLimit);
+    this.roll = this.getTurn().doPlayerRoll(this.message, "NORMAL", this.arg, this.rollLimit);
   }
 
   getRollLimitInput() {

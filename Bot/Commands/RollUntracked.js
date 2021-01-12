@@ -15,7 +15,7 @@ class RollUntrackedCommand extends RollCommand {
 
   doRoll() {
     this.getRollLimitInput();
-    this.roll = this.getTurn().doPlayerRoll(this.player, this.message, "TEST", "", this.rollLimit);
+    this.roll = this.getTurn().doPlayerRoll(this.message, "TEST", "", this.rollLimit);
   }
 
   save() {

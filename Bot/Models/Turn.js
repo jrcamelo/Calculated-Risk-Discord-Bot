@@ -20,8 +20,8 @@ module.exports = class Turn {
   }
 
   playersFromPreviousTurn(oldPlayers) {
-    newPlayers = {};
-    for (player of Object.values(oldPlayers)) {
+    let newPlayers = {};
+    for (let player of Object.values(oldPlayers)) {
       let newPlayer = new Player().newTurn(player);
       newPlayers[newPlayer.user.id] = newPlayer;
     }
@@ -68,11 +68,11 @@ module.exports = class Turn {
     delete this.players[player.user.id];
   }
 
-  doPlayerRoll(discordUser, message, type, arg, limit) {
-    let player = this.getPlayer(discordUser);
+  doPlayerRoll(message, type, arg, limit) {
+    let player = this.getPlayer(message.author);
     let roll = player.roll(message, type, arg, limit)
     if (roll.shouldSave) {
-      this.history.push(roll.describeHistory());
+      this.history.push(roll.describeHistory(player));
     }
     return roll;
   }
@@ -91,7 +91,7 @@ module.exports = class Turn {
 
   // Mup Management
   
-  updateMup(description, link) {
+  updateMup(link, description) {
     if (!link || !Utils.isImage(link)) {
       link = this.mup;
     }

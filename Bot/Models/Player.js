@@ -34,6 +34,7 @@ module.exports = class Player {
   roll(message, type, arg, limit) {
     const roll = new Roll(message, type, arg, limit).roll();
     if (roll.shouldSave) {
+      this.rolled = true;
       this.rolls.push(roll.describeHistory(this));
     }
     return roll;
@@ -65,19 +66,18 @@ module.exports = class Player {
   }
 
   describeFirstRoll() {
-    if (turn == null || !this.rolled || !this.rolls) {
+    if (!this.rolled || !this.rolls) {
       return "has not rolled";
     }
-    let roll = this.rolls[0];
-    let text = `rolled ${roll.result}`;
+    let text = this.rolls[0];
     if (this.rolls.length > 1) {
       text += ` (then +${this.rolls.length - 1})`;
     }
     return text;
   }
 
-  describeTurnRolls(turn) {    
-    if (turn == null || !this.rolled || !this.rolls) {
+  describeTurnRolls() {    
+    if (!this.rolled || !this.rolls) {
       return null;
     }
     for (let roll of this.rolls) {

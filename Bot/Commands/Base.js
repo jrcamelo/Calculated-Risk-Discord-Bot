@@ -190,13 +190,15 @@ class BaseCommand {
   // Utils
 
   getGame() {
-    if (this.channel) {
+    if (this.channel != null) {
       return this.channel.game;
     }
   }
 
   getTurn(index=null) {
-    if (this.channel) {
+    console.log(11)
+    if (this.channel != null) {
+      console.log(this.channel.getTurn(index))
       return this.channel.getTurn(index);
     }
   }

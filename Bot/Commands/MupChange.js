@@ -5,7 +5,7 @@ class MupChangeCommand extends MupCommand {
   static helpTitle = "Updates the current Mup image and description, without changing turn and rolls.";
 
   changeMup(description, attachment) {
-    this.getTurn().update(description, attachment);
+    this.getTurn().update(attachment, description);
   }
 
 }

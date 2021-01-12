@@ -20,14 +20,8 @@ class RollBaseCommand extends BaseCommand {
     return this.reply(this.roll.makeText(this.player));
   }
 
-  getTurn() {
-    if (this.channel.game) {
-      this.turn = this.channel.game.turn;
-    }
-  }
-
   doRoll() {
-    this.roll = this.getTurn().doPlayerRoll(this.player, this.message, "NORMAL", this.arg);
+    this.roll = this.getTurn().doPlayerRoll(this.message, "NORMAL", this.arg);
   }
 
   validate() {
@@ -48,10 +42,7 @@ class RollBaseCommand extends BaseCommand {
 
   addAttachmentToIntention() {
     if (this.getMessageAttachment() != null) {
-      if (this.arg) {
-        this.arg += " ";
-      }
-      this.arg += "{Attachment}";
+      this.arg = `{Attachment} ${this.arg}`;
     }
   }
 

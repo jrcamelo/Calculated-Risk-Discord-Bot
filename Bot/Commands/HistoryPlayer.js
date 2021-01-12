@@ -13,12 +13,12 @@ class HistoryPlayerCommand extends BaseCommand {
     if (!this.mentionedUser) {
       return await this.reply(`Try mentioning a player.`)
     }
-    this.player = this.channel.game.getPlayer(this.mentionedUser);
+    this.player = this.getTurn().getPlayer(this.mentionedUser);
     if (!this.player) {
       return await this.reply(`This user is not playing this game.`)
     }
     const turn = this.channel.game.turn;
-    await this.reply(this.player.describeTurnRolls(turn));
+    await this.reply(this.getTurn(turn).getPlayer(this.mentionedUser));
     await this.addDeleteReactionToReply();
     await this.waitReplyReaction();
   }

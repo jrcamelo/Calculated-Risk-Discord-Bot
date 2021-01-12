@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const User = require("./User");
 const Turn = require("./Turn");
 const Player = require("./Player");
-const Mup = require("./Mup");
 const Utils = require("../Utils");
 
 module.exports = class Game {
@@ -31,10 +30,10 @@ module.exports = class Game {
 
   loadTurns(hash) {
     let turns = [];
-    for (turn of hash) {
+    for (let turn of hash) {
       turns.push(new Turn().load(turn));
     }
-    return turn;
+    return turns;
   }
 
   // Event
@@ -44,7 +43,7 @@ module.exports = class Game {
   }
 
   nextTurn(mup, description) {
-    oldTurn = this.getTurn();
+    let oldTurn = this.getTurn();
     this.currentTurn += 1;
     this.turns.push(new Turn().create(mup, description, oldTurn.players));
     return this.getTurn();
@@ -53,8 +52,8 @@ module.exports = class Game {
   // Descriptions
 
   makeCurrentGameEmbed(index, showMupDescription=false) {
-    if (index == null) {
-      index = this.turn;
+    if (index == null || index < 0 || index > this.currentTurn) {
+      index = this.currentTurn;
     }
     let embed = new Discord.MessageEmbed()
       .setColor('#c90040')
@@ -64,6 +63,11 @@ module.exports = class Game {
       .setThumbnail(this.getMupImage(index))
       .setFooter(`Turn ${index} of ${this.turns.length - 1} `)
     return embed;
+  }
+
+  getMupImage(index) {
+    const turn = this.getTurn(index);
+    return turn.mup;
   }
 
   makeDescription(index, showMupDescription) {

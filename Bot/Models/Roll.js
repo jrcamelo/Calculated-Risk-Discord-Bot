@@ -4,6 +4,7 @@ const Utils = require("../Utils");
 DEFAULT_MAX = 1000000000000;
 DATABASE_MAX = 10000000000000000;
 SAVED_ROLL_LENGTH = 6;
+MAX_INTENTION_LENGTH = 64;
 module.exports = class Roll {
 
   constructor(message, type, arg, limit) {
@@ -66,7 +67,7 @@ module.exports = class Roll {
   }
 
   rollId() {
-    this.value = this.message.id;
+    this.value = this.messageId;
     this.calculateRoll();
     return this;
   }
@@ -91,9 +92,13 @@ module.exports = class Roll {
   }
 
   describeHistory(player) {    
-    text += `${player.user.username} ${this.describeType()}${this.describeRollValue()}`;
+    let text = `${player.user.username} ${this.describeType()}${this.describeRollValue()}`;
     if (this.intention) {
-      text += ` - "${this.intention}"`
+      if (this.intention.length > MAX_INTENTION_LENGTH) {
+        text += ` - "${this.intention.substr(0, MAX_INTENTION_LENGTH)}-..."`
+      } else {
+        text += ` - "${this.intention}"`
+      }
     }
     return text;
   }
@@ -114,7 +119,7 @@ module.exports = class Roll {
   }
 
   describeRollValue() {
-    return `${this.formattedResult || this.result || "?"}`
+    return `${this.result || this.formattedResult || "?"}`
   }
 
   describeIntentionAndDetails() {
