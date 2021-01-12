@@ -6,10 +6,10 @@ class Parser {
   GameEnd = require("./Commands/GameEnd")
   GameWhat = require("./Commands/GameWhat")
   Claim = require("./Commands/Claim")
-  HistoryPlayer = require("./Commands/HistoryPlayer")
   Kill = require("./Commands/PlayerKill")
   Revive = require("./Commands/PlayerRevive")
   Kick = require("./Commands/PlayerKick")
+  History = require("./Commands/History")
   Mup = require("./Commands/Mup")
   MupChange = require("./Commands/MupChange")
   Ping = require("./Commands/PlayerPing")
@@ -33,7 +33,7 @@ class Parser {
       this.GameStart, 
       this.GameEnd, 
       this.GameWhat,
-      this.HistoryPlayer,
+      this.History,
       this.Claim, 
       this.Kill, 
       this.Revive, 
@@ -54,7 +54,7 @@ class Parser {
         player: [
           this.GameWhat, 
           this.Claim,
-          this.HistoryPlayer,
+          this.History,
           this.Roll, 
           this.RollId,
           this.RollUntracked,

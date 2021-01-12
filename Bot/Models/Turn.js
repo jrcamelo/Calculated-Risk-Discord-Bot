@@ -77,14 +77,12 @@ module.exports = class Turn {
     return roll;
   }
 
-  killPlayer(discordUser) {
-    let player = this.getPlayer(discordUser);
+  killPlayer(player) {
     player.alive = false;
     this.history.push(player.describeDeath());
   }
 
-  revivePlayer(discordUser) {
-    let player = this.getPlayer(discordUser);
+  revivePlayer(player) {
     player.alive = true;
     this.history.push(player.describeRevival());
   }
@@ -100,6 +98,17 @@ module.exports = class Turn {
   }
 
   // Descriptions
+
+  makeHistoryText() {
+    if (this.history.length == 0) {
+      return "Peace. For now."
+    }
+    let text = ""
+    for (let event of this.history) {
+      text += event + "\n";
+    }
+    return text;
+  }
 
   pingNotPlayed() {
     if (!Object.keys(this.players).length) {
