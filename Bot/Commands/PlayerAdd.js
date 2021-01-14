@@ -23,7 +23,9 @@ class PlayerAddCommand extends BaseCommand {
       return await this.reply(`This user is already playing this game.`);
     }
 
-    this.newPlayer = this.getTurn().addPlayer(this.mentionedUser, "");
+    this.arg.shift();
+    this.joinArgsIntoArg();
+    this.newPlayer = this.getTurn().addPlayer(this.mentionedUser, this.arg);
     this.save();
     await this.reply(`${this.newPlayer.user.username} has been added to the game.`);
   }

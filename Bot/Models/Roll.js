@@ -92,7 +92,7 @@ module.exports = class Roll {
   }
 
   describeHistory(player) {    
-    let text = `${player.user.username} ${this.describeType()}${this.describeRollValue()}`;
+    let text = `**${player.user.username}**${player.getFactionParenthesis()} ${this.describeType()}${this.describeRollValue()}`;
     if (this.intention) {
       if (this.intention.length > MAX_INTENTION_LENGTH) {
         text += ` - "${this.intention.substr(0, MAX_INTENTION_LENGTH)}-..."`

@@ -23,7 +23,7 @@ class PlayerKickCommand extends BaseCommand {
       return await this.reply(`This user is not playing this game.`);
     }
 
-    let name = this.kickedPlayer.factioname || this.kickedPlayer.user.ping();
+    let name = this.kickedPlayer.name || this.kickedPlayer.user.ping();
     this.getTurn().deletePlayer(this.kickedPlayer);
     this.save();
     await this.reply(`${name} has been removed from the game.`);

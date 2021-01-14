@@ -28,7 +28,7 @@ class PlayerKillCommand extends BaseCommand {
 
     this.getTurn().killPlayer(this.killedPlayer);
     this.save();
-    let name = this.killedPlayer.factioname || this.killedPlayer.user.ping();
+    let name = this.killedPlayer.name || this.killedPlayer.user.ping();
     this.reply = await this.reply(`${name} is no more. Press F to pay respects.`);
     this.reply.react(BaseCommand.fReactionEmoji);
   }

@@ -53,14 +53,11 @@ module.exports = class Player {
   }
 
   describePlayerCompact(turn = null) {
-    let text = `**${this.user.username}** `
-    if (this.name) {
-      text += `(${this.name}) `
-    }
+    let text = ""
     if (this.alive) {
       text += `${this.describeFirstRoll()}`;
     } else {
-      text += `is dead`;
+      text += `**${this.user.username}**${this.getFactionParenthesis()} has fallen.`;
     }
     return text;
   }
@@ -104,8 +101,8 @@ module.exports = class Player {
   // Utils
 
   getFactionParenthesis() {
-    if (this.factionName) {
-      return `(${this.factionName}) `;
+    if (this.name) {
+      return `(${this.name}) `;
     }
     return "";
   }

@@ -28,7 +28,7 @@ class PlayerReviveCommand extends BaseCommand {
 
     this.getTurn().revivePlayer(this.revivedPlayer);
     this.save();
-    let name = this.revivedPlayer.factioname || this.revivedPlayer.user.ping();
+    let name = this.revivedPlayer.name || this.revivedPlayer.user.ping();
     this.reply = await this.reply(`${name} is back. To live is to suffer.`);
     this.reply.react(BaseCommand.fReactionEmoji);
   }
