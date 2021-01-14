@@ -3,7 +3,7 @@ const Utils = require("../Utils");
 const Player = require("../Models/Player");
 
 class RollUntrackedCommand extends RollCommand {
-  static command = ["Test", "T", "Untracked", "U"];
+  static command = ["Test", "T", "TR", "TD"];
   static helpTitle = "Just like roll, but will not be saved as a roll.";
   static helpDescription = `${RollUntrackedCommand.prefix + this.command[0]}{Limit Number}`;
 

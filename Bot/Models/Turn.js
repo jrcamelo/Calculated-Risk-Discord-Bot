@@ -103,7 +103,6 @@ module.exports = class Turn {
     if (this.history.length == 0) {
       return "Peace. For now."
     }
-    let text = ""
     for (let event of this.history) {
       text += event + "\n";
     }
