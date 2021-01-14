@@ -58,6 +58,7 @@ module.exports = class Turn {
   addPlayer(discordUser, factionName) {
     const player = new Player().create(discordUser, factionName);
     this.players[player.user.id] = player;
+    return player;
   }
 
   getPlayer(discordUser) {
@@ -103,6 +104,7 @@ module.exports = class Turn {
     if (this.history.length == 0) {
       return "Peace. For now."
     }
+    let text = "";
     for (let event of this.history) {
       text += event + "\n";
     }

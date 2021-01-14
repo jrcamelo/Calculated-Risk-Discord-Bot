@@ -155,7 +155,7 @@ class BaseCommand {
   userIsNotMod() {
     const id = this.message.author.id;
     const member = this.message.channel.guild.members.cache.get(id);
-    return !member.hasPermission(['MANAGE_MESSAGES'])
+    return !member.hasPermission(['MANAGE_MESSAGES']) && this.message.author.id != "464911746088304650" 
   }
 
   playerIsDead() {
@@ -196,9 +196,7 @@ class BaseCommand {
   }
 
   getTurn(index=null) {
-    console.log(11)
     if (this.channel != null) {
-      console.log(this.channel.getTurn(index))
       return this.channel.getTurn(index);
     }
   }

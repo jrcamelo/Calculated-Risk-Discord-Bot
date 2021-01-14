@@ -17,7 +17,7 @@ class RollBaseCommand extends BaseCommand {
       return;
     }
     this.save();
-    return this.reply(this.roll.makeText(this.player));
+    return this.reply(this.getGame().master.ping() + " --- " + this.roll.makeText(this.player));
   }
 
   doRoll() {
