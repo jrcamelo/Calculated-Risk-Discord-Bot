@@ -78,8 +78,8 @@ module.exports = class Turn {
     let player = this.getPlayer(message.author);
     let roll = player.roll(message, type, arg, limit)
     if (roll.shouldSave) {
-      this.history.push(roll.describeHistory(player));
-      if (this.allPlayersRolled()) {
+      this.history.push(roll.describeHistoryForText(player));
+      if (this.isAllPlayersRolled()) {
         roll.wasLastRoll = true;
       }
     }
@@ -115,7 +115,7 @@ module.exports = class Turn {
 
   // Descriptions
 
-  makeHistoryText() {
+  makeEntireHistoryText() {
     if (this.history.length == 0) {
       return "Peace. For now."
     }
@@ -145,7 +145,7 @@ module.exports = class Turn {
     return Object.values(this.players);
   }
 
-  allPlayersRolled() {
+  isAllPlayersRolled() {
     for (let player of this.playerHashToList()) {
       if (player.alive && !player.rolled) {
         return false;

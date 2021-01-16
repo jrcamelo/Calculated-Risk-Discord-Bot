@@ -5,6 +5,7 @@ DEFAULT_MAX = 1000000000000;
 DATABASE_MAX = 10000000000000000;
 SAVED_ROLL_LENGTH = 6;
 MAX_INTENTION_LENGTH = 64;
+MAX_EMBED_INTENTION_LENGTH = 32;
 module.exports = class Roll {
 
   constructor(message, type, arg, limit) {
@@ -24,6 +25,14 @@ module.exports = class Roll {
   }
 
   load(hash) {
+    // Just so it doesn't break with old rolls
+    if (typeof(hash) == typeof("")) {
+      this.makeReplyEmbed = function() { return hash }
+      this.makeReplyText = function() { return hash }
+      return this;
+    }
+    this.messageId = hash.messageId;
+    this.messageLink = hash.messageLink;
     this.value = hash.value;
     this.type = hash.type;
     this.intention = hash.intention || "";
@@ -75,8 +84,8 @@ module.exports = class Roll {
 
   // Descriptions
 
-  makeText(player) {    
-    let text = `${this.describeRoll(player)}\n`;
+  makeReplyText(player) {    
+    let text = `${this.describeRollWithPing(player)}\n`;
     text += this.describeIntentionAndDetails();
     if (this.wasLastRoll) {
       text += "\n\n**Every player has rolled this turn!**"
@@ -84,25 +93,35 @@ module.exports = class Roll {
     return text;
   }
 
-  makeEmbed(player) {
+  // Not used
+  makeReplyEmbed(player) {
     let embed = new Discord.MessageEmbed()
-      .setTitle(`${this.describeRoll(player)}`)
+      .setTitle(`${this.describeRollWithPing(player)}`)
       .setDescription(this.describeIntentionAndDetails())
     return embed;
   }
   
-  describeRoll(player) {
+
+  describeRollWithPing(player) {
     return `${player.user.ping()} ${this.describeType()}${this.describeRollValue()}`;
   }
 
-  describeHistory(player, shouldLink=false) {  
-    let text = `**${player.user.username}** ${player.getFactionParenthesis()} ${this.describeTypeWithLink(shouldLink)}${this.describeRollValue()}`;
+  describeHistoryForEmbed(player) {  
+    let text = `**${player.user.username}** ${player.getFactionParenthesis()} ${this.describeTypeWithLink()}${this.describeRollValue()}`;
     if (this.intention) {
-      if (this.intention.length > MAX_INTENTION_LENGTH) {
-        text += ` - "${this.intention.substr(0, MAX_INTENTION_LENGTH)}-..."`
+      if (this.intention.length > MAX_EMBED_INTENTION_LENGTH) {
+        text += ` - "${this.intention.substr(0, MAX_EMBED_INTENTION_LENGTH)}-..."`
       } else {
         text += ` - "${this.intention}"`
       }
+    }
+    return text;
+  }
+
+  describeHistoryForText(player) {  
+    let text = `**${player.user.username}** ${player.getFactionParenthesis()} ${this.describeType()}${this.describeRollValue()}`;
+    if (this.intention) {
+      text += ` - "${this.intention}"`
     }
     return text;
   }
@@ -122,7 +141,7 @@ module.exports = class Roll {
     }
   }
 
-  describeTypeWithLink(shouldLink=false) {
+  describeTypeWithLink() {
     let type = this.describeType();
     if (this.messageLink && shouldLink) {
       return `[${type}](${this.messageLink})`;

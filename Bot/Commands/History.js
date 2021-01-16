@@ -1,6 +1,5 @@
 const BaseCommand = require("./Base.js");
 
-
 class HistoryCommand extends BaseCommand {
   static command = ["Played", "P", "Rolls", "History"];
   static helpTitle = "Shows the rolls and intentions this turn.";
@@ -14,7 +13,7 @@ class HistoryCommand extends BaseCommand {
     if (this.mentionedUser) {
       return this.playerHistory();
     }
-    await this.reply(this.getTurn().makeHistoryText())
+    await this.reply(this.getTurn().makeEntireHistoryText())
     await this.addDeleteReactionToReply();
     await this.waitReplyReaction();
   }

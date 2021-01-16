@@ -8,6 +8,7 @@ module.exports = class Player {
     this.alive = true;
     this.rolled = false;
     this.rolls = [];
+    this.firstRoll = null;
     return this;
   }
 
@@ -16,7 +17,8 @@ module.exports = class Player {
     this.name = hash.name;
     this.alive = hash.alive;
     this.rolled = hash.rolled;
-    this.rolls = hash.rolls;
+    this.rolls = this.loadRolls(hash.rolls);
+    this.firstRoll = hash.firstRoll;
     return this;
   }
 
@@ -26,7 +28,16 @@ module.exports = class Player {
     this.alive = hash.alive;
     this.rolled = false;
     this.rolls = [];
+    this.firstRoll = null;
     return this;
+  }
+
+  loadRolls(hash) {
+    let rolls = []
+    for (let roll of hash) {
+      rolls.push(new Roll().load(roll));
+    }
+    return rolls;
   }
 
   // Events
@@ -35,7 +46,7 @@ module.exports = class Player {
     const roll = new Roll(message, type, arg, limit).roll();
     if (roll.shouldSave) {
       this.rolled = true;
-      this.rolls.push(roll.describeHistory(this));
+      this.rolls.push(roll);
     }
     return roll;
   }
@@ -70,23 +81,9 @@ module.exports = class Player {
     if (!this.rolled || !this.rolls) {
       return `${this.describeName()} **has not rolled.**`;
     }
-    let text = this.rolls[0];
+    let text = this.rolls[0].describeHistoryForEmbed(this);
     if (this.rolls.length > 1) {
       text += ` (then +${this.rolls.length - 1})`;
-    }
-    return text;
-  }
-
-  describeTurnRolls() {    
-    if (!this.rolled || !this.rolls) {
-      return null;
-    }
-    for (let roll of this.rolls) {
-      text += `${roll.result}`;
-      if (roll.describeIntentionAndDetails()) {
-        text += ` - "${roll.describeIntentionAndDetails()}"`
-      }
-      text += "\n";
     }
     return text;
   }
@@ -97,7 +94,7 @@ module.exports = class Player {
     }
     let text = ""
     for (let roll of this.rolls) {
-      text += roll + "\n";
+      text += roll.describeHistoryForText(this) + "\n";
     }
     return text;
   }

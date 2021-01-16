@@ -58,7 +58,7 @@ module.exports = class Game {
     let embed = new Discord.MessageEmbed()
       .setTitle(this.name)
       .setAuthor(`Game Master: ${this.master.username}`, this.master.avatar)
-      .setDescription(this.makeDescription(index, showMore))
+      .setDescription(this.makeEmbedDescription(index, showMore))
       .setFooter(`Turn ${index} of ${this.turns.length - 1} `)
     let mup = this.getMupImage(index);
     if (showMore && mup) {
@@ -74,7 +74,7 @@ module.exports = class Game {
     return turn.mup;
   }
 
-  makeDescription(index, showMore) {
+  makeEmbedDescription(index, showMore) {
     const turn = this.getTurn(index);
     let text = "";
     if (showMore) {
