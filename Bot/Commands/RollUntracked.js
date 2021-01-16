@@ -5,7 +5,7 @@ const Turn = require("../Models/Turn");
 
 class RollUntrackedCommand extends RollCommand {
   static command = ["Test", "T", "TR", "TD"];
-  static helpTitle = "Just like roll, but does not need a game and will not be saved as a roll.";
+  static helpTitle = "Just like roll, but will not be saved.";
   static helpDescription = `${RollUntrackedCommand.prefix + this.command[0]}{Limit Number}`;
 
   async execute() {
@@ -24,6 +24,10 @@ class RollUntrackedCommand extends RollCommand {
 
   save() {
     // Don't save
+  }
+
+  pingGM() {
+    return "";
   }
 
   thereIsNoGame() {

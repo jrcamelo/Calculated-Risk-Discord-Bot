@@ -1,8 +1,8 @@
 const BaseCommand = require("./Base.js");
 
-class PlayerKillCommand extends BaseCommand {
-  static command = ["Kill", "Dead"];
-  static helpTitle = "Marks a player as dead.";
+class PlayerUnrollCommand extends BaseCommand {
+  static command = ["Unroll", "Undo", "UN"];
+  static helpTitle = "Cancels the first roll of the player this turn.";
   static helpDescription = `${BaseCommand.prefix + this.command[0]} <@Player>`;
 
   async execute() {
@@ -18,20 +18,18 @@ class PlayerKillCommand extends BaseCommand {
       return await this.reply(`Try again while mentioning a Player.`)
     }
 
-    this.killedPlayer = this.channel.getPlayer(this.mentionedUser);
-    if (!this.killedPlayer) {
+    this.unrolledPlayer = this.channel.getPlayer(this.mentionedUser);
+    if (!this.unrolledPlayer) {
       return await this.reply(`This user is not playing this game.`);
     }
-    if (this.killedPlayer.alive == false) {
-      return await this.reply(`Stop! Stop! They're already dead!`);
+    if (this.unrolledPlayer.rolled == false) {
+      return await this.reply(`You can't undo what has not been done yet.`);
     }
 
-    await this.getTurn().killPlayer(this.killedPlayer);
+    await this.getTurn().unrollPlayer(this.unrolledPlayer);
     await this.save();
-    let name = this.killedPlayer.name || this.killedPlayer.user.ping();
-    this.reply = await this.reply(`${name} is no more. Press F to pay respects.`);
-    this.reply.react(BaseCommand.fReactionEmoji);
+    this.reply = await this.reply(`Current roll: ${this.unrolledPlayer.describeFirstRoll() || "Needs to roll"}`);
   }
 
 }
-module.exports = PlayerKillCommand;
+module.exports = PlayerUnrollCommand;

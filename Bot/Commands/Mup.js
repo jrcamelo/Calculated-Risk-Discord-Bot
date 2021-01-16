@@ -2,8 +2,8 @@ const BaseCommand = require("./Base.js");
 
 class MupCommand extends BaseCommand {
   static command = ["Mup", "Turn"];
-  static helpTitle = "Updates the Mup, can add an image and description, and starts the next turn.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} <Description> {Image Attachment}`;
+  static helpTitle = "Starts next turn with an image and description.";
+  static helpDescription = `${BaseCommand.prefix + this.command[0]} <Description> {Image}`;
 
   async execute() {
     if (this.thereIsNoGame()) {

@@ -11,8 +11,10 @@ class Parser {
   Revive = require("./Commands/PlayerRevive")
   Kick = require("./Commands/PlayerKick")
   History = require("./Commands/History")
+  Unroll = require("./Commands/PlayerUnroll")
   Mup = require("./Commands/Mup")
   MupChange = require("./Commands/MupChange")
+  Mups = require("./Commands/GameMups");
   Ping = require("./Commands/PlayerPing")
   Roll = require("./Commands/Roll")
   RollId = require("./Commands/RollId")
@@ -40,8 +42,10 @@ class Parser {
       this.Kill, 
       this.Revive, 
       this.Kick, 
+      this.Unroll,
       this.Mup, 
-      this.MupChange, 
+      this.MupChange,
+      this.Mups,
       this.Ping, 
       this.Roll, 
       this.RollId, 
@@ -57,6 +61,7 @@ class Parser {
           this.GameWhat, 
           this.Claim,
           this.History,
+          this.Mups,
           this.Roll, 
           this.RollId,
           this.RollUntracked,
@@ -68,6 +73,7 @@ class Parser {
           this.Mup, 
           this.MupChange,
           this.Add,
+          this.Unroll,
           this.Kill, 
           this.Revive, 
           this.Kick, 

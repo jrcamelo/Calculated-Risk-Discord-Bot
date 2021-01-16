@@ -111,8 +111,10 @@ class BaseCommand {
   }
 
   async addDeleteReactionToReply() {
-    await this.reply.react(BaseCommand.deleteReactionEmoji);
-    this.reactions[BaseCommand.deleteReactionEmoji] = this.deleteReply;
+    if (this.reply != null) {
+      await this.reply.react(BaseCommand.deleteReactionEmoji);
+      this.reactions[BaseCommand.deleteReactionEmoji] = this.deleteReply;
+    }
   }
 
   async deleteReply(collected, _command) {
@@ -120,14 +122,17 @@ class BaseCommand {
   }
   
   async addNextReactionToReply(callback) {
-    await this.reply.react(BaseCommand.nextReactionEmoji);
-    this.reactions[BaseCommand.nextReactionEmoji] = callback;
+    if (this.reply != null) {
+      await this.reply.react(BaseCommand.nextReactionEmoji);
+      this.reactions[BaseCommand.nextReactionEmoji] = callback;
+    }
   }
 
   async addPreviousReactionToReply(callback) {
-    
-    await this.reply.react(BaseCommand.previousReactionEmoji);
-    this.reactions[BaseCommand.previousReactionEmoji] = callback;
+    if (this.reply != null) {
+      await this.reply.react(BaseCommand.previousReactionEmoji);
+      this.reactions[BaseCommand.previousReactionEmoji] = callback;
+    }
   }
 
   cancelNextReactionToReply() {

@@ -56,6 +56,11 @@ module.exports = class Turn {
   // Player Management
   
   addPlayer(discordUser, factionName) {
+    const oldPlayer = this.getPlayer(discordUser);
+    if (oldPlayer != null) {
+      oldPlayer.name = factionName;
+      return oldPlayer;
+    }
     const player = new Player().create(discordUser, factionName);
     this.players[player.user.id] = player;
     return player;
@@ -74,6 +79,9 @@ module.exports = class Turn {
     let roll = player.roll(message, type, arg, limit)
     if (roll.shouldSave) {
       this.history.push(roll.describeHistory(player));
+      if (this.allPlayersRolled()) {
+        roll.wasLastRoll = true;
+      }
     }
     return roll;
   }
@@ -86,6 +94,13 @@ module.exports = class Turn {
   revivePlayer(player) {
     player.alive = true;
     this.history.push(player.describeRevival());
+  }
+
+  unrollPlayer(player) {
+    player.rolls.shift();
+    if (player.rolls.length == 0) {
+      player.rolled = false;
+    }
   }
 
   // Mup Management
@@ -128,5 +143,14 @@ module.exports = class Turn {
   
   playerHashToList() {
     return Object.values(this.players);
+  }
+
+  allPlayersRolled() {
+    for (let player of this.playerHashToList()) {
+      if (player.alive && !player.rolled) {
+        return false;
+      }
+    }
+    return true;
   }
 }

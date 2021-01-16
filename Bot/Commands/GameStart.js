@@ -2,7 +2,7 @@ const BaseCommand = require("./Base.js");
 
 class GameStartCommand extends BaseCommand {
   static command = ["StartGame", "NewGame"];
-  static helpTitle = "Starts a new game in this channel. User that runs this command will be the GM of said game.";
+  static helpTitle = "Starts a new game in this channel. You will be the GM.";
   static helpDescription = `${BaseCommand.prefix + this.command[0]} <Title of the Game>`
 
   async execute() {

@@ -51,17 +51,21 @@ module.exports = class Game {
 
   // Descriptions
 
-  makeCurrentGameEmbed(index, showMupDescription=false) {
+  makeCurrentGameEmbed(index, showMore=false) {
     if (index == null || index < 0 || index > this.currentTurn) {
       index = this.currentTurn;
     }
     let embed = new Discord.MessageEmbed()
-      .setColor('#c90040')
       .setTitle(this.name)
       .setAuthor(`Game Master: ${this.master.username}`, this.master.avatar)
-      .setDescription(this.makeDescription(index, showMupDescription))
-      .setThumbnail(this.getMupImage(index))
+      .setDescription(this.makeDescription(index, showMore))
       .setFooter(`Turn ${index} of ${this.turns.length - 1} `)
+    let mup = this.getMupImage(index);
+    if (showMore && mup) {
+      embed.setImage(mup)
+    } else {
+      embed.setThumbnail(mup)
+    }
     return embed;
   }
 
@@ -70,10 +74,10 @@ module.exports = class Game {
     return turn.mup;
   }
 
-  makeDescription(index, showMupDescription) {
+  makeDescription(index, showMore) {
     const turn = this.getTurn(index);
     let text = "";
-    if (showMupDescription) {
+    if (showMore) {
       text += `${turn.description}\n\n`;
     }
 
@@ -87,17 +91,19 @@ module.exports = class Game {
     return text;
   }
 
-  // makeDescriptionOfPlayers(index) {
-  //   const turn = this.getTurn();
-  //   if (!Object.keys(this.players).length) {
-  //     return "No players."
-  //   }
-  //   let text = ""
-  //   for (let player of this.playerHashToList()) {
-  //     text += `\n${player.describePlayerCompact(turn)}`
-  //   }
-  //   return text;
-  // }
+  makeListOfMups() {
+    let text = "Mup image for:\n";
+    for (let i = this.currentTurn; i >= 0; i--) {
+      let turn = this.getTurn(i);
+      if (turn.mup) {
+        text += `[Turn ${i}](${turn.mup})\n`
+      }
+    }
+    let embed = new Discord.MessageEmbed()
+      .setTitle(this.name)
+      .setDescription(text)
+    return embed;
+  }
 
   // Utils
 

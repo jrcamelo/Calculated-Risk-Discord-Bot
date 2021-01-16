@@ -42,14 +42,18 @@ module.exports = class Player {
 
   // Descriptions
 
+  describeName() {
+    return `**${this.user.username}** ${this.getFactionParenthesis()}`
+  }
+
   describeJoin() {
-    return `${this.user.username}${this.getFactionParenthesis()} joined the game.`;
+    return `${this.describeName()} joined the game.`;
   }
   describeDeath() {
-    return `${this.user.username}${this.getFactionParenthesis()} is out of the game.`;
+    return `${this.describeName()} is out of the game.`;
   }
   describeRevival() {
-    return `${this.user.username}${this.getFactionParenthesis()} is back in the game.`;
+    return `${this.describeName()} is back in the game.`;
   }
 
   describePlayerCompact(turn = null) {
@@ -57,14 +61,14 @@ module.exports = class Player {
     if (this.alive) {
       text += `${this.describeFirstRoll()}`;
     } else {
-      text += `**${this.user.username}**${this.getFactionParenthesis()} has fallen.`;
+      text += `${this.describeName()} has fallen.`;
     }
     return text;
   }
 
   describeFirstRoll() {
     if (!this.rolled || !this.rolls) {
-      return "has not rolled";
+      return `${this.describeName()} **has not rolled.**`;
     }
     let text = this.rolls[0];
     if (this.rolls.length > 1) {
@@ -102,7 +106,7 @@ module.exports = class Player {
 
   getFactionParenthesis() {
     if (this.name) {
-      return `(${this.name}) `;
+      return `(${this.name})`;
     }
     return "";
   }

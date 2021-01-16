@@ -10,6 +10,7 @@ module.exports = class Roll {
   constructor(message, type, arg, limit) {
     if (message && message.id) {
       this.messageId = message.id;
+      this.messageLink = Utils.makeMessageLink(message);
     }
     this.type = type
     this.intention = arg;
@@ -77,6 +78,9 @@ module.exports = class Roll {
   makeText(player) {    
     let text = `${this.describeRoll(player)}\n`;
     text += this.describeIntentionAndDetails();
+    if (this.wasLastRoll) {
+      text += "\n\n**Every player has rolled this turn!**"
+    }
     return text;
   }
 
@@ -91,8 +95,8 @@ module.exports = class Roll {
     return `${player.user.ping()} ${this.describeType()}${this.describeRollValue()}`;
   }
 
-  describeHistory(player) {    
-    let text = `**${player.user.username}**${player.getFactionParenthesis()} ${this.describeType()}${this.describeRollValue()}`;
+  describeHistory(player, shouldLink=false) {  
+    let text = `**${player.user.username}** ${player.getFactionParenthesis()} ${this.describeTypeWithLink(shouldLink)}${this.describeRollValue()}`;
     if (this.intention) {
       if (this.intention.length > MAX_INTENTION_LENGTH) {
         text += ` - "${this.intention.substr(0, MAX_INTENTION_LENGTH)}-..."`
@@ -110,11 +114,20 @@ module.exports = class Roll {
       case Roll.types.ID:
         return `rolled ID `
       case Roll.types.TEST:
-        return `**test** rolled `
+        return `*test* rolled `
       case Roll.types.TESTID:
-        return `**test** rolled ID `
+        return `*test* rolled ID `
       default:
         return "rolled ";
+    }
+  }
+
+  describeTypeWithLink(shouldLink=false) {
+    let type = this.describeType();
+    if (this.messageLink && shouldLink) {
+      return `[${type}](${this.messageLink})`;
+    } else {
+      return type;
     }
   }
 

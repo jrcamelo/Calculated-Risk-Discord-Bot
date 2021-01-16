@@ -24,8 +24,8 @@ class PlayerKickCommand extends BaseCommand {
     }
 
     let name = this.kickedPlayer.name || this.kickedPlayer.user.ping();
-    this.getTurn().deletePlayer(this.kickedPlayer);
-    this.save();
+    await this.getTurn().deletePlayer(this.kickedPlayer);
+    await this.save();
     await this.reply(`${name} has been removed from the game.`);
   }
 
