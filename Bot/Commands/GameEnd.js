@@ -3,7 +3,7 @@ const BaseCommand = require("./Base.js");
 class GameEndCommand extends BaseCommand {
   static command = ["EndGame", "FinishGame"];
   static helpTitle = "Finishes the current running game. GM or Mod only.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]}`
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]}` }
 
   async execute() {
     if (this.thereIsNoGame()) {

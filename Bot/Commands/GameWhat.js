@@ -3,7 +3,7 @@ const BaseCommand = require("./Base.js");
 class GameWhatCommand extends BaseCommand {
   static command = ["Game", "Current", "G"];
   static helpTitle = "Checks the game being hosted in the current channel.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]}`;
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]}`; }
 
   async execute() {
     if (this.thereIsNoGame()) {

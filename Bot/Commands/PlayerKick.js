@@ -3,7 +3,7 @@ const BaseCommand = require("./Base.js");
 class PlayerKickCommand extends BaseCommand {
   static command = ["Kick", "Purge"];
   static helpTitle = "Removes a player from the game. This deletes old rolls.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} <@Player>`;
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]} <@Player>`; }
 
   async execute() {
     if (this.thereIsNoGame()) {

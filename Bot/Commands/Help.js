@@ -55,7 +55,7 @@ class HelpCommand extends BaseCommand {
   }
 
   makeCommandField(command) {
-    let description = command.helpDescription;
+    let description = command.helpDescription();
     if (command.command.length > 1) {
       for (let alternative of command.command) {
         if (alternative == command.command[0]) {

@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 class PlayerUnrollCommand extends BaseCommand {
   static command = ["Unroll", "Undo", "UN"];
   static helpTitle = "Cancels the first roll of the player this turn.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} <@Player>`;
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]} <@Player>`; }
 
   async execute() {
     if (this.thereIsNoGame()) {

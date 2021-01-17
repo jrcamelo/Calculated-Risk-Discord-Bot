@@ -5,7 +5,7 @@ class BaseCommand {
   static prefix = "r.";
   static command = ["Command to be used"];
   static helpTitle = "BaseCommand";
-  static helpDescription = "Command to be extended";
+  static helpDescription() { return "Command to be extended"; }
 
   static deleteReactionEmoji = "💥";
   static previousReactionEmoji = "⬅️";

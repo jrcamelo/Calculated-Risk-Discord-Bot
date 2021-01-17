@@ -3,7 +3,7 @@ const BaseCommand = require("./Base.js");
 class PlayerReviveCommand extends BaseCommand {
   static command = ["Revive", "Ressurrect", "Res"];
   static helpTitle = "Brings a player back from the dead.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} <@Player>`;
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]} <@Player>`; }
 
   async execute() {
     if (this.thereIsNoGame()) {

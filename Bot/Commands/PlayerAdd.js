@@ -3,7 +3,7 @@ const BaseCommand = require("./Base.js");
 class PlayerAddCommand extends BaseCommand {
   static command = ["Add", "Change"];
   static helpTitle = "Adds a player to the game. Can also rename the player.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} <@Player>`;
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]} <@Player>`; }
 
   async execute() {
     if (this.thereIsNoGame()) {

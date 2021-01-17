@@ -3,7 +3,7 @@ const BaseCommand = require("./Base.js");
 class RollBaseCommand extends BaseCommand {
   static command = ["Roll"];
   static helpTitle = "State your intention and put your life on Fate's hands.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} [Intention]`;
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]} [Intention]`; }
 
   async execute() {
     const error = await this.validate();

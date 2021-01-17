@@ -4,7 +4,7 @@ const Bot = require("../Bot");
 class ChangePrefixCommand extends BaseCommand {
   static command = ["ChangePrefix", "Prefix"];
   static helpTitle = "Changes the Prefix for the bot in this server. (Mod command)";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} <Prefix>`
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]} <Prefix>` }
 
   async execute() {
     if (this.isArgsBlank()) {

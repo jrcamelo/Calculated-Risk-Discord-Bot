@@ -3,7 +3,7 @@ const BaseCommand = require("./Base.js");
 class HistoryCommand extends BaseCommand {
   static command = ["Played", "P", "Rolls", "History"];
   static helpTitle = "Shows the rolls and intentions this turn.";
-  static helpDescription = `${BaseCommand.prefix + this.command[0]} [@Player]`;
+  static helpDescription() { return `${BaseCommand.prefix + this.command[0]} [@Player]`; }
 
   async execute() {
     if (this.thereIsNoGame()) {
