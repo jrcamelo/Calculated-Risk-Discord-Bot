@@ -97,6 +97,12 @@ class BaseCommand {
     return this.reply;    
   }
 
+  async replyWithDelete(botMessage, mention=false) {
+    await this.reply(botMessage, mention);
+    await this.addDeleteReactionToReply();
+    return await this.waitReplyReaction();
+  }
+
   // Discord Reactions
 
   async waitReplyReaction() {

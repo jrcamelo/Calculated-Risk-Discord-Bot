@@ -1,6 +1,7 @@
 class Parser {
-  static prefix = "r."
+  static defaultPrefix = "r."
 
+  Base = require("./Commands/Base")
   Help = require("./Commands/Help")
   GameStart = require("./Commands/GameStart")
   GameEnd = require("./Commands/GameEnd")
@@ -16,19 +17,41 @@ class Parser {
   MupChange = require("./Commands/MupChange")
   Mups = require("./Commands/GameMups");
   Ping = require("./Commands/PlayerPing")
+  NotRolled = require("./Commands/PlayerNotRolled")
   Roll = require("./Commands/Roll")
   RollId = require("./Commands/RollId")
   RollUntracked = require("./Commands/RollUntracked")
   RollUntrackedId = require("./Commands/RollUntrackedId")
-  constructor(message) {
+  ChangePrefix = require("./Commands/ChangePrefix")
+  constructor(message, db) {
     this.message = message;
+    this.db = db;
+
   }
 
-  static isValidMessage(message) {
+  static async isValidMessage(message) {
     if (!message || !message.channel || !message.channel.guild) return false;
     if (message.author.bot) return false;
-    if (!message.content.toLowerCase().startsWith(Parser.prefix)) return false;
     return true;
+  }
+
+  static async updateSavedPrefix(server) {
+    const Bot = require("./Bot");
+    Parser.savedPrefixes[server] = await Bot.db.getPrefix(server) || Parser.defaultPrefix;
+  }
+  
+  static savedPrefixes = {};
+  
+  async startsWithPrefix() {
+    console.log(Parser.savedPrefixes);
+    const server = this.message.channel.guild.id;
+    this.prefix = Parser.savedPrefixes[server] || await this.db.getPrefix(server) || Parser.defaultPrefix;
+    Parser.savedPrefixes[server] = this.prefix;
+    if (!this.message.content.toLowerCase().startsWith(this.prefix) && !this.message.content.startsWith(Parser.defaultPrefix)) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   parse() {
@@ -47,10 +70,12 @@ class Parser {
       this.MupChange,
       this.Mups,
       this.Ping, 
+      this.NotRolled,
       this.Roll, 
       this.RollId, 
       this.RollUntracked, 
-      this.RollUntrackedId
+      this.RollUntrackedId,
+      this.ChangePrefix,
     ];
 
     this.separateCommandAndArgs();
@@ -61,6 +86,7 @@ class Parser {
           this.GameWhat, 
           this.Claim,
           this.History,
+          this.NotRolled,
           this.Mups,
           this.Roll, 
           this.RollId,
@@ -77,9 +103,12 @@ class Parser {
           this.Kill, 
           this.Revive, 
           this.Kick, 
-          this.Ping, 
+          this.Ping,
+          this.ChangePrefix,
         ]
       };
+
+      this.Base.prefix = this.prefix;
       return new this.Help(this.message, helpCommands);
     }
 
@@ -108,7 +137,7 @@ class Parser {
   }
 
   removePrefix() {
-    return this.message.content.slice(Parser.prefix.length);
+    return this.message.content.slice(this.prefix.length);
   }
 }
 module.exports = Parser

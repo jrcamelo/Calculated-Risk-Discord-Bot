@@ -20,7 +20,6 @@ module.exports = class Channel {
     this.name = hash.name;
     this.server = hash.server;
     this.game = new Game().load(hash.game);
-    this.prefix = hash.prefix;
     return this;
   }
 
@@ -29,7 +28,6 @@ module.exports = class Channel {
     this.name = channel.name;
     this.server = channel.guild.name;
     this.game = null;
-    this.prefix = "r.";
     return this;
   }
 

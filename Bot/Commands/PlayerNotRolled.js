@@ -1,15 +1,16 @@
 const BaseCommand = require("./Base.js");
 
-class GameMupsCommand extends BaseCommand {
-  static command = ["AllMups", "Mups"];
-  static helpTitle = "Shows a list of all the mups.";
+class PlayerNotRolledCommand extends BaseCommand {
+  static command = ["Who", "NotRolled", "Not"];
+  static helpTitle = "Lists every player who is alive and has not rolled.";
   static helpDescription = `${BaseCommand.prefix + this.command[0]}`;
 
   async execute() {
     if (this.thereIsNoGame()) {
         return await this.replyWithDelete(`There is currently no game being hosted in this channel.`)
     }
-    await this.replyWithDelete(this.getGame().makeListOfMups());
+    return await this.reply(this.getTurn().listNotPlayed());
   }
+
 }
-module.exports = GameMupsCommand;
+module.exports = PlayerNotRolledCommand;

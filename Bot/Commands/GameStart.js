@@ -7,16 +7,14 @@ class GameStartCommand extends BaseCommand {
 
   async execute() {
     if (this.isArgsBlank()) {
-      return await this.message.reply("Try again with a name for the game.")
+      return await this.replyWithDelete("Try again with a name for the game.")
     }
     if (this.channel.game != null) {
-        return await this.reply(`There is a game being hosted in this channel already.`)
+        return await this.replyWithDelete(`There is a game being hosted in this channel already.`)
     }
     this.channel.createNewGame(this.message.author, this.arg)
     await this.save();
-    await this.reply(this.channel.game.makeCurrentGameEmbed())
-    await this.addDeleteReactionToReply();
-    await this.waitReplyReaction();
+    await this.replyWithDelete(this.channel.game.makeCurrentGameEmbed())
   }
 
 }

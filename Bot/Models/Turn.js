@@ -139,6 +139,23 @@ module.exports = class Turn {
     return text || "No players need to roll.";
   }
 
+  listNotPlayed() {
+    if (!Object.keys(this.players).length) {
+      return "Nobody is playing yet."
+    }
+    let players = ""
+    for (let player of this.playerHashToList()) {
+      if (player.alive && !player.rolled) {
+        players += `${player.user.username}\n`
+      }
+    }
+    if (players) {
+      return `Players who have not rolled yet:\n${players}`
+    } else {
+      return "No players need to roll.";
+    }
+  }
+
   // Utils
   
   playerHashToList() {

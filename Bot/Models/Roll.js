@@ -26,10 +26,10 @@ module.exports = class Roll {
 
   load(hash) {
     // Just so it doesn't break with old rolls
-    if (typeof(hash) == typeof("")) {
-      this.makeReplyEmbed = function() { return hash }
-      this.makeReplyText = function() { return hash }
-      return this;
+    if (hash.value == null) {
+      String.prototype.describeHistoryForEmbed = function() { return this }
+      String.prototype.describeHistoryForText = function() { return this }
+      return hash;
     }
     this.messageId = hash.messageId;
     this.messageLink = hash.messageLink;
@@ -88,7 +88,7 @@ module.exports = class Roll {
     let text = `${this.describeRollWithPing(player)}\n`;
     text += this.describeIntentionAndDetails();
     if (this.wasLastRoll) {
-      text += "\n\n**Every player has rolled this turn!**"
+      text += "\n**Every player has rolled this turn!**"
     }
     return text;
   }
@@ -143,7 +143,7 @@ module.exports = class Roll {
 
   describeTypeWithLink() {
     let type = this.describeType();
-    if (this.messageLink && shouldLink) {
+    if (this.messageLink) {
       return `[${type}](${this.messageLink})`;
     } else {
       return type;

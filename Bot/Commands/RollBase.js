@@ -27,22 +27,16 @@ class RollBaseCommand extends BaseCommand {
 
   async validate() {
     if (this.thereIsNoGame()) {
-        await this.reply(`There is currently no game being hosted in this channel. Try r.Test instead.`)
-        await this.addDeleteReactionToReply()
-        await this.waitReplyReaction()
+        await this.replyWithDelete(`There is currently no game being hosted in this channel. Try r.Test instead.`)
         return true;
     }
     this.loadPlayer();
     if (this.userIsNotPlaying()) {
-        this.reply(`You have not joined this game yet. Join with r.claim or roll with r.Test instead.`)
-        await this.addDeleteReactionToReply()
-        await this.waitReplyReaction()
+        await this.replyWithDelete(`You have not joined this game yet. Join with r.claim or roll with r.Test instead.`)
         return true;
     } else {
       if (this.playerIsDead()) {
-        this.reply(`You are dead.`)
-        await this.addDeleteReactionToReply()
-        await this.waitReplyReaction()
+        await this.replyWithDelete(`You are dead.`)
         return true;
       }
     }

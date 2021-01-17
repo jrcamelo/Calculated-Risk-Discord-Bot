@@ -31,7 +31,7 @@ class Bot {
       const message = Bot.messageQueue.shift();
       const response = await Bot.readMessage(message)
       if (!response) {
-        await Bot.sleep(100);
+        await Bot.sleep(50);
       }
     }
   }  
@@ -54,15 +54,22 @@ class Bot {
 
   static async readMessage(message) {
     try {
-      if (Parser.isValidMessage(message)) {
-        const command = new Parser(message).parse();
-        if (command) {
-          return await command.tryExecute() || true;
+      if (await Parser.isValidMessage(message)) {
+        const parser = new Parser(message, this.db);
+        if (await parser.startsWithPrefix(message)) {
+          const command = parser.parse();
+          if (command) {
+            return await command.tryExecute() || true;
+          }
         }
       }
     } catch(e) {
       console.log(e);
     }
+  }
+
+  static updateSavedPrefix(server) {
+    Parser.updateSavedPrefix(server);
   }
 
   static getProfilePicture() {

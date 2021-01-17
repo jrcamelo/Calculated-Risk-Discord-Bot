@@ -22,24 +22,15 @@ module.exports = class Database {
     return await this.db.set(prefix + channel.id, channel);
   }
 
-  async getUser(discordId, channelId) {
-    return await this.db.get(`USER_${discordId}_AT_CHANNEL_${channelId}`);
+  async savePrefix(serverId, commandPrefix, prefix="SERVER_") {
+    return await this.db.set(prefix + serverId, commandPrefix);
   }
 
-  async addRoll(user, roll) {
-    user.rolls.unshift(roll);
-    return await this.db.set(user.key, user);
+  async getPrefix(serverId, prefix="SERVER_") {
+    return await this.db.get(prefix + serverId);
   }
 
   async getChannels() {
     return await this.db.list("CHANNEL_");
-  }
-
-  async getChannel(channelId, prefix = "CHANNEL_") {
-    return await this.db.get(prefix + channelId);
-  }
-
-  async addChannel(channelId, roll, prefix = "CHANNEL_") {
-    return await this.db.set(prefix + channelId, [roll]);
   }
 }
