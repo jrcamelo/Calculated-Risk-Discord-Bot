@@ -7,22 +7,22 @@ class HistoryCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.replyWithDelete(`There is currently no game being hosted in this channel.`)
+        return await this.sendReplyWithDelete(`There is currently no game being hosted in this channel.`)
     }
     this.mentionedUser = this.getMentionedUser();
     if (this.mentionedUser) {
       return this.playerHistory();
     }
-    await this.replyWithDelete(this.getTurn().makeEntireHistoryText())
+    await this.sendReplyWithDelete(this.getTurn().makeEntireHistoryText())
   }
 
   async playerHistory() {
     this.player = this.getTurn().getPlayer(this.mentionedUser);
     if (!this.player) {
-      return await this.replyWithDelete(`This user is not playing this game.`)
+      return await this.sendReplyWithDelete(`This user is not playing this game.`)
     }
     const turn = this.channel.game.turn;
-    await this.replyWithDelete(this.player.makeHistoryText());
+    await this.sendReplyWithDelete(this.player.makeHistoryText());
   }
 }
 module.exports = HistoryCommand;

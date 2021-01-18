@@ -7,17 +7,17 @@ class ClaimCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.reply(`There is currently no game being hosted in this channel.`);
+        return await this.sendReply(`There is currently no game being hosted in this channel.`);
     }
     this.loadPlayer();
     if (this.playerIsDead()) {
-        return await this.reply(`You have already died.`);
+        return await this.sendReply(`You have already died.`);
     }    
 
     const factionName = this.arg || "";
     await this.getTurn().addPlayer(this.message.author, factionName);
     await this.save();
-    await this.reply(this.channel.game.makeCurrentGameEmbed());
+    await this.sendReply(this.channel.game.makeCurrentGameEmbed());
     await this.addDeleteReactionToReply();
     await this.waitReplyReaction();
   }

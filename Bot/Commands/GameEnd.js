@@ -7,14 +7,14 @@ class GameEndCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.reply(`There is currently no game being hosted in this channel.`)
+        return await this.sendReply(`There is currently no game being hosted in this channel.`)
     }
     if (this.userIsNotMaster() && this.userIsNotMod()) {
-        return await this.reply(`You are not the GM of this game.`)
+        return await this.sendReply(`You are not the GM of this game.`)
     }
     const oldGame = this.channel.finishGame();
     await this.save();
-    return await this.reply(`${oldGame.name} has been finished.`)
+    return await this.sendReply(`${oldGame.name} has been finished.`)
   }
 
 }

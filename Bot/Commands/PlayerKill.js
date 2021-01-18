@@ -7,29 +7,29 @@ class PlayerKillCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.replyWithDelete(`There is currently no game being hosted in this channel.`)
+        return await this.sendReplyWithDelete(`There is currently no game being hosted in this channel.`)
     }
     if (this.userIsNotMaster()) {
-        return await this.replyWithDelete(`You are not the GM of this game.`)
+        return await this.sendReplyWithDelete(`You are not the GM of this game.`)
     }
 
     this.mentionedUser = this.getMentionedUser();
     if (!this.mentionedUser) {
-      return await this.replyWithDelete(`Try again while mentioning a Player.`)
+      return await this.sendReplyWithDelete(`Try again while mentioning a Player.`)
     }
 
     this.killedPlayer = this.channel.getPlayer(this.mentionedUser);
     if (!this.killedPlayer) {
-      return await this.replyWithDelete(`This user is not playing this game.`);
+      return await this.sendReplyWithDelete(`This user is not playing this game.`);
     }
     if (this.killedPlayer.alive == false) {
-      return await this.replyWithDelete(`Stop! Stop! They're already dead!`);
+      return await this.sendReplyWithDelete(`Stop! Stop! They're already dead!`);
     }
 
     await this.getTurn().killPlayer(this.killedPlayer);
     await this.save();
     let name = this.killedPlayer.name || this.killedPlayer.user.ping();
-    this.reply = await this.reply(`${name} is no more. Press F to pay respects.`);
+    this.reply = await this.sendReply(`${name} is no more. Press F to pay respects.`);
     this.reply.react(BaseCommand.fReactionEmoji);
   }
 

@@ -7,9 +7,9 @@ class GameMupsCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.replyWithDelete(`There is currently no game being hosted in this channel.`)
+        return await this.sendReplyWithDelete(`There is currently no game being hosted in this channel.`)
     }
-    await this.replyWithDelete(this.getGame().makeListOfMups());
+    await this.sendReplyWithDelete(this.getGame().makeListOfMups());
   }
 }
 module.exports = GameMupsCommand;

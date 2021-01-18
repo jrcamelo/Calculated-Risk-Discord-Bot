@@ -7,12 +7,12 @@ class PlayerPingCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.replyWithDelete(`There is currently no game being hosted in this channel.`)
+        return await this.sendReplyWithDelete(`There is currently no game being hosted in this channel.`)
     }
     if (this.userIsNotMaster() && this.userIsNotMod()) {
-        return await this.replyWithDelete(`You are not the GM of this game.`)
+        return await this.sendReplyWithDelete(`You are not the GM of this game.`)
     }
-    return await this.reply(this.getTurn().pingNotPlayed());
+    return await this.sendReply(this.getTurn().pingNotPlayed());
   }
 
 }

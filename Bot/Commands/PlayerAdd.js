@@ -7,22 +7,22 @@ class PlayerAddCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.replyWithDelete(`There is currently no game being hosted in this channel.`)
+        return await this.sendReplyWithDelete(`There is currently no game being hosted in this channel.`)
     }
     if (this.userIsNotMaster() && this.userIsNotMod()) {
-        return await this.replyWithDelete(`You are not the GM of this game.`)
+        return await this.sendReplyWithDelete(`You are not the GM of this game.`)
     }
 
     this.mentionedUser = this.getMentionedUser();
     if (!this.mentionedUser) {
-      return await this.replyWithDelete(`Try again while mentioning a Player.`)
+      return await this.sendReplyWithDelete(`Try again while mentioning a Player.`)
     }
 
     this.args.shift();
     this.joinArgsIntoArg();
     this.newPlayer = await this.getTurn().addPlayer(this.mentionedUser, this.arg);
     await this.save();
-    await this.reply(`${this.newPlayer.describeName()} has been added to the game.`);
+    await this.sendReply(`${this.newPlayer.describeName()} has been added to the game.`);
   }
 
 }

@@ -27,7 +27,7 @@ class HelpCommand extends BaseCommand {
       this.makeEmbed(player, "List of Player Commands"), 
       this.makeEmbed(master, "List of Game Master Commands"),
     ];
-    await this.reply(this.embeds[this.index]);
+    await this.sendReply(this.embeds[this.index]);
     await this.addReactions();
   }
   

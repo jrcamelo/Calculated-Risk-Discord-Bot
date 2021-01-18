@@ -8,16 +8,16 @@ class ChangePrefixCommand extends BaseCommand {
 
   async execute() {
     if (this.isArgsBlank()) {
-      return await this.replyWithDelete("Try again with a prefix.")
+      return await this.sendReplyWithDelete("Try again with a prefix.")
     }
     if (this.userIsNotMod()) {
-        return await this.replyWithDelete(`You do not have permission to do this.`)
+        return await this.sendReplyWithDelete(`You do not have permission to do this.`)
     }
     let prefix = this.args[0].toLowerCase();
     let server = this.message.channel.guild.id;
     await this.db.savePrefix(server, prefix);
     Bot.updateSavedPrefix(server);
-    await this.replyWithDelete(`Prefix changed to ${prefix}, try ${prefix}help`);
+    await this.sendReplyWithDelete(`Prefix changed to ${prefix}, try ${prefix}help`);
   }
 
 }

@@ -7,11 +7,11 @@ class GameWhatCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.reply(`There is currently no game being hosted in this channel.`)
+        return await this.sendReply(`There is currently no game being hosted in this channel.`)
     }
     this.index = this.getGame().currentTurn;
     this.showDescription = false;
-    await this.reply(this.getGame().makeCurrentGameEmbed(this.index));
+    await this.sendReply(this.getGame().makeCurrentGameEmbed(this.index));
     await this.addDeleteReactionToReply();
     await this.addShowDescriptionReaction();
     await this.addPageReactions();

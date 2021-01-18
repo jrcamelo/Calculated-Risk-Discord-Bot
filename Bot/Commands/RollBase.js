@@ -18,7 +18,7 @@ class RollBaseCommand extends BaseCommand {
     }
     this.save();
 
-    await this.reply(this.pingGM() + this.roll.makeReplyText(this.player));
+    await this.sendReply(this.pingGM() + this.roll.makeReplyText(this.player));
   }
 
   doRoll() {
@@ -27,16 +27,16 @@ class RollBaseCommand extends BaseCommand {
 
   async validate() {
     if (this.thereIsNoGame()) {
-        await this.replyWithDelete(`There is currently no game being hosted in this channel. Try r.Test instead.`)
+        await this.sendReplyWithDelete(`There is currently no game being hosted in this channel. Try r.Test instead.`)
         return true;
     }
     this.loadPlayer();
     if (this.userIsNotPlaying()) {
-        await this.replyWithDelete(`You have not joined this game yet. Join with r.claim or roll with r.Test instead.`)
+        await this.sendReplyWithDelete(`You have not joined this game yet. Join with r.claim or roll with r.Test instead.`)
         return true;
     } else {
       if (this.playerIsDead()) {
-        await this.replyWithDelete(`You are dead.`)
+        await this.sendReplyWithDelete(`You are dead.`)
         return true;
       }
     }

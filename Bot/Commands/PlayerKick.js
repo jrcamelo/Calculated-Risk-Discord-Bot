@@ -7,26 +7,26 @@ class PlayerKickCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.replyWithDelete(`There is currently no game being hosted in this channel.`)
+        return await this.sendReplyWithDelete(`There is currently no game being hosted in this channel.`)
     }
     if (this.userIsNotMaster() && this.userIsNotMod()) {
-        return await this.replyWithDelete(`You are not the GM of this game.`)
+        return await this.sendReplyWithDelete(`You are not the GM of this game.`)
     }
 
     this.mentionedUser = this.getMentionedUser();
     if (!this.mentionedUser) {
-      return await this.replyWithDelete(`Try again while mentioning a Player.`)
+      return await this.sendReplyWithDelete(`Try again while mentioning a Player.`)
     }
 
     this.kickedPlayer = this.channel.getPlayer(this.mentionedUser);
     if (!this.kickedPlayer) {
-      return await this.replyWithDelete(`This user is not playing this game.`);
+      return await this.sendReplyWithDelete(`This user is not playing this game.`);
     }
 
     let name = this.kickedPlayer.name || this.kickedPlayer.user.ping();
     await this.getTurn().deletePlayer(this.kickedPlayer);
     await this.save();
-    await this.reply(`${name} has been removed from the game.`);
+    await this.sendReply(`${name} has been removed from the game.`);
   }
 
 }

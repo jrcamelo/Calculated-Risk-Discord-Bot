@@ -90,15 +90,15 @@ class BaseCommand {
     return await this.channel.save();
   }
 
-  async reply(botMessage, mention=false) {
+  async sendReply(botMessage, mention=false) {
     this.reply = mention ?
       await this.message.reply(botMessage)
       : await this.message.channel.send(botMessage)
     return this.reply;    
   }
 
-  async replyWithDelete(botMessage, mention=false) {
-    await this.reply(botMessage, mention);
+  async sendReplyWithDelete(botMessage, mention=false) {
+    await this.sendReply(botMessage, mention);
     await this.addDeleteReactionToReply();
     return await this.waitReplyReaction();
   }

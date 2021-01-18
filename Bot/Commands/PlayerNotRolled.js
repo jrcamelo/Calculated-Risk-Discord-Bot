@@ -7,9 +7,9 @@ class PlayerNotRolledCommand extends BaseCommand {
 
   async execute() {
     if (this.thereIsNoGame()) {
-        return await this.replyWithDelete(`There is currently no game being hosted in this channel.`)
+        return await this.sendReplyWithDelete(`There is currently no game being hosted in this channel.`)
     }
-    return await this.reply(this.getTurn().listNotPlayed());
+    return await this.sendReply(this.getTurn().listNotPlayed());
   }
 
 }
