@@ -43,7 +43,6 @@ class Parser {
   static savedPrefixes = {};
   
   async startsWithPrefix() {
-    console.log(Parser.savedPrefixes);
     const server = this.message.channel.guild.id;
     this.prefix = Parser.savedPrefixes[server] || await this.db.getPrefix(server) || Parser.defaultPrefix;
     Parser.savedPrefixes[server] = this.prefix;
