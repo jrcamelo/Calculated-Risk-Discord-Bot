@@ -6,7 +6,7 @@ const Utils = require("../Utils");
 
 module.exports = class Game {
   create(user, name) {    
-    this.name = name;
+    this.name = Utils.removeEmojis(name);
     this.master = new User().create(user);
     this.currentTurn = 0;
     this.turns = [new Turn().create()];
@@ -81,7 +81,7 @@ module.exports = class Game {
       text += `${turn.description}\n\n`;
     }
 
-    const turnPlayers = turn.playerHashToList();
+    const turnPlayers = turn.playerHashToSortedList();
     if (!turnPlayers.length) {
       return "No players."
     }

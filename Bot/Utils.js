@@ -1,4 +1,5 @@
 const IsImage = require("is-image-url")
+const EmojiConverter = require("discord-emoji-converter");
 
 const times = {
   SECONDS: 1,
@@ -18,6 +19,31 @@ function makeMessageLink(message) {
 
 function isImage(url) {
   return IsImage(url);
+}
+
+function removeEmojis(str) {
+  if (!str) {
+    return str;
+  }
+  try {
+    return EmojiConverter.shortcodify(str);
+  } catch(e) {
+    var unified_emoji_ranges = [
+      '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
+      '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
+      '\ud83d[\ude80-\udeff]'  // U+1F680 to U+1F6FF
+    ];
+    str = str || "";
+    var regex = new RegExp(unified_emoji_ranges.join('|'), 'g');
+    return str.replace(regex, "?");
+  }
+}
+
+function addEmojis(str) {
+  if (!str) {
+    return str;
+  }
+  return EmojiConverter.emojify(str);
 }
 
 function timestampToDateTime(timestamp) {
@@ -121,6 +147,8 @@ function isReverseStraight(str) {
 module.exports.times = times;
 module.exports.keepOnlyNumbers = keepOnlyNumbers;
 module.exports.isImage = isImage;
+module.exports.removeEmojis = removeEmojis;
+module.exports.addEmojis = addEmojis;
 module.exports.makeMessageLink = makeMessageLink;
 module.exports.timestampToDate = timestampToDate;
 module.exports.timestampToDateTime = timestampToDateTime;

@@ -17,6 +17,7 @@ class MupCommand extends BaseCommand {
     await this.sendReply(this.channel.game.makeCurrentGameEmbed())
     await this.addShowDescriptionReaction();
     await this.waitReplyReaction();
+    await this.sendAdditionalReply(this.getTurn().pingNotPlayed());
   }
 
   changeMup(description, attachment) {

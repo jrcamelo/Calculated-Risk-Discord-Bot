@@ -6,3 +6,8 @@ app.listen(port, () => console.log(`Staying alive at http://localhost:${port}`))
 
 const Bot = require("./Bot/Bot")
 Bot.initialize()
+
+const ReplitDatabase = require("@replit/database");
+const db = new ReplitDatabase();
+
+// db.delete("CHANNEL_796143378844483634");

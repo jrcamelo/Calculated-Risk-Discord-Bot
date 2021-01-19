@@ -91,6 +91,9 @@ class BaseCommand {
   }
 
   async sendReply(botMessage, mention=false) {
+    if (botMessage.length > 2000) {
+      botMessage = botMessage.substring(0, 1985) + "\n--- TOO LONG!";
+    }
     this.reply = mention ?
       await this.message.reply(botMessage)
       : await this.message.channel.send(botMessage)
@@ -101,6 +104,10 @@ class BaseCommand {
     await this.sendReply(botMessage, mention);
     await this.addDeleteReactionToReply();
     return await this.waitReplyReaction();
+  }
+
+  async sendAdditionalReply(botMessage) {
+    await this.message.channel.send(botMessage)
   }
 
   // Discord Reactions

@@ -14,7 +14,7 @@ module.exports = class Roll {
       this.messageLink = Utils.makeMessageLink(message);
     }
     this.type = type
-    this.intention = arg;
+    this.intention = Utils.removeEmojis(arg);
     this.userLimit = limit;
     if (!limit || limit < 1 || limit > DATABASE_MAX) {
       this.userLimit = DEFAULT_MAX;
@@ -200,5 +200,4 @@ module.exports = class Roll {
     this.result = Utils.lastCharacters(this.formattedResult, Math.max(size + 4, SAVED_ROLL_LENGTH + 4));
     return this.result;
   }
-
 }

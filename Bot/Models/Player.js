@@ -1,10 +1,11 @@
 const User = require("./User");
-const Roll = require("./Roll")
+const Roll = require("./Roll");
+const Utils = require("../Utils");
 
 module.exports = class Player {
   create(discordUser, factionName) {
     this.user = new User().create(discordUser);
-    this.name = factionName;
+    this.name = Utils.removeEmojis(factionName);
     this.alive = true;
     this.rolled = false;
     this.rolls = [];
@@ -46,6 +47,9 @@ module.exports = class Player {
     const roll = new Roll(message, type, arg, limit).roll();
     if (roll.shouldSave) {
       this.rolled = true;
+      if (this.firstRoll == null) {
+        this.firstRoll = roll;
+      }
       this.rolls.push(roll);
     }
     return roll;
@@ -106,5 +110,33 @@ module.exports = class Player {
       return `(${this.name})`;
     }
     return "";
+  }
+
+  compareFirstRolls(otherPlayer) {
+    if (!this.alive && !otherPlayer.alive) {
+      return 0;
+    }
+    if (!this.alive) {
+      return 1;
+    }
+    if (!otherPlayer.alive) {
+      return -1;
+    }
+    if (!this.firstRoll && !otherPlayer.firstRoll) {
+      return 0;
+    }
+    if (!this.firstRoll) {
+      return 1;
+    }
+    if (!otherPlayer.firstRoll) {
+      return -1;
+    }
+    if (this.firstRoll.time > otherPlayer.firstRoll.time) {
+      return 1;
+    }
+    if (this.firstRoll.time < otherPlayer.firstRoll.time) {
+      return -1;
+    }
+    return 0;
   }
 }

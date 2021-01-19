@@ -9,7 +9,7 @@ module.exports = class Turn {
 
   create(mup="", description="", players=null) {
     this.mup = mup;
-    this.description = description;
+    this.description = Utils.removeEmojis(description);
     this.history = [];
     if (players != null) {
       this.players = this.playersFromPreviousTurn(players)
@@ -100,6 +100,9 @@ module.exports = class Turn {
     player.rolls.shift();
     if (player.rolls.length == 0) {
       player.rolled = false;
+      player.firstRoll = null;
+    } else {
+      player.firstRoll = player.rolls[0];
     }
   }
 
@@ -160,6 +163,12 @@ module.exports = class Turn {
   
   playerHashToList() {
     return Object.values(this.players);
+  }
+
+  playerHashToSortedList() {
+    let players = this.playerHashToList();
+    players.sort((a,b) => (a.compareFirstRolls(b)));
+    return players;
   }
 
   isAllPlayersRolled() {

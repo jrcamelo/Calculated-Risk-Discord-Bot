@@ -46,10 +46,10 @@ class Parser {
     const server = this.message.channel.guild.id;
     this.prefix = Parser.savedPrefixes[server] || await this.db.getPrefix(server) || Parser.defaultPrefix;
     Parser.savedPrefixes[server] = this.prefix;
-    if (!this.message.content.toLowerCase().startsWith(this.prefix) && !this.message.content.startsWith(Parser.defaultPrefix)) {
-      return false;
-    } else {
+    if (this.message.content.toLowerCase().startsWith(this.prefix) || this.message.content.toLowerCase().startsWith("r.h")) {
       return true;
+    } else {
+      return false;
     }
   }
 
@@ -79,7 +79,7 @@ class Parser {
 
     this.separateCommandAndArgs();
 
-    if (this.Help.isRequestedCommand(this.command)) {
+    if (this.Help.isRequestedCommand(this.command) || this.message.content.toLowerCase() == "r.help") {
       const helpCommands = {
         player: [
           this.GameWhat, 

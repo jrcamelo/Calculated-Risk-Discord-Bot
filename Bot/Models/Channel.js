@@ -1,5 +1,6 @@
 const Bot = require("../Bot");
 const Game = require("./Game");
+const Utils = require("../Utils");
 
 module.exports = class Channel {
   constructor() {
@@ -25,8 +26,8 @@ module.exports = class Channel {
 
   createNew(channel) {
     this.id = channel.id;
-    this.name = channel.name;
-    this.server = channel.guild.name;
+    this.name = Utils.removeEmojis(channel.name);
+    this.server = Utils.removeEmojis(channel.guild.name);
     this.game = null;
     return this;
   }
