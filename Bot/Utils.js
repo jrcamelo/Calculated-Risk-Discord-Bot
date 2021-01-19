@@ -26,7 +26,7 @@ function sanitize(str) {
     return str;
   }
   str = removeEmojis(str);
-  str = str.replace(";", ",");
+  str = str.replace(/;/g, ",");
   return str;
 }
 
