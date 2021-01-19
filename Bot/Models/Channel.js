@@ -26,8 +26,8 @@ module.exports = class Channel {
 
   createNew(channel) {
     this.id = channel.id;
-    this.name = Utils.removeEmojis(channel.name);
-    this.server = Utils.removeEmojis(channel.guild.name);
+    this.name = Utils.sanitize(channel.name);
+    this.server = Utils.sanitize(channel.guild.name);
     this.game = null;
     return this;
   }

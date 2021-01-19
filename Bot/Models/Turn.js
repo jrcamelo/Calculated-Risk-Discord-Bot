@@ -9,7 +9,7 @@ module.exports = class Turn {
 
   create(mup="", description="", players=null) {
     this.mup = mup;
-    this.description = Utils.removeEmojis(description);
+    this.description = Utils.sanitize(description);
     this.history = [];
     if (players != null) {
       this.players = this.playersFromPreviousTurn(players)

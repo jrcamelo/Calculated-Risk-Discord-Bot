@@ -21,10 +21,16 @@ function isImage(url) {
   return IsImage(url);
 }
 
-function removeEmojis(str) {
+function sanitize(str) {
   if (!str) {
     return str;
   }
+  str = removeEmojis(str);
+  str = str.replace(";", ",");
+  return str;
+}
+
+function removeEmojis(str) {
   try {
     return EmojiConverter.shortcodify(str);
   } catch(e) {
@@ -37,13 +43,6 @@ function removeEmojis(str) {
     var regex = new RegExp(unified_emoji_ranges.join('|'), 'g');
     return str.replace(regex, "?");
   }
-}
-
-function addEmojis(str) {
-  if (!str) {
-    return str;
-  }
-  return EmojiConverter.emojify(str);
 }
 
 function timestampToDateTime(timestamp) {
@@ -147,8 +146,8 @@ function isReverseStraight(str) {
 module.exports.times = times;
 module.exports.keepOnlyNumbers = keepOnlyNumbers;
 module.exports.isImage = isImage;
+module.exports.sanitize = sanitize;
 module.exports.removeEmojis = removeEmojis;
-module.exports.addEmojis = addEmojis;
 module.exports.makeMessageLink = makeMessageLink;
 module.exports.timestampToDate = timestampToDate;
 module.exports.timestampToDateTime = timestampToDateTime;

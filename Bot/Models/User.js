@@ -3,7 +3,7 @@ const Utils = require("../Utils");
 module.exports = class User {
   create(discordUser) {
     this.id = discordUser.id;
-    this.username = Utils.removeEmojis(discordUser.username);
+    this.username = Utils.sanitize(discordUser.username);
     this.avatar = User.makeDiscordAvatarUrl(discordUser);
     return this;
   }

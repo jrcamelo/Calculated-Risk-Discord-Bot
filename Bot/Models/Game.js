@@ -6,7 +6,7 @@ const Utils = require("../Utils");
 
 module.exports = class Game {
   create(user, name) {    
-    this.name = Utils.removeEmojis(name);
+    this.name = Utils.sanitize(name);
     this.master = new User().create(user);
     this.currentTurn = 0;
     this.turns = [new Turn().create()];

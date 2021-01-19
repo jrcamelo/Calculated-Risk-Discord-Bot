@@ -5,7 +5,7 @@ const Utils = require("../Utils");
 module.exports = class Player {
   create(discordUser, factionName) {
     this.user = new User().create(discordUser);
-    this.name = Utils.removeEmojis(factionName);
+    this.name = Utils.sanitize(factionName);
     this.alive = true;
     this.rolled = false;
     this.rolls = [];
