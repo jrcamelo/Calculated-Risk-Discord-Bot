@@ -19,6 +19,10 @@ module.exports = class Database {
   }
 
   async saveChannel(channel, prefix="CHANNEL_") {
+    const old = await this.db.get(channel.id);
+    if (old != null) {
+      await this.db.set(prefix + channel.id + "_BACKUP", old);
+    }
     return await this.db.set(prefix + channel.id, channel);
   }
 

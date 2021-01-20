@@ -3,7 +3,7 @@ const Utils = require("../Utils");
 
 class RollCommand extends RollBaseCommand {
   static command = ["Roll", "R", "D"];
-  static helpTitle = "Choose a limit for the roll (r.r100, r.d20), state your intention and put your life on Fate's hands.";
+  static helpTitle = "Choose a limit for the roll (r100, d20), state your intention and put your life on Fate's hands.";
   static helpDescription() { return `${RollBaseCommand.prefix + this.command[0]}{Limit Number} [Intention]`; }
 
   static isRequestedCommand(input) {

@@ -17,7 +17,7 @@ class Bot {
     Bot.client.on("message", async function(message) {
       Bot.messageQueue.push(message);
     });
-    await Bot.client.login(process.env.BOT_TOKEN);
+    await Bot.client.login(process.env.BOT_TOKEN).catch(console.error);
     await Bot.setStatus();
 
     console.log("Bot is now calculating.");
@@ -31,7 +31,7 @@ class Bot {
       const message = Bot.messageQueue.shift();
       const response = await Bot.readMessage(message)
       if (!response) {
-        await Bot.sleep(50);
+        await Bot.sleep(100);
       }
     }
   }  

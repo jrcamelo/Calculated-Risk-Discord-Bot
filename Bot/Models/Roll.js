@@ -4,8 +4,8 @@ const Utils = require("../Utils");
 DEFAULT_MAX = 1000000000000;
 DATABASE_MAX = 10000000000000000;
 SAVED_ROLL_LENGTH = 6;
-MAX_INTENTION_LENGTH = 64;
-MAX_EMBED_INTENTION_LENGTH = 48;
+MAX_INTENTION_LENGTH = 48;
+MAX_EMBED_INTENTION_LENGTH = 32;
 module.exports = class Roll {
 
   constructor(message, type, arg, limit) {

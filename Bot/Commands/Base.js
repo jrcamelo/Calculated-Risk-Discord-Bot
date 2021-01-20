@@ -91,7 +91,7 @@ class BaseCommand {
   }
 
   async sendReply(botMessage, mention=false) {
-    if (botMessage.length > 2000) {
+    if (botMessage.length > 2000 && botMessage.substring != null) {
       botMessage = botMessage.substring(0, 1985) + "\n--- TOO LONG!";
     }
     this.reply = mention ?

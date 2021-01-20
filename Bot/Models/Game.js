@@ -78,7 +78,7 @@ module.exports = class Game {
     const turn = this.getTurn(index);
     let text = "";
     if (showMore) {
-      text += `${turn.description}\n\n`;
+      text += `${turn.description}\n`;
     }
 
     const turnPlayers = turn.playerHashToSortedList();
