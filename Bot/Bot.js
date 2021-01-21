@@ -21,6 +21,7 @@ class Bot {
     await Bot.setStatus();
 
     console.log("Bot is now calculating.");
+    Parser.defaultPrefix = process.env.DEFAULT_PREFIX || "r.";
     // Testing
     console.log(await Bot.db.getAll())
     Bot.startMessageQueueReader();

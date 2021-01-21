@@ -19,11 +19,19 @@ module.exports = class Database {
   }
 
   async saveChannel(channel, prefix="CHANNEL_") {
-    const old = await this.db.get(channel.id);
-    if (old != null) {
-      await this.db.set(prefix + channel.id + "_BACKUP", old);
-    }
+    await this.trySaveChannelBackup(channel);
     return await this.db.set(prefix + channel.id, channel);
+  }
+
+  async trySaveChannelBackup(channel) {
+    try {
+      const old = await this.db.get("CHANNEL_" + channel.id);
+      if (old != null) {
+        await this.db.set("CHANNEL_" + channel.id + "_BACKUP", old);
+      }
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   async savePrefix(serverId, commandPrefix, prefix="SERVER_") {
