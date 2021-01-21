@@ -26,7 +26,8 @@ function sanitize(str) {
     return str;
   }
   str = removeEmojis(str);
-  str = str.replace(/;/g, ",");
+  str = str.replace(/;/g, "[,]");
+  str = str.replace(/&/g, "[!]");
   return str;
 }
 
@@ -41,7 +42,7 @@ function removeEmojis(str) {
     ];
     str = str || "";
     var regex = new RegExp(unified_emoji_ranges.join('|'), 'g');
-    return str.replace(regex, "?");
+    return str.replace(regex, "[?]");
   }
 }
 

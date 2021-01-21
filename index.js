@@ -8,10 +8,10 @@ console.log("...")
 const Bot = require("./Bot/Bot")
 Bot.initialize()
 
-// const ReplitDatabase = require("@replit/database");
-// const db = new ReplitDatabase();
+const ReplitDatabase = require("@replit/database");
+const db = new ReplitDatabase();
 
-//db.delete("CHANNEL_800255017478389800");
+db.delete("CHANNEL_796143378844483634");
 
 
 // db.get("CHANNEL_632916917966995457", {"raw":true}).then(function(result) {console.log(result);})

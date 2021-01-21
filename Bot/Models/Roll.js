@@ -5,7 +5,7 @@ DEFAULT_MAX = 1000000000000;
 DATABASE_MAX = 10000000000000000;
 SAVED_ROLL_LENGTH = 6;
 MAX_INTENTION_LENGTH = 48;
-MAX_EMBED_INTENTION_LENGTH = 32;
+MAX_EMBED_INTENTION_LENGTH = 24;
 module.exports = class Roll {
 
   constructor(message, type, arg, limit) {
@@ -15,6 +15,7 @@ module.exports = class Roll {
     }
     this.type = type
     this.intention = Utils.sanitize(arg);
+    console.log(this.intention);
     this.userLimit = limit;
     if (!limit || limit < 1 || limit > DATABASE_MAX) {
       this.userLimit = DEFAULT_MAX;
