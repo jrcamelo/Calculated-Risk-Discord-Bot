@@ -32,10 +32,10 @@ module.exports = class Turn {
     if (hash == null) {
       return null;
     }
-    this.mup = hash.mup;
-    this.description = hash.description;
+    this.mup = Utils.decode(hash.mup);
+    this.description = Utils.decode(hash.description);
     this.players = this.loadPlayerHash(hash.players);
-    this.history = hash.history;
+    this.history = this.loadHistory(hash.history);
     return this;
   }
 
@@ -46,6 +46,25 @@ module.exports = class Turn {
       result[key] = player;
     }
     return result;
+  }
+
+  loadHistory(hash) {
+    const result = [];
+    for (let hist of hash) {
+      result.push(Utils.decode(hist));
+    }
+    return result;
+  }
+
+  encode() {
+    this.mup = Utils.encode(this.mup);
+    this.description = Utils.encode(this.description);
+    for (const [key, value] of Object.entries(this.players)) {
+      this.players[key].encode();
+    }
+    for (let i in this.history) {
+      this.history[i] = Utils.encode(this.history[i]);
+    }
   }
 
   update(mup, description) {
@@ -97,13 +116,7 @@ module.exports = class Turn {
   }
 
   unrollPlayer(player) {
-    player.rolls.shift();
-    if (player.rolls.length == 0) {
-      player.rolled = false;
-      player.firstRoll = null;
-    } else {
-      player.firstRoll = player.rolls[0];
-    }
+    player.unroll();
   }
 
   // Mup Management

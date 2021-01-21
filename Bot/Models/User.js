@@ -10,9 +10,13 @@ module.exports = class User {
 
   load(hash) {
     this.id = hash.id;
-    this.username = hash.username;
+    this.username = Utils.decode(hash.username);
     this.avatar = hash.avatar;
     return this;
+  }
+
+  encode() {
+    this.username = Utils.encode(this.username);
   }
 
   ping() {

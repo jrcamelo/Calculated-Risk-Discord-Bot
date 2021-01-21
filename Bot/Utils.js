@@ -1,5 +1,7 @@
 const IsImage = require("is-image-url")
 const EmojiConverter = require("discord-emoji-converter");
+const EmojiRegex = require("emoji-regex");
+const Base32 = require("base32");
 
 const times = {
   SECONDS: 1,
@@ -21,28 +23,48 @@ function isImage(url) {
   return IsImage(url);
 }
 
+function encode(str) {
+  if (!str) return str;
+  try {
+    return Base32.encode(str);
+  } catch(e) {
+    console.log(str);
+    console.log(e);
+    return null;
+  }
+}
+
+function decode(encoded) {
+  if (!encoded) return encoded;
+  try {
+    return Base32.decode(encoded);
+  } catch(e) {
+    console.log(encoded);
+    console.log(e);
+    return null;
+  }
+}
+
 function sanitize(str) {
   if (!str) {
     return str;
   }
   str = removeEmojis(str);
-  str = str.replace(/;/g, "[,]");
-  str = str.replace(/&/g, "[!]");
+
+  //str = str.replace(/;/g, "[,]");
+  //str = str.replace(/&/g, "[!]");
   return str;
 }
 
 function removeEmojis(str) {
+  let strCodify = "";
   try {
-    return EmojiConverter.shortcodify(str);
+    strCodify = EmojiConverter.shortcodify(str);
+    str = strCodify || str;
+    return str.replace(EmojiRegex(), "[]");
   } catch(e) {
-    var unified_emoji_ranges = [
-      '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
-      '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
-      '\ud83d[\ude80-\udeff]'  // U+1F680 to U+1F6FF
-    ];
-    str = str || "";
-    var regex = new RegExp(unified_emoji_ranges.join('|'), 'g');
-    return str.replace(regex, "[?]");
+    str = strCodify || str || "";
+    return str.replace(EmojiRegex(), "[]");
   }
 }
 
@@ -147,6 +169,8 @@ function isReverseStraight(str) {
 module.exports.times = times;
 module.exports.keepOnlyNumbers = keepOnlyNumbers;
 module.exports.isImage = isImage;
+module.exports.encode = encode;
+module.exports.decode = decode;
 module.exports.sanitize = sanitize;
 module.exports.removeEmojis = removeEmojis;
 module.exports.makeMessageLink = makeMessageLink;

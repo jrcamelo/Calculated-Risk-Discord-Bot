@@ -15,7 +15,6 @@ module.exports = class Roll {
     }
     this.type = type
     this.intention = Utils.sanitize(arg);
-    console.log(this.intention);
     this.userLimit = limit;
     if (!limit || limit < 1 || limit > DATABASE_MAX) {
       this.userLimit = DEFAULT_MAX;
@@ -26,6 +25,7 @@ module.exports = class Roll {
   }
 
   load(hash) {
+    if (hash == null) return null;
     // Just so it doesn't break with old rolls
     if (hash.value == null) {
       String.prototype.describeHistoryForEmbed = function() { return this }
@@ -36,11 +36,20 @@ module.exports = class Roll {
     this.messageLink = hash.messageLink;
     this.value = hash.value;
     this.type = hash.type;
-    this.intention = hash.intention || "";
+    this.intention = Utils.decode(Utils.sanitize(hash.intention)) || "";
     this.userLimit = hash.userLimit;
     this.result = hash.result;
     this.time = hash.time;
     return this;
+  }
+
+  encode() {
+    this.intention = Utils.encode(this.intention);
+    return this;
+  }
+
+  decode() {
+    this.intention = Utils.decode(this.intention);
   }
 
   static types = {

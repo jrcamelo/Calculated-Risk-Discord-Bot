@@ -8,7 +8,7 @@ module.exports = class Channel {
 
   async get(channel) {
     const hash = await Bot.db.getChannel(channel.id);
-    if (hash != null) {
+    if (hash) {
       this.load(hash);
     } else {
       this.createNew(channel);
@@ -18,10 +18,18 @@ module.exports = class Channel {
 
   load(hash) {
     this.id = hash.id;
-    this.name = hash.name;
-    this.server = hash.server;
+    this.name = Utils.decode(hash.name);
+    this.server = Utils.decode(hash.server);
     this.game = new Game().load(hash.game);
     return this;
+  }
+
+  encode() {
+    this.name = Utils.encode(this.name);
+    this.server = Utils.encode(this.server);
+    if (this.game) {
+      this.game.encode();
+    }
   }
 
   createNew(channel) {

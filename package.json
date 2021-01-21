@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "@replit/database": "^2.0.0",
+    "base32": "0.0.6",
     "discord-emoji-converter": "^1.0.0",
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
+    "emoji-regex": "^9.2.0",
     "express": "^4.17.1",
     "fetch-base64": "^2.1.2",
     "html-to-text": "^6.0.0",

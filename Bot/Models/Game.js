@@ -19,13 +19,21 @@ module.exports = class Game {
     if (hash == null) {
       return null;
     }
-    this.name = hash.name;
+    this.name = Utils.decode(hash.name);
     this.master = new User().load(hash.master);
     this.turns = this.loadTurns(hash.turns);
     this.currentTurn = hash.currentTurn;
     this.startedAt = hash.startedAt;
     this.endedAt = hash.endedAt;
     return this;
+  }
+
+  encode() {
+    this.name = Utils.encode(this.name);
+    this.master.encode();
+    for (let i in this.turns) {
+      this.turns[i].encode();
+    }
   }
 
   loadTurns(hash) {

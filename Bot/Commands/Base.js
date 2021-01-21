@@ -41,7 +41,8 @@ class BaseCommand {
   }
 
   async loadChannelFromMessage() {
-    this.channel =  await new Channel().get(this.message.channel) || new Channel().createNew(this.message.channel);
+    this.channel =  await new Channel().get(this.message.channel) || new Channel()
+    .createNew(this.message.channel);
   }
 
   loadPlayer() {

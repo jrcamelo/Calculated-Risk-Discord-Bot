@@ -1,4 +1,5 @@
 const ReplitDatabase = require("@replit/database");
+const Base32 = require("base32");
 
 module.exports = class Database {
   constructor() {
@@ -20,6 +21,7 @@ module.exports = class Database {
 
   async saveChannel(channel, prefix="CHANNEL_") {
     await this.trySaveChannelBackup(channel);
+    channel.encode();
     return await this.db.set(prefix + channel.id, channel);
   }
 

@@ -15,11 +15,11 @@ module.exports = class Player {
 
   load(hash) {
     this.user = new User().load(hash.user);
-    this.name = hash.name;
+    this.name = Utils.decode(hash.name);
     this.alive = hash.alive;
     this.rolled = hash.rolled;
     this.rolls = this.loadRolls(hash.rolls);
-    this.firstRoll = hash.firstRoll;
+    this.firstRoll = new Roll().load(hash.firstRoll);
     return this;
   }
 
@@ -41,6 +41,17 @@ module.exports = class Player {
     return rolls;
   }
 
+  encode() {
+    this.user.encode();
+    this.name = Utils.encode(this.name);
+    for (let i in this.rolls) {
+      this.rolls[i].encode();
+    }
+    if (this.firstRoll) {
+      this.firstRoll.encode();
+    }
+  }
+
   // Events
 
   roll(message, type, arg, limit) {
@@ -48,11 +59,21 @@ module.exports = class Player {
     if (roll.shouldSave) {
       this.rolled = true;
       if (this.firstRoll == null) {
-        this.firstRoll = roll;
+        this.firstRoll = new Roll().load(Object.assign({}, roll));
       }
       this.rolls.push(roll);
     }
     return roll;
+  }
+
+  unroll() {
+    this.rolls.shift();
+    if (this.rolls.length == 0) {
+      this.rolled = false;
+      this.firstRoll = null;
+    } else {
+      this.firstRoll = new Roll().load(Object.assign({}, this.rolls[0]));
+    }
   }
 
   // Descriptions
