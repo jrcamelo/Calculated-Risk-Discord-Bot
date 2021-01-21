@@ -15,11 +15,9 @@ class ClaimCommand extends BaseCommand {
     }    
 
     const factionName = this.arg || "";
-    await this.getTurn().addPlayer(this.message.author, factionName);
+    this.newPlayer = await this.getTurn().addPlayer(this.message.author, factionName);
     await this.save();
-    await this.sendReply(this.channel.game.makeCurrentGameEmbed());
-    await this.addDeleteReactionToReply();
-    await this.waitReplyReaction();
+    await this.sendReply(`${this.newPlayer.describeName()} has joined the game.`);
   }
 
 }

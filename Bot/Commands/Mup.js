@@ -14,8 +14,7 @@ class MupCommand extends BaseCommand {
     }
     this.changeMup(this.arg, this.getMessageAttachment());
     this.save();
-    await this.sendReply(this.channel.game.makeCurrentGameEmbed())
-    await this.addShowDescriptionReaction();
+    await this.sendReply(this.channel.game.makeCurrentGameEmbed(null, true))
     await this.waitReplyReaction();
     await this.sendAdditionalReply(this.getTurn().pingNotPlayed());
   }
@@ -24,18 +23,8 @@ class MupCommand extends BaseCommand {
     this.getGame().nextTurn(attachment, description);
   }
 
-  async addShowDescriptionReaction() {
-    await this.reply.react(BaseCommand.plusReactionEmoji);
-    this.reactions[BaseCommand.plusReactionEmoji] = this.showDescriptionTrigger;
-  }
-  
-  async showDescriptionTrigger(_collected, command) {
-    command.showDescription = !command.showDescription;
-    await command.editReply();
-  }
-
   async editReply() {
-    const embed = this.getGame().makeCurrentGameEmbed(null, this.showDescription);
+    const embed = this.getGame().makeCurrentGameEmbed(null);
     await this.reply.edit(embed);
     await this.waitReplyReaction();
   }

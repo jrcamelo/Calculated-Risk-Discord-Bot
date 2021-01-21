@@ -11,7 +11,8 @@ Bot.initialize()
 const ReplitDatabase = require("@replit/database");
 const db = new ReplitDatabase();
 
-// db.delete("CHANNEL_796143378844483634");
+
+//db.delete("CHANNEL_796143378844483634");
 //db.delete("CHANNEL_796143378844483634_BACKUP");
 //db.delete("CHANNEL_undefined");
 

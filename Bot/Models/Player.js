@@ -24,7 +24,7 @@ module.exports = class Player {
   }
 
   newTurn(hash) {
-    this.user = new User().load(hash.user);
+    this.user = new User().loadClean(hash.user);
     this.name = hash.name;
     this.alive = hash.alive;
     this.rolled = false;

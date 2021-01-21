@@ -15,6 +15,14 @@ module.exports = class User {
     return this;
   }
 
+  loadClean(hash) {
+    this.id = hash.id;
+    this.username = hash.username;
+    this.avatar = hash.avatar;
+    return this;
+
+  }
+
   encode() {
     this.username = Utils.encode(this.username);
   }
