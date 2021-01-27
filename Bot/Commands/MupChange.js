@@ -8,6 +8,9 @@ class MupChangeCommand extends MupCommand {
   changeMup(description, attachment) {
     this.getTurn().update(attachment, description);
   }
-
+  
+  async pingPlayers() {
+    // Actually don't.
+  }
 }
 module.exports = MupChangeCommand;

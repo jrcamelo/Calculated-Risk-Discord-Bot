@@ -77,7 +77,7 @@ module.exports = class Turn {
   addPlayer(discordUser, factionName) {
     const oldPlayer = this.getPlayer(discordUser);
     if (oldPlayer != null) {
-      oldPlayer.name = factionName;
+      oldPlayer.name = Utils.sanitize(factionName);
       return oldPlayer;
     }
     const player = new Player().create(discordUser, factionName);

@@ -2,6 +2,7 @@ const IsImage = require("is-image-url")
 const EmojiConverter = require("discord-emoji-converter");
 const EmojiRegex = require("emoji-regex");
 const Base32 = require("base32");
+const Regenerate = require("regenerate");
 
 const times = {
   SECONDS: 1,
@@ -51,7 +52,8 @@ function sanitize(str) {
   }
   str = removeEmojis(str);
 
-  //str = str.replace(/;/g, "[,]");
+  let apostRegex = Regenerate("’").toRegExp();
+  str = str.replace(apostRegex, "'");
   //str = str.replace(/&/g, "[!]");
   return str;
 }
@@ -124,7 +126,7 @@ function findStraightSize(str) {
   return 0;
 }
 
-FUNNY_NUMBERS = ["69", "420", "69420", "42069", "1488", "1337", "80085", "8008135"]
+FUNNY_NUMBERS = ["69", "420", "69420", "42069", "1488", "1337", "80085", "8008135", "1350"]
 function findFunnyNumberSize(str) {
   for (let funny of FUNNY_NUMBERS) {
     if (str.endsWith(funny)) {

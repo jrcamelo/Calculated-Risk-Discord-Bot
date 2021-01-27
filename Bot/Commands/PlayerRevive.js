@@ -1,7 +1,7 @@
 const BaseCommand = require("./Base.js");
 
 class PlayerReviveCommand extends BaseCommand {
-  static command = ["Revive", "Ressurrect", "Res"];
+  static command = ["Revive", "Res", "Unkill"];
   static helpTitle = "Brings a player back from the dead.";
   static helpDescription() { return `${BaseCommand.prefix + this.command[0]} <@Player>`; }
 

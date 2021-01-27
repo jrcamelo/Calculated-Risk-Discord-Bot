@@ -16,11 +16,15 @@ class MupCommand extends BaseCommand {
     this.save();
     await this.sendReply(this.channel.game.makeCurrentGameEmbed(null, true))
     await this.waitReplyReaction();
-    await this.sendAdditionalReply(this.getTurn().pingNotPlayed());
+    await this.pingPlayers();
   }
 
   changeMup(description, attachment) {
     this.getGame().nextTurn(attachment, description);
+  }
+
+  async pingPlayers() {
+    return await this.sendAdditionalReply(this.getTurn().pingNotPlayed());
   }
 
   async editReply() {

@@ -5,7 +5,7 @@ DEFAULT_MAX = 1000000000000;
 DATABASE_MAX = 10000000000000000;
 SAVED_ROLL_LENGTH = 6;
 MAX_INTENTION_LENGTH = 48;
-MAX_EMBED_INTENTION_LENGTH = 24;
+MAX_EMBED_INTENTION_LENGTH = 12;
 module.exports = class Roll {
 
   constructor(message, type, arg, limit) {
@@ -30,6 +30,7 @@ module.exports = class Roll {
     if (hash.value == null) {
       String.prototype.describeHistoryForEmbed = function() { return this }
       String.prototype.describeHistoryForText = function() { return this }
+      String.prototype.encode = function() { return this }
       return hash;
     }
     this.messageId = hash.messageId;
