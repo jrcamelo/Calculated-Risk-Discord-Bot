@@ -14,7 +14,7 @@ class MupCommand extends BaseCommand {
     }
     this.changeMup(this.arg, this.getMessageAttachment());
     this.save();
-    await this.sendReply(this.channel.game.makeCurrentGameEmbed(null, true))
+    await this.sendReply(this.channel.game.makeCurrentGameEmbed(null, false))
     await this.waitReplyReaction();
     await this.pingPlayers();
   }
