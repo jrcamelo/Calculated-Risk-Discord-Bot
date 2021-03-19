@@ -9,7 +9,7 @@ class PlayerAddCommand extends BaseCommand {
     if (this.thereIsNoGame()) {
         return await this.sendReplyWithDelete(`There is currently no game being hosted in this channel.`)
     }
-    if (this.userIsNotMaster() && this.userIsNotMod()) {
+    if (this.userIsNotMaster()) {
         return await this.sendReplyWithDelete(`You are not the GM of this game.`)
     }
 

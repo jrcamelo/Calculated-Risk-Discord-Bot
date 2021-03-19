@@ -1,7 +1,7 @@
 const BaseCommand = require("./Base.js");
 
 class PlayerNotRolledCommand extends BaseCommand {
-  static command = ["Who", "NotRolled", "Not"];
+  static command = ["Who", "Left", "Not"];
   static helpTitle = "Lists every player who is alive and has not rolled.";
   static helpDescription() { return `${BaseCommand.prefix + this.command[0]}`; }
 
