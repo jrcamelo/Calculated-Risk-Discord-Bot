@@ -99,18 +99,15 @@ module.exports = class Game {
     return text;
   }
 
-  makeListOfMups() {
-    let text = "Mup image for:\n";
-    for (let i = this.currentTurn; i >= 0; i--) {
+  makeListOfMups(index=0) {
+    let text = `Mup images for turns ${index} - ${index+10}:\n`;
+    for (let i = index; i < index + 10; i++) {
       let turn = this.getTurn(i);
-      if (turn.mup) {
-        text += `[Turn ${i}](${turn.mup})\n`
+      if (turn && turn.mup) {
+        text += `<${turn.mup}>\n`
       }
     }
-    let embed = new Discord.MessageEmbed()
-      .setTitle(this.name)
-      .setDescription(text)
-    return embed;
+    return text;
   }
 
   // Utils
@@ -118,6 +115,9 @@ module.exports = class Game {
   getTurn(turn=null) {
     if (turn == null) {
       turn = this.currentTurn;
+    }
+    if (turn > this.currentTurn) {
+      return null;
     }
     return this.turns[turn];
   }

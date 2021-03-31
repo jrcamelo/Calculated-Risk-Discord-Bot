@@ -22,8 +22,10 @@ module.exports = class Turn {
   playersFromPreviousTurn(oldPlayers) {
     let newPlayers = {};
     for (let player of Object.values(oldPlayers)) {
-      let newPlayer = new Player().newTurn(player);
-      newPlayers[newPlayer.user.id] = newPlayer;
+      if (player.left != true) {
+        let newPlayer = new Player().newTurn(player);
+        newPlayers[newPlayer.user.id] = newPlayer;
+      }
     }
     return newPlayers;
   }
@@ -78,6 +80,7 @@ module.exports = class Turn {
     const oldPlayer = this.getPlayer(discordUser);
     if (oldPlayer != null) {
       oldPlayer.name = Utils.sanitize(factionName);
+      oldPlayer.left = false;
       return oldPlayer;
     }
     const player = new Player().create(discordUser, factionName);
@@ -90,7 +93,8 @@ module.exports = class Turn {
   }
 
   deletePlayer(player) {
-    delete this.players[player.user.id];
+    player.alive = false;
+    player.left = true;
   }
 
   doPlayerRoll(message, type, arg, limit) {
@@ -112,7 +116,9 @@ module.exports = class Turn {
 
   revivePlayer(player) {
     player.alive = true;
+    player.left = false;
     this.history.push(player.describeRevival());
+    return true;
   }
 
   unrollPlayer(player) {
