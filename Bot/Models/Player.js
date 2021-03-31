@@ -105,6 +105,14 @@ module.exports = class Player {
     return text;
   }
 
+  describePlayerMinimum(turn = null) {
+    let text = ""
+    if (this.alive) {
+      text += `${this.describeFirstRollCompact()}`;
+    }
+    return text;
+  }
+
   describeFirstRoll() {
     if (!this.rolled || !this.rolls) {
       return `${this.describeName()} **has not rolled.**`;
@@ -112,6 +120,17 @@ module.exports = class Player {
     let text = this.rolls[0].describeHistoryForEmbed(this);
     if (this.rolls.length > 1) {
       text += ` (then +${this.rolls.length - 1})`;
+    }
+    return text;
+  }
+
+  describeFirstRollCompact() {
+    if (!this.rolled || !this.rolls) {
+      return `**${this.user.username}**`;
+    }
+    let text = this.rolls[0].describeHistoryForEmbedCompact(this);
+    if (this.rolls.length > 1) {
+      text += ` (and +${this.rolls.length - 1})`;
     }
     return text;
   }

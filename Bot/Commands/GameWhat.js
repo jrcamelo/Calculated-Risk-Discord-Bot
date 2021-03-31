@@ -11,15 +11,26 @@ class GameWhatCommand extends BaseCommand {
     }
     this.index = this.getGame().currentTurn;
     this.showDescription = false;
-    await this.sendReply(this.getGame().makeCurrentGameEmbed(this.index));
+    await this.sendReply(this.getEmbed());
     await this.addDeleteReactionToReply();
     await this.addShowDescriptionReaction();
     await this.addPageReactions();
   }
+
+  getEmbed() {
+    let embed = this.getGame().makeCurrentGameEmbed(this.index, this.showDescription);
+    if (embed.length > 2048) {
+      embed = this.getGame().makeCurrentGameEmbedCompact(this.index, this.showDescription);
+    }
+    if (embed.length > 2048) {
+      // TODO: Remove links
+      embed = "Game description too long, can't send message";
+    }
+    return embed;
+  }
   
   async editReply() {
-    const embed = this.getGame().makeCurrentGameEmbed(this.index, this.showDescription);
-    await this.reply.edit(embed);
+    await this.reply.edit(this.getEmbed());
     await this.addPageReactions();
   }
 

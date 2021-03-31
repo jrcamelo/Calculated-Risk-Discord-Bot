@@ -129,6 +129,11 @@ module.exports = class Roll {
     return text;
   }
 
+  describeHistoryForEmbedCompact(player) {  
+    let text = `**${player.user.username}** ${this.describeTypeWithLink()}${this.describeRollValue()}`;
+    return text;
+  }
+
   describeHistoryForText(player) {  
     let text = `**${player.user.username}** ${player.getFactionParenthesis()} ${this.describeType()}${this.describeRollValue()}`;
     if (this.intention) {

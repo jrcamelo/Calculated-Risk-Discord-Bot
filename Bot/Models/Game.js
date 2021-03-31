@@ -77,6 +77,23 @@ module.exports = class Game {
     return embed;
   }
 
+    makeCurrentGameEmbedCompact(index, showMore=false) {
+    if (index == null || index < 0 || index > this.currentTurn) {
+      index = this.currentTurn;
+    }
+    let embed = new Discord.MessageEmbed()
+      .setAuthor(`Game Master: ${this.master.username}`, this.master.avatar)
+      .setDescription(this.makeEmbedDescriptionCompact(index, showMore))
+      .setFooter(`${index}/${this.turns.length - 1} `)
+    let mup = this.getMupImage(index);
+    if (showMore && mup) {
+      embed.setImage(mup)
+    } else {
+      embed.setThumbnail(mup)
+    }
+    return embed;
+  }
+
   getMupImage(index) {
     const turn = this.getTurn(index);
     return turn.mup;
@@ -95,6 +112,19 @@ module.exports = class Game {
     }
     for (let player of turnPlayers) {
       text += `\n${player.describePlayerCompact()}`
+    }
+    return text;
+  }
+
+  makeEmbedDescriptionCompact(index, showMore) {
+    const turn = this.getTurn(index);
+    let text = "";
+    const turnPlayers = turn.playerHashToSortedList();
+    if (!turnPlayers.length) {
+      return "Nothing."
+    }
+    for (let player of turnPlayers) {
+      text += `\n${player.describePlayerMinimum()}`
     }
     return text;
   }
