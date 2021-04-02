@@ -27,7 +27,7 @@ function isImage(url) {
 function encode(str) {
   if (!str) return str;
   try {
-    return Base32.encode(str);
+    return Base32.encode(encode_utf8(str));
   } catch(e) {
     console.log(str);
     console.log(e);
@@ -38,7 +38,7 @@ function encode(str) {
 function decode(encoded) {
   if (!encoded) return encoded;
   try {
-    return Base32.decode(encoded);
+    return decode_utf8(Base32.decode(encoded));
   } catch(e) {
     console.log(encoded);
     console.log(e);
@@ -166,6 +166,21 @@ function isReverseStraight(str) {
   return true;
 }
 
+function encode_utf8(s) {
+  try {
+    return unescape(encodeURIComponent(s));
+  } catch {
+    return s
+  }
+}
+
+function decode_utf8(s) {
+  try {
+    return decodeURIComponent(escape(s));
+  } catch {
+    return s
+  }
+}
 
 
 module.exports.times = times;
