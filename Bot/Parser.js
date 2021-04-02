@@ -6,9 +6,11 @@ class Parser {
   GameStart = require("./Commands/GameStart")
   GameEnd = require("./Commands/GameEnd")
   GameWhat = require("./Commands/GameWhat")
+  GameMessages = require("./Commands/GameMessages")
   Claim = require("./Commands/Claim")
   Add = require("./Commands/PlayerAdd")
   Kill = require("./Commands/PlayerKill")
+  Purge = require("./Commands/PlayerPurge")
   Revive = require("./Commands/PlayerRevive")
   Kick = require("./Commands/PlayerKick")
   History = require("./Commands/History")
@@ -59,12 +61,14 @@ class Parser {
       this.GameStart, 
       this.GameEnd, 
       this.GameWhat,
+      this.GameMessages,
       this.History,
       this.Claim, 
       this.Add,
       this.Kill, 
       this.Revive, 
       this.Kick, 
+      this.Purge,
       this.Unroll,
       this.Mup, 
       this.MupChange,
@@ -87,6 +91,7 @@ class Parser {
           this.GameWhat, 
           this.Claim,
           this.History,
+          this.GameMessages,
           this.NotRolled,
           this.Mups,
           this.Roll, 
@@ -102,6 +107,7 @@ class Parser {
           this.Add,
           this.Unroll,
           this.Kill, 
+          this.Purge,
           this.Revive, 
           this.Kick, 
           this.Ping,
@@ -127,6 +133,7 @@ class Parser {
   }
 
   separateCommandAndArgs() {
+    this.message.onlyGmDelete = false;
     const commandBody = this.removePrefix();
     this.args = commandBody.split(' ');
     if (this.args.length > 1) {
@@ -135,6 +142,14 @@ class Parser {
     else {
       this.command = this.args[0]
       this.args = [];
+    }
+    this.checkIfOnlyGmDelete();
+  }
+
+  checkIfOnlyGmDelete() {
+    if (this.command.endsWith("!")) {
+      this.message.onlyGmDelete = true;
+      this.command = this.command.slice(0, -1);
     }
   }
 

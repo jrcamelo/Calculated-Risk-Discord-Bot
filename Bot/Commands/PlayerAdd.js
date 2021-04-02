@@ -20,6 +20,7 @@ class PlayerAddCommand extends BaseCommand {
 
     this.args.shift();
     this.joinArgsIntoArg();
+    this.arg = this.cleanLineBreaks(this.arg);
     this.newPlayer = await this.getTurn().addPlayer(this.mentionedUser, this.arg);
     await this.save();
     await this.sendReply(`${this.newPlayer.describeName()} has been added to the game.`);

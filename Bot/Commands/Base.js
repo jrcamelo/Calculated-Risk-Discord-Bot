@@ -12,6 +12,7 @@ class BaseCommand {
   static nextReactionEmoji = "➡️";
   static fReactionEmoji = "🇫";
   static plusReactionEmoji = "➕";
+  static xReactionEmoji = "❌";
 
   static isRequestedCommand(userCommand) {
     for (let commandInput of this.command) {
@@ -59,7 +60,7 @@ class BaseCommand {
     }
   }
 
-  prepareToListenForReactions() {    
+  prepareToListenForReactions() {
     this.reactions = {}
     this.reactionFilter = (reaction, user) => {
       console.log(reaction.emoji.name);
@@ -124,14 +125,23 @@ class BaseCommand {
       });
   }
 
-  async addDeleteReactionToReply() {
+  async addDeleteReactionToReply() {    
+    if (!this.userIsNotMaster()) {
+      this.onlyGmDelete = this.message.onlyGmDelete;
+    } 
+
     if (this.reply != null) {
       await this.reply.react(BaseCommand.deleteReactionEmoji);
       this.reactions[BaseCommand.deleteReactionEmoji] = this.deleteReply;
     }
   }
 
-  async deleteReply(collected, _command) {
+  async deleteReply(collected, command) {
+    if (command.onlyGmDelete) {
+      if (!collected.users.cache.has(command.channel.game.master.id)) {
+        return await command.waitReplyReaction();
+      }
+    }
     collected.message.delete();
   }
   
@@ -218,6 +228,10 @@ class BaseCommand {
     if (this.channel != null) {
       return this.channel.getTurn(index);
     }
+  }
+
+  cleanLineBreaks(text) {
+    return text.replace(/(\r\n|\n|\r)/gm, "");
   }
 }
 module.exports = BaseCommand;

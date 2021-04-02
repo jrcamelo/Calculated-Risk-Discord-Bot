@@ -12,8 +12,9 @@ class ClaimCommand extends BaseCommand {
     this.loadPlayer();
     if (this.playerIsDead()) {
         return await this.sendReply(`You have already died.`);
-    }    
+    }
 
+    this.arg = this.cleanLineBreaks(this.arg);
     const factionName = this.arg || "";
     this.newPlayer = await this.getTurn().addPlayer(this.message.author, factionName);
     await this.save();

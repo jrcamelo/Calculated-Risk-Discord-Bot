@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const User = require("./User");
 const Player = require("./Player");
 const Utils = require("../Utils");
+const Roll = require("./Roll")
 
 module.exports = class Turn {
   
@@ -97,6 +98,10 @@ module.exports = class Turn {
     player.left = true;
   }
 
+  deletePlayerInstantly(player) {
+    delete this.players[player.user.id]
+  }
+
   doPlayerRoll(message, type, arg, limit) {
     let player = this.getPlayer(message.author);
     let roll = player.roll(message, type, arg, limit)
@@ -137,13 +142,17 @@ module.exports = class Turn {
 
   // Descriptions
 
-  makeEntireHistoryText() {
+  makeEntireHistoryText(short=false) {
     if (this.history.length == 0) {
       return "Peace. For now."
     }
     let text = "";
     for (let event of this.history) {
-      text += event + "\n";
+      if (short && event.length > 80) {
+        text += event.slice(0, 80) + "\n";
+      } else {
+        text += event + "\n";
+      }
     }
     return text;
   }
@@ -189,6 +198,22 @@ module.exports = class Turn {
     }
   }
 
+  getAllRollLinksEmbed(index) {
+    const rolls = this.getAllRollsWithPlayer();
+    index = index % (Math.ceil(rolls.length / 10) * 10)
+
+    let description = "";
+    for (let i = index; i < index + 10; i++) {
+      if (i < rolls.length) {
+        description += rolls[i].describeHistoryForEmbedCompact(rolls[i].player) + "\n";
+      }
+    }
+    let embed = new Discord.MessageEmbed()
+      .setDescription(description || "No rolls")
+      .setFooter(`${index+1} - ${index+10}/${rolls.length}`)
+    return embed;
+  }
+
   // Utils
   
   playerHashToList() {
@@ -208,5 +233,19 @@ module.exports = class Turn {
       }
     }
     return true;
+  }
+
+  getAllRollsWithPlayer() {
+    let rolls = [];
+    for (let player of this.playerHashToSortedList()) {
+      if (player.rolled) {
+        for (let roll of player.rolls) {
+          let newRoll = new Roll().load(roll);
+          newRoll.player = player;
+          rolls.push(newRoll);
+        }
+      }
+    }
+    return rolls;
   }
 }

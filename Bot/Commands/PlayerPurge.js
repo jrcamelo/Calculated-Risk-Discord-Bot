@@ -1,9 +1,9 @@
 const BaseCommand = require("./Base.js");
 const Discord = require("discord.js");
 
-class PlayerKickCommand extends BaseCommand {
-  static command = ["Kick"];
-  static helpTitle = "Removes a player from the game on the next turn. You can also kick yourself.";
+class PlayerPurgeCommand extends BaseCommand {
+  static command = ["Purge"];
+  static helpTitle = "Removes a player from the game instantly.";
   static helpDescription() { return `${BaseCommand.prefix + this.command[0]} <@Player>`; }
 
   async execute() {
@@ -16,7 +16,7 @@ class PlayerKickCommand extends BaseCommand {
       return await this.sendReplyWithDelete(`Try again while mentioning a Player.`)
     }
 
-    if (this.userIsNotMaster() && this.mentionedUser != this.message.author) {
+    if (this.userIsNotMaster()) {
         return await this.sendReplyWithDelete(`You are not the GM of this game.`)
     }
 
@@ -26,9 +26,9 @@ class PlayerKickCommand extends BaseCommand {
     }
 
     let name = this.kickedPlayer.name || this.kickedPlayer.user.ping();
-    await this.getTurn().deletePlayer(this.kickedPlayer);
+    await this.getTurn().deletePlayerInstantly(this.kickedPlayer);
     await this.save();
-    await this.sendReply(`${name} has fallen and will be removed next turn.`);
+    await this.sendReply(`${name} was removed.`);
   }
 }
-module.exports = PlayerKickCommand;
+module.exports = PlayerPurgeCommand;
