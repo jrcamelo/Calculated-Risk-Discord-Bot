@@ -2,7 +2,7 @@ const BaseCommand = require("./Base.js");
 
 class PlayerPingCommand extends BaseCommand {
   static command = ["Ping", "NotPlayed"];
-  static helpTitle = "Pings every player who is alive and has not rolled.";
+  static helpTitle = "Pings every player who is alive and has not rolled. You can try PingAll and PingAlive as well.";
   static helpDescription() { return `${BaseCommand.prefix + this.command[0]}`; }
 
   async execute() {

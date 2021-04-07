@@ -178,6 +178,9 @@ class BaseCommand {
   }
 
   userIsNotMaster() {
+    if (!this.channel || !this.channel.game) {
+      return true;
+    }
     return this.channel.game.master.id != this.message.author.id;
   }
 

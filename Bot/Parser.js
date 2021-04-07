@@ -20,11 +20,14 @@ class Parser {
   Mups = require("./Commands/GameMups");
   Ping = require("./Commands/PlayerPing");
   PingAll = require("./Commands/PlayerPingAll");
+  PingAlive = require("./Commands/PlayerPingAlive");
   NotRolled = require("./Commands/PlayerNotRolled");
   Roll = require("./Commands/Roll");
   RollId = require("./Commands/RollId");
   RollUntracked = require("./Commands/RollUntracked");
   RollUntrackedId = require("./Commands/RollUntrackedId");
+  RollUntrackedPizzaRoll  = require("./Commands/RollUntrackedPizzaRoll");
+
   ChangePrefix = require("./Commands/ChangePrefix");
   constructor(message, db) {
     this.message = message;
@@ -75,11 +78,13 @@ class Parser {
       this.Mups,
       this.Ping, 
       this.PingAll, 
+      this.PingAlive,
       this.NotRolled,
       this.Roll, 
       this.RollId, 
       this.RollUntracked, 
       this.RollUntrackedId,
+      this.RollUntrackedPizzaRoll,
       this.ChangePrefix,
     ];
 
@@ -111,7 +116,6 @@ class Parser {
           this.Revive, 
           this.Kick, 
           this.Ping,
-          this.PingAll, 
           this.ChangePrefix,
         ]
       };

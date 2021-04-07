@@ -170,6 +170,19 @@ module.exports = class Turn {
     return text || "No players need to roll.";
   }
 
+  pingAlive() {
+    if (!Object.keys(this.players).length) {
+      return "Nobody is playing yet."
+    }
+    let text = ""
+    for (let player of this.playerHashToList()) {
+      if (player.alive) {
+        text += `${player.user.ping()} `
+      }
+    }
+    return text || "This is a cemetery.";
+  }
+
   pingAll() {
     if (!Object.keys(this.players).length) {
       return "Nobody is playing yet."
