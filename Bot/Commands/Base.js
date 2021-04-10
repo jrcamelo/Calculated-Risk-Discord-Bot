@@ -92,17 +92,19 @@ class BaseCommand {
     return await this.channel.save();
   }
 
-  async sendReply(botMessage, mention=false) {
+  async sendReply(botMessage, mention=true) {
     if (botMessage.length > 2000 && botMessage.substring != null) {
       botMessage = botMessage.substring(0, 1985) + "\n--- TOO LONG!";
     }
-    this.reply = mention ?
-      await this.message.reply(botMessage)
-      : await this.message.channel.send(botMessage)
+    if (mention == false) {
+      this.reply = await this.message.channel.send(botMessage, {"allowedMentions": { "users" : []}})
+    } else {
+      this.reply = await this.message.channel.send(botMessage)
+    }
     return this.reply;    
   }
 
-  async sendReplyWithDelete(botMessage, mention=false) {
+  async sendReplyWithDelete(botMessage, mention=true) {
     await this.sendReply(botMessage, mention);
     await this.addDeleteReactionToReply();
     return await this.waitReplyReaction();

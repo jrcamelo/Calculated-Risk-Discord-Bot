@@ -15,11 +15,11 @@ class HistoryCommand extends BaseCommand {
       if (!this.player) {
         return await this.sendReplyWithDelete(`This user is not playing this game.`)
       }
-      return await this.sendReplyWithDelete(this.player.makeHistoryText());
+      return await this.sendReplyWithDelete(this.player.makeHistoryText(), false);
     }    
 
     this.index = this.getGame().currentTurn;
-    await this.sendReply(this.getHistory());
+    await this.sendReply(this.getHistory(), false);
     await this.addDeleteReactionToReply();
     await this.addPageReactions();
   }

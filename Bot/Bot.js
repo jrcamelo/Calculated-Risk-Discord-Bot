@@ -32,7 +32,7 @@ class Bot {
       const message = Bot.messageQueue.shift();
       const response = await Bot.readMessage(message)
       if (!response) {
-        await Bot.sleep(100);
+        await Bot.sleep(200);
       }
     }
   }  

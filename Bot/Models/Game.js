@@ -82,7 +82,7 @@ module.exports = class Game {
       index = this.currentTurn;
     }
     let embed = new Discord.MessageEmbed()
-      .setAuthor(`Game Master: ${this.master.username}`, this.master.avatar)
+      .setAuthor(`GM: ${this.master.username}`, this.master.avatar)
       .setDescription(this.makeEmbedDescriptionCompact(index, showMore))
       .setFooter(`${index}/${this.turns.length - 1} `)
     let mup = this.getMupImage(index);
