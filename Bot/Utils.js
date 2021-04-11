@@ -146,9 +146,9 @@ function isPalindrome(str) {
 
 function isStraight(str) {
   for (var i = 0; i < str.length - 1; i++) {
-    let current = +str[i] || 10;
-    let next = +str[i+1] || 10;
-    if (current + 1 != next) {
+    let current = +str[i];
+    let next = +str[i+1];
+    if ((current + 1) % 10 != next) {
       return false;
     }
   }
@@ -158,7 +158,7 @@ function isStraight(str) {
 function isReverseStraight(str) {
   for (var i = 0; i < str.length - 1; i++) {
     let current = +str[i] || 10;
-    let next = +str[i+1] || 10;
+    let next = +str[i+1];
     if (current - 1 != next) {
       return false;
     }
