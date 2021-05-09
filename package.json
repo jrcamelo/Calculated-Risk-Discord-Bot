@@ -1,29 +1,24 @@
 {
-  "name": "CavernousHardtofindSpyware",
+  "name": "calculated-risk-discord-bot",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "JR",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jrcamelo/Calculated-Risk-Discord-Bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jrcamelo/Calculated-Risk-Discord-Bot/issues"
+  },
+  "homepage": "https://github.com/jrcamelo/Calculated-Risk-Discord-Bot#readme",
+  "description": "",
   "dependencies": {
-    "@replit/database": "^2.0.0",
-    "base32": "0.0.6",
-    "discord-emoji-converter": "^1.0.0",
-    "discord.js": "^12.4.1",
-    "dotenv": "^8.2.0",
-    "emoji-regex": "^9.2.0",
-    "express": "^4.17.1",
-    "fetch-base64": "^2.1.2",
-    "html-to-text": "^6.0.0",
-    "is-image-url": "^1.1.8",
-    "is-url": "^1.2.4",
-    "node-cron": "^2.0.3",
-    "node-fetch": "^2.6.1",
-    "regenerate": "^1.4.2",
-    "sagiri": "^3.1.1"
+    "dotenv": "^9.0.1",
+    "fs-extra": "^10.0.0"
   }
 }

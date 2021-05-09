@@ -72,15 +72,12 @@ class BaseCommand {
 
   async tryExecute() {
     await this.loadChannelFromMessage();
-    this.message.channel.startTyping();
     try {
       await this.execute();
-      this.message.channel.stopTyping();
     } catch(e) {
       console.log("\n" + this.message.content + " caused an error at " + new Date())
       console.log(e);
       console.log("\n")
-      this.message.channel.stopTyping();
     }
   }
   
@@ -117,7 +114,7 @@ class BaseCommand {
   // Discord Reactions
 
   async waitReplyReaction() {
-    const options = { max: 1, time: 120000, errors: ['time'] };
+    const options = { max: 1, time: 60000, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
           this.reactions[collected.first().emoji](collected.first(), this); 
