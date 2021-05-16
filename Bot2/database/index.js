@@ -2,8 +2,8 @@ const storage = require("./storage.js");
 const PathTo = require("./pathto.js")
 
 class Database {
-  constructor(message) {
-    this.pathTo = new PathTo(message)
+  constructor(channel) {
+    this.pathTo = new PathTo(channel)
     this.gameFolderPath = this.pathTo.game()
     this.gameFilePath = this.pathTo.gameFile()
     this.currentTurnFilePath = this.pathTo.turnFile("current")
@@ -18,7 +18,8 @@ class Database {
 
   set(path, content) {
     if (path == null || content == null) return null
-    return storage.write(path, content)
+    storage.write(path, content)
+    return true
   }
 
   getGame() {
@@ -29,7 +30,32 @@ class Database {
     if (!storage.exists(this.gameFilePath))
       console.debug(`SAVEGAME: ${this.gameFilePath} did not exist, creating it`)
     storage.ensurePath(this.gameFolderPath)
-    return this.set(this.gameFilePath, game)
+    this.set(this.gameFilePath, game)
+    return true
+  }
+
+  outdateCurrentGame(game) {
+    if (!storage.exists(this.gameFilePath))
+      return console.debug(`OUTDATEGAME: ${this.gameFilePath} did not exist`)
+    storage.ensurePath(this.pathTo.previousGames())
+    this.writeGameOnPreviousGameList(game)
+    const newFolderPath = this.pathTo.previousGame(game.startedAt)
+    storage.ensurePath(newFolderPath)
+    storage.move(this.gameFolderPath, newFolderPath)
+    return true
+  }
+
+  writeGameOnPreviousGameList(game) {
+    const previousGames = storage.read(this.pathTo.previousGameListFile()) || {}
+    previousGames[game.startedAt] = {
+      title: game.title,
+      startedAt: game.startedAt,
+      endedAt: game.endedAt,
+      master: game.master,
+      currentTurn: game.currentTurn
+    }
+    storage.write(this.pathTo.previousGameListFile(), previousGames)
+    return true
   }
 
   getTurn(turn="current") {
@@ -43,6 +69,7 @@ class Database {
     this.set(newFilePath, turn)
     this.outdateCurrentTurn()
     storage.move(newFilePath, this.currentTurnFilePath)
+    return true
   }
 
   outdateCurrentTurn() {
@@ -54,7 +81,9 @@ class Database {
       } else {
         storage.move(this.currentTurnFilePath, this.pathTo.turnFile(oldNumber))
       }
+      return true
     }
+    return false
   }
 
   readTurnNumber(path) {

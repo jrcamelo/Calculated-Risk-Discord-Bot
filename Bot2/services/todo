@@ -1,0 +1,4 @@
+
+
+Turn / player takes a Roll type from the command
+Roll type extends Roll and does its stuff differently
