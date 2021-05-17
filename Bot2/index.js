@@ -1,6 +1,6 @@
 require('dotenv').config()
 const Discord = require("discord.js");
-const WaitQueue = require("wait-queue")
+const Conductor = require("./handler/conductor")
 const Parser = require("./handler/parser")
 
 const client = new Discord.Client({
@@ -15,38 +15,13 @@ const client = new Discord.Client({
 console.log("Connecting to Discord")
 client.login(process.env.BOT_TOKEN).catch(console.error)
 
-client.on("message", async function(message) {
-  queue.push(message)
-})
 
 client.once("ready", async function() {
   console.log("Connected!")
   await client.user.setActivity(`r.help`, { type: "PLAYING"});
   Parser.readCommands()
+  Conductor.enable()
   console.log("Waiting for commands.")
-  setImmediate(readFromQueue)
 })
 
-const queue = new WaitQueue()
-async function readFromQueue() {
-  queue.shift().then(async function(message) {
-    await readMessage(message)
-    setImmediate(readFromQueue);
-  }).catch(function(e) {
-    console.error("Error while reading queue", e);
-    setImmediate(readFromQueue);
-  });
-}
-
-async function readMessage(message) {
-  try {
-    if (await Parser.isValid(message)) {
-      const command = new Parser(message).getCommand();
-      if (command) {
-        await command.tryExecute()
-      }
-    }
-  } catch(e) {
-    console.error("Error while reading message", e);
-  }
-}
+client.on("message", Conductor.onNewMessage)

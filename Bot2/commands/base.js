@@ -3,10 +3,10 @@ const Database = require("../database")
 
 module.exports = class BaseCommand {
   // Command settings
-  static name = "base"
   static description = "Description not set"
   static options = []
-  static aliases = []
+  static aliases = ["base"]
+  static name = this.aliases[0]
   static data() { 
     return {
       name: this.name, 
@@ -22,7 +22,6 @@ module.exports = class BaseCommand {
   aliveOnly = false
   // Database
   getsGame = true
-  getsTurn = true
   // Deletion
   canDelete = true
   limitDelete = false
@@ -41,20 +40,20 @@ module.exports = class BaseCommand {
   }
 
   setup() {
+    this.user = this.interaction.user
     this.database = new Database(this.interaction.channel)
     if (this.getsGame) this.game = this.database.getGame()
-    if (this.getsTurn) this.turn = this.database.getTurn()
-    this.user = this.interaction.user
+    if (this.game != null) this.turn = this.game.turn
     if (this.turn != null) 
       this.player = this.turn.getPlayer(this.user)
     this.loadOptions()
   }
   // ! Message
   setupMessage() {
+    this.user = this.message.author
     this.database = new Database(this.message.channel)
     if (this.getsGame) this.game = this.database.getGame()
-    if (this.getsTurn) this.turn = this.database.getTurn()
-    this.user = this.message.author
+    if (this.game != null) this.turn = this.game.turn
     if (this.turn != null) 
       this.player = this.turn.getPlayer(this.user)
     this.limitDelete = this.message.limitDelete      

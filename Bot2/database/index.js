@@ -62,7 +62,15 @@ class Database {
     return this.get(this.pathTo.turnFile(turn))
   }
 
-  saveTurn(turn) {
+  saveCurrentTurn(turn) {
+    if (!storage.exists(this.gameFilePath))
+      return console.debug(`SAVETURN: ${this.gameFilePath} does not exist`)
+    storage.ensurePath(this.gameFolderPath)
+    this.set(this.currentTurnFilePath, turn)
+    return true
+  }
+
+  saveNewTurn(turn) {
     if (!storage.exists(this.gameFilePath))
       return console.debug(`SAVETURN: ${this.gameFilePath} does not exist`)
     const newFilePath = this.pathTo.turnFile("new")

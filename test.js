@@ -13,44 +13,49 @@
 
 const WaitQueue = require("wait-queue");
 
-const wq = new WaitQueue();
-async function readFromQueue() {
-  // put first element out of queue
-  wq.shift().then(async function(item) {
-      console.log(item);
-      // do next loop
-      await sleep(200)
-      setImmediate(readFromQueue);
-    })
-    .catch(function(e) {
-      console.error('error', e);
-      setImmediate(readFromQueue);
-    });
+const queues = {}
+async function readQueue(i) {
+  queues[i.toString()].shift().then(async function(item) {
+    console.log(item);
+    await sleep(item * 100)
+    setImmediate(readQueue, i);
+  })
+  .catch(function(e) {
+    console.error('error', e);
+    setImmediate(readQueue, i);
+  });
 }
-setImmediate(loop);
+
+function length() {
+  return +Object.keys(queues).length
+}
+
+function addAndStartQueue() {
+  queues[+length()] = new WaitQueue()
+  readQueue(+length() - 1)
+}
  
 
 function sleep(ms) {
   return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
-} 
+}
 
-var taskID = 0;
-var interval;
-// add a task every 1s
-interval = setInterval(function() {
-  if (taskID < 10)
-    wq.push({
-      taskid: taskID++,
-    });
-  else {
-    taskID++
-    if (taskID > 30) {
-      console.log(1)
-      wq.push({
-        taskid: taskID++,
-      });
-    }
+
+function randomPopulate() {
+  addAndStartQueue()
+  if (length() > 1) {
+    let i = randomNumber(0, +length() - 1)
+    queues[i.toString()].push(i)
   }
-}, 100);
+}
+
+
+function randomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const interval = setInterval(function() {
+  randomPopulate()
+}, 0.1);
