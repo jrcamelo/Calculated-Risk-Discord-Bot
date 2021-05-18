@@ -72,15 +72,12 @@ class BaseCommand {
 
   async tryExecute() {
     await this.loadChannelFromMessage();
-    this.message.channel.startTyping();
     try {
       await this.execute();
-      this.message.channel.stopTyping();
     } catch(e) {
       console.log("\n" + this.message.content + " caused an error at " + new Date())
       console.log(e);
       console.log("\n")
-      this.message.channel.stopTyping();
     }
   }
   

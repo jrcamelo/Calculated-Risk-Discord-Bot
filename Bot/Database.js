@@ -1,9 +1,9 @@
-const ReplitDatabase = require("@replit/database");
+const Storage = require("./Storage")
 const Base32 = require("base32");
 
 module.exports = class Database {
   constructor() {
-    this.db = new ReplitDatabase();
+    this.db = new Storage()
   }
 
   // For tests
