@@ -1,61 +1,40 @@
-// require("dotenv").config();
+require('reflect-metadata');
+const fse = require("fs-extra")
+const ct = require('class-transformer');
+const Base32 = require("base32")
 
-// const Database = require("./Bot2/database/")
+class Player {
+  constructor(name, rolls) {
+    this.name = name
+    this._aaa = "AAAA"
+  }
 
-// const message = {channel: {id: "channel", guild: { id: "guild"}}}
-// const game = {game: "Game?"}
-// const turn = {"number": 1}
+  prepare() {
+    this.rolls = this.rolls.map(roll => ct.plainToClass(Roll, roll))
+    return this
+  }
 
-// const db = new Database(message)
-// //db.saveGame(game)
-// db.getGame()
-// db.saveTurn(turn)
-
-const WaitQueue = require("wait-queue");
-
-const queues = {}
-async function readQueue(i) {
-  queues[i.toString()].shift().then(async function(item) {
-    console.log(item);
-    await sleep(item * 100)
-    setImmediate(readQueue, i);
-  })
-  .catch(function(e) {
-    console.error('error', e);
-    setImmediate(readQueue, i);
-  });
+  roll() {
+    let roll = Math.random() * 1000
+    console.log(roll)
+    this.rolls.push(new Roll(roll, Date.now))
+  }
 }
 
-function length() {
-  return +Object.keys(queues).length
-}
+class Roll {
+  constructor(value, time) {
+    this.value = value
+    this.time = time
+  }
 
-function addAndStartQueue() {
-  queues[+length()] = new WaitQueue()
-  readQueue(+length() - 1)
-}
- 
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-}
-
-
-function randomPopulate() {
-  addAndStartQueue()
-  if (length() > 1) {
-    let i = randomNumber(0, +length() - 1)
-    queues[i.toString()].push(i)
+  what() {
+    console.log("IT WAS " + this.value)
   }
 }
 
 
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+const usersJson = fse.readFileSync("./test.json")
+const users = ct.deserialize(Player, usersJson).map(p => p.prepare())
+users[0].rolls[0].what()
 
-const interval = setInterval(function() {
-  randomPopulate()
-}, 0.1);
+fse.writeFileSync("test2.json", ct.serialize(users, { excludePrefixes: ["_"]}))
