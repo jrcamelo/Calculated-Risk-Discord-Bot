@@ -18,8 +18,10 @@
   "homepage": "https://github.com/jrcamelo/Calculated-Risk-Discord-Bot#readme",
   "description": "",
   "dependencies": {
+    "base32": "0.0.6",
     "class-transformer": "^0.4.0",
     "discord.js": "github:discordjs/discord.js",
+    "discord.js-commando": "github:discordjs/Commando",
     "dotenv": "^9.0.1",
     "fs-extra": "^10.0.0",
     "reflect-metadata": "^0.1.13",

@@ -1,17 +1,27 @@
 const fse = require("fs-extra")
+const transformer = require("class-transformer")
 
-function read(path) {
+function read(path, classType) {
   if (!exists(path)) return null
-  return fse.readJSONSync(path)
+  if (classType == null) return console.error("Null class for " + path)
+  try {
+    const content = fse.readJSONSync(path)
+    return transformer.deserialize(classType, content)
+  } catch(e) {
+    console.error("Error while reading " + path, e)
+    return null
+  }
 }
 
-function write(path, content, classType) {
+function write(path, content) {
   try {
     makeBackup(path)
-    return fse.writeJSONSync(path, content)
+    const serialized = transformer.serialize(content, { excludePrefixes: ["_"] })
+    return fse.writeJSONSync(path, serialized)
   } catch(e) {
     console.error("Error while writing file", e)
-    restoreBackup(path)
+    if (restoreBackup(path))
+      console.log("Backup restored")
   }
 }
 
@@ -36,13 +46,17 @@ function remove(path) {
 }
 
 function makeBackup(path) {
-  if (exists(path))
-    return fse.copyFileSync(path, path + ".backup")
+  if (exists(path)) {
+    fse.copyFileSync(path, path + ".backup")
+    return true
+  }
 }
 
 function restoreBackup(path) {
-  if (exists(path + ".backup"))
-    return fse.copyFileSync(path + ".backup", path)
+  if (exists(path + ".backup")) {
+    fse.copyFileSync(path + ".backup", path)
+    return true
+  }
 }
 
 module.exports = { 

@@ -1,5 +1,5 @@
 require('dotenv').config()
-const Discord = require("discord.js");
+const Discord = require("discord.js-commando");
 const Conductor = require("./handler/conductor")
 const Parser = require("./handler/parser")
 
