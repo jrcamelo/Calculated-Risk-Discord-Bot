@@ -1,10 +1,10 @@
 const storage = require("./storage.js");
 const PathTo = require("./pathto.js")
 
-const Game = require("../services/game")
-const Turn = require("../services/turn")
-const Player = require("../services/player")
-const Roll = require("../services/roll")
+const Game = require("../models/game")
+const Turn = require("../models/turn")
+const Player = require("../models/player")
+const Roll = require("../models/roll")
 
 class Database {
   constructor(channel) {

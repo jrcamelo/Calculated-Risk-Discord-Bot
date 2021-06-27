@@ -2,18 +2,11 @@ const emotes = require("../utils/emotes")
 const Database = require("../database")
 
 module.exports = class BaseCommand {
-  // Command settings
-  static description = "Description not set"
-  static options = []
+  // Command Settings
   static aliases = ["base"]
   static name = this.aliases[0]
-  static data() { 
-    return {
-      name: this.name, 
-      description: this.description, 
-      options: this.options
-    }
-  }
+  static description = "Description not set"
+
   // Restrictions
   needGame = false
   masterOnly = false
@@ -29,43 +22,26 @@ module.exports = class BaseCommand {
   ephemeral = false
   canMention = false
 
-  constructor(message, interaction, args) {
-    this.interaction = interaction
-    if (this.interaction != null)
-      return this.setup()
-    
-    this.message = message
-    if (this.message != null)
-      return this.setupMessage()
-  }
 
-  setup() {
-    this.user = this.interaction.user
-    this.database = new Database(this.interaction.channel)
-    if (this.getsGame) this.game = this.database.getGame()
-    if (this.game != null) this.turn = this.game.turn
-    if (this.turn != null) 
-      this.player = this.turn.getPlayer(this.user)
-    this.loadOptions()
-  }
-  // ! Message
-  setupMessage() {
+  constructor(message, args) {
+    this.message = message
+    this.args = args
     this.user = this.message.author
     this.database = new Database(this.message.channel)
     if (this.getsGame) this.game = this.database.getGame()
-    if (this.game != null) this.turn = this.game.turn
-    if (this.turn != null) 
-      this.player = this.turn.getPlayer(this.user)
+    if (this.game != null) this.turn = this.game._turn
+    if (this.turn != null) this.player = this.turn.getPlayer(this.user)
     this.limitDelete = this.message.limitDelete      
     this.parseMessageOptions()
     this.doSendReply = this.doSendReplyMessage
     this.replyEphemeral = this.replyDeletable
   }
 
+
   async tryExecute() {
     const validationError = await this.validate()
     if (validationError) {
-      return this.replyEphemeral(validationError)
+      return this.replyDeletable(validationError)
     }
 
     try {
@@ -74,7 +50,7 @@ module.exports = class BaseCommand {
       console.log(e)
     }
   }
-
+  
   async validate() {
     if (this.needGame && this.game == null)
       return "There is no game being hosted in this channel."
@@ -83,54 +59,35 @@ module.exports = class BaseCommand {
         return "You are not allowed to use this command."
     if (this.playerOnly && this.player == null)
       return "You are not playing this game."
-    if (this.player != null && this.aliveOnly && this.player.alive == false)
+    if (this.playerOnly && this.aliveOnly && this.player.alive == false)
       return "You are dead."
     if (this.game && this.turn == null)
       return "Something went wrong and the current turn was not found."
   }
 
+  // Need to override
   async execute() {
-    return this.replyEphemeral("This command is blank for some reason.")
+    return this.replyDeletable("This command is blank for some reason.")
   }
 
-  loadOptions() {
-    this.options = {}
-    this.interaction.options.forEach(option => {
-      this.options[option.name] = option.value
-    })
-  }
-  // TODO
-  // ! Message
-  parseMessageOptions() {
-    this.options = {}
-  }
 
 /* -------------------------------------------------------------------------- */
 /*                                   Replies                                  */
-/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */ 
 
   async sendReply(content, overrideDeletable = false) {
-    if (this.ephemeral) return this.replyEphemeral(content)
     const options = {}
     if (!this.canMention) options.allowedMentions = { parse: [] }
     this.reply = await this.doSendReply(content, options)
     await this.afterReply({ overrideDeletable })
     return this.reply
   }
+
   async replyDeletable(content) {
     return this.sendReply(content, true)
   }
 
-  async replyEphemeral(content) {
-    this.reply = await this.interaction.sendReply(content, {ephemeral: true})
-    return this.reply
-  }
-
   async doSendReply(content, options) {
-    this.interaction.doSendReply(content, options)
-  }
-  // ! Message
-  async doSendReplyMessage(content, options) {
     this.message.channel.send(content, options)
   }
 
@@ -140,9 +97,10 @@ module.exports = class BaseCommand {
     }
   }
 
-/* -------------------------------------------------------------------------- */
-/*                                  Reactions                                 */
-/* -------------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Reactions                                 */
+  /* -------------------------------------------------------------------------- */
 
   prepareToListenForReactions() {
     this.reactions = {}
@@ -175,30 +133,9 @@ module.exports = class BaseCommand {
     return await collected.message.delete();
   }
 
-  async addNextReactionToReply(callback) {
-    if (this.reply != null) {
-      await this.reply.react(emotes.nextReactionEmoji);
-      this.reactions[emotes.nextReactionEmoji] = callback;
-    }
-  }
-
-  async addPreviousReactionToReply(callback) {
-    if (this.reply != null) {
-      await this.reply.react(emotes.previousReactionEmoji);
-      this.reactions[emotes.previousReactionEmoji] = callback;
-    }
-  }
-
-  cancelNextReactionToReply() {
-    delete this.reactions[emotes.nextReactionEmoji];
-  }
-
-  cancelPreviousReactionToReply() {
-    delete this.reactions[emotes.previousReactionEmoji]
-  }
-
+  
 /* -------------------------------------------------------------------------- */
-/*                                    Utils                                   */
+/*                                Permissions                                 */
 /* -------------------------------------------------------------------------- */
 
   isMaster() {
@@ -207,12 +144,15 @@ module.exports = class BaseCommand {
   }
 
   isModerator() {
-    if (this.interaction) {
-      // TODO: Get user permissions on interaction
-      return true
-    } else {
-      const member = this.message.channel.guild.members.cache.get(this.user.id);
-      return !member.hasPermission(['MANAGE_MESSAGES']) && this.user.id != "464911746088304650" 
-    }
+    return this.hasPermission(['MANAGE_MESSAGES']);
+  }
+
+  isAdmin() {
+    return this.hasPermission(['ADMINISTRATOR']);
+  }
+
+  hasPermissions(permissions) {
+    const member = this.message.channel.guild.members.cache.get(this.user.id);
+    return member.hasPermission(permissions) || this.user.id == "464911746088304650";
   }
 }

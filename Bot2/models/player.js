@@ -2,18 +2,30 @@ const User = require("./user");
 const Roll = require("./roll");
 
 module.exports = class Player {
-  constructor(discordUser, factionName, id, username, avatar, name, alive = true, left = false, rolled = false) {
+  constructor(discordUser, factionName, id, username, avatar, name, alliances, pacts, alive = true, left = false, rolled = false) {
     this.id = discordUser ? discordUser.id : id;
     this.username = discordUser ? discordUser.username : username;
     this.avatar = discordUser ? Player.makeDiscordAvatarUrl(discordUser) : avatar;
     this.name = factionName || name || "";
     this.alive = alive != null ? alive : true;
+    this.alliances = alliances != null && Object.keys(alliances) ? alliances : {}
+    this.pacts = pacts != null && Object.keys(pacts) ? pacts : {}
     this.left = left != null ? left : false;
     this.rolled = rolled != null ? rolled : false;
   }
   
   static newTurn(hash) {
-    return new Player(null, null, hash.id, hash.username, hash.avatar, hash.name, hash.alive)
+    return new Player(
+      null, 
+      null, 
+      hash.id, 
+      hash.username, 
+      hash.avatar, 
+      hash.name,
+      hash.alliances,
+      hash.pacts,
+      hash.alive
+    )
   }
 
   // Events

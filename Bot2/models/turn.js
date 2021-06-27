@@ -38,4 +38,11 @@ module.exports = class Turn {
   save() {
     this.database.saveTurn(hash)
   }
+
+
+  getPlayer(discordUser) {
+
+
+    
+  }
 }
