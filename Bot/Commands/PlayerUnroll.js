@@ -31,7 +31,7 @@ class PlayerUnrollCommand extends BaseCommand {
     await this.save();
 
     let embed = new Discord.MessageEmbed()
-      .setAuthor(`${this.unrolledPlayer.user.username}'s current roll`, this.unrolledPlayer.user.avatar)
+      .setAuthor(`${this.unrolledPlayer.user.username}'s current roll`, null)
       .setDescription(`${this.unrolledPlayer.describeFirstRoll() || "Needs to roll"}`)
     this.reply = await this.sendReply(embed);
     await this.addDeleteReactionToReply();

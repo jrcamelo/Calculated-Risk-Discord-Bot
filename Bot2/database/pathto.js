@@ -6,7 +6,10 @@ const ONGOING_GAME_FOLDER = "ongoing"
 const GAME_FILE_NAME = "game.json"
 const PREVIOUS_GAME_FOLDER = "previous"
 const PREVIOUS_GAME_LIST_FILE_NAME = "previous.json"
-function TURN_FILE_NAME(turn) { return `turn-${turn}.json` }
+const PLAYERS_FILE_NAME = "players.json"
+const ROLLS_FILE_NAME = "rolls.json"
+const TURN_FILE_NAME = "turn.json"
+function TURN_FOLDER_NAME(turn) { return `turn-${turn}.json` }
 
 class PathTo {  
   constructor(channel) {
@@ -34,10 +37,28 @@ class PathTo {
     return path.join(parentPath, GAME_FILE_NAME)
   }
 
-  turnFile(turn="current") {
+  turnFolder(turn="current") {
     const parentPath = this.game()
     if (parentPath == null) return null
-    return path.join(parentPath, TURN_FILE_NAME(turn))
+    return path.join(parentPath, TURN_FOLDER_NAME(turn))
+  }
+
+  turnFile(turn="current") {
+    const parentPath = this.turnFolder(turn)
+    if (parentPath == null) return null
+    return path.join(parentPath, TURN_FILE_NAME)
+  }
+
+  playersFile(turn="current") {
+    const parentPath = this.turnFolder(turn)
+    if (parentPath == null) return null
+    return path.join(parentPath, PLAYERS_FILE_NAME)
+  }
+
+  rollsFile(turn="current") {
+    const parentPath = this.turnFolder(turn)
+    if (parentPath == null) return null
+    return path.join(parentPath, ROLLS_FILE_NAME)
   }
   
   previousGames() {

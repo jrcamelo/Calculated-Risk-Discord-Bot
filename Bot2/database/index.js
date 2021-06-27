@@ -1,19 +1,34 @@
 const storage = require("./storage.js");
 const PathTo = require("./pathto.js")
 
+const Game = require("../services/game")
+const Turn = require("../services/turn")
+const Player = require("../services/player")
+const Roll = require("../services/roll")
+
 class Database {
   constructor(channel) {
     this.pathTo = new PathTo(channel)
     this.gameFolderPath = this.pathTo.game()
     this.gameFilePath = this.pathTo.gameFile()
+    this.currentTurnFolderPath = this.pathTo.turnFolder("current")
     this.currentTurnFilePath = this.pathTo.turnFile("current")
+    this.currentPlayersFilePath = this.pathTo.playersFile("current")
+    this.currentRollsFilePath = this.pathTo.rollsFile("current")
   }
 
-  get(path) {
+  get(path, cls, hash) {
     if (path == null) return null
     if (!storage.exists(path)) 
       return console.debug(`GET: ${path} does not exist, returning null`)
-    return storage.read(path)
+    if (hash)
+      return storage.readHash(path, cls)
+    else
+      return storage.read(path, cls)
+  }
+
+  getHash(path, cls) {
+    return this.get(path, cls, true)
   }
 
   set(path, content) {
@@ -23,7 +38,7 @@ class Database {
   }
 
   getGame() {
-    return this.get(this.gameFilePath)
+    return this.get(this.gameFilePath, Game)
   }
 
   saveGame(game) {
@@ -59,43 +74,50 @@ class Database {
   }
 
   getTurn(turn="current") {
-    return this.get(this.pathTo.turnFile(turn))
+    const turn = this.get(this.pathTo.turnFile(turn), Turn)
+    turn._players = this.getHash(this.pathTo.playersFile(turn), Player)
+    turn._rolls = this.get(this.pathTo.rollsFile(turn), Roll)
   }
 
-  saveCurrentTurn(turn) {
+  saveTurn(turn, identifier = "current") {
     if (!storage.exists(this.gameFilePath))
       return console.debug(`SAVETURN: ${this.gameFilePath} does not exist`)
     storage.ensurePath(this.gameFolderPath)
-    this.set(this.currentTurnFilePath, turn)
+    storage.ensurePath(this.pathTo.turnFolder(identifier))
+    this.set(this.pathTo.turnFile(identifier), turn)
+    this.set(this.pathTo.playersFile(identifier), turn._players)
+    this.set(this.pathTo.rollsFile(identifier), turn._rolls)
     return true
   }
 
   saveNewTurn(turn) {
     if (!storage.exists(this.gameFilePath))
       return console.debug(`SAVETURN: ${this.gameFilePath} does not exist`)
-    const newFilePath = this.pathTo.turnFile("new")
-    this.set(newFilePath, turn)
-    this.outdateCurrentTurn()
-    storage.move(newFilePath, this.currentTurnFilePath)
+    this.saveTurn(turn, "new")
+    try {
+      this.outdateCurrentTurn()
+    } finally {
+      storage.move(this.pathTo.turnFolder("new"), this.currentTurnFolderPath)
+    }
     return true
   }
 
   outdateCurrentTurn() {
-    if (storage.exists(this.currentTurnFilePath)) {
-      const oldNumber = this.readTurnNumber(this.currentTurnFilePath)
+    if (storage.exists(this.currentTurnFolderPath)) {
+      const oldNumber = this.readCurrentTurnNumber()
       if (oldNumber == null) { // Shouldn't happen
         console.debug(`OUTDATE: ${this.currentTurnFilePath} had null turn number`)
-        storage.remove(this.currentTurnFilePath)
+        storage.remove(this.currentTurnFolderPath)
       } else {
-        storage.move(this.currentTurnFilePath, this.pathTo.turnFile(oldNumber))
+        storage.move(this.currentTurnFolderPath, this.pathTo.turnFolder(oldNumber))
       }
       return true
     }
     return false
   }
 
-  readTurnNumber(path) {
-    const turn = this.get(path)
+  readCurrentTurnNumber() {
+    const turn = this.get(this.currentTurnFilePath)
     if (turn == null) return null
     return turn.number.toString()
   }  

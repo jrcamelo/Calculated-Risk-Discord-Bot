@@ -2,69 +2,18 @@ const User = require("./user");
 const Roll = require("./roll");
 
 module.exports = class Player {
-  static loadPlayers(hash) {
-    const result = {};
-    for (const [key, value] of Object.entries(hash)) {
-      const player = new Player().load(value)
-      result[key] = player;
-    }
-    return result;
+  constructor(discordUser, factionName, id, username, avatar, name, alive = true, left = false, rolled = false) {
+    this.id = discordUser ? discordUser.id : id;
+    this.username = discordUser ? discordUser.username : username;
+    this.avatar = discordUser ? Player.makeDiscordAvatarUrl(discordUser) : avatar;
+    this.name = factionName || name || "";
+    this.alive = alive != null ? alive : true;
+    this.left = left != null ? left : false;
+    this.rolled = rolled != null ? rolled : false;
   }
-
-  create(discordUser, factionName) {
-    this.user = new User().create(discordUser);
-    this.name = TextUtils.sanitize(factionName);
-    this.alive = true;
-    this.left = false;
-    this.rolled = false;
-    this.rolls = [];
-    return this;
-  }
-
-  load(hash) {
-    const { user, name, alive, left, rolled, rolls } = hash
-    this.user = new User().load(user);
-    this.name = TextUtils.decode(name);
-    this.alive = alive;
-    this.left = left || false;
-    this.rolled = rolled;
-    this.rolls = this.loadRolls(rolls);
-    return this;
-  }
-
-  newTurn(hash) {
-    this.user = new User().loadClean(hash.user);
-    this.name = hash.name;
-    this.alive = hash.alive;
-    this.left = false;
-    this.rolled = false;
-    this.rolls = [];
-    return this;
-  }
-
-  loadRolls(hash) {
-    let rolls = []
-    for (let roll of hash) {
-      rolls.push(new Roll().load(roll));
-    }
-    return rolls;
-  }
-
-  encode() {
-    this.user.encode();
-    this.name = TextUtils.encode(this.name);
-    for (let i in this.rolls) {
-      this.rolls[i].encode();
-    }
-    if (this.firstRoll) {
-      this.firstRoll.encode();
-    }
-  }
-
-  firstRoll() {
-    if (this.rolls.length)
-      return this.rolls[0]
-    return null
+  
+  static newTurn(hash) {
+    return new Player(null, null, hash.id, hash.username, hash.avatar, hash.name, hash.alive)
   }
 
   // Events
@@ -87,8 +36,12 @@ module.exports = class Player {
 
   // Descriptions
 
+  ping() {
+    return `<@!${this.id}>`
+  }
+
   describeName() {
-    return `**${this.user.username}** ${this.getFactionParenthesis()}`
+    return `**${this.username}** ${this.getFactionParenthesis()}`
   }
 
   describeJoin() {
@@ -132,7 +85,7 @@ module.exports = class Player {
 
   describeFirstRollCompact() {
     if (!this.rolled || !this.rolls) {
-      return `**${this.user.username}**`;
+      return `**${this.username}**`;
     }
     let text = this.rolls[0].describeHistoryForEmbedCompact(this);
     if (this.rolls.length > 1) {
@@ -187,5 +140,11 @@ module.exports = class Player {
       return -1;
     }
     return 0;
+  }
+
+  
+  static makeDiscordAvatarUrl(discordUser) {
+    const url = "https://cdn.discordapp.com/avatars/"
+    return url + discordUser + "/" + discordUser.avatar + ".png";
   }
 }

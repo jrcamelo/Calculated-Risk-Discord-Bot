@@ -1,22 +1,30 @@
 const fse = require("fs-extra")
-const transformer = require("class-transformer")
+const { deserialize, serialize } = require("class-transformer")
+const deserializeHash = require("../utils/deserialize_hash")
 
-function read(path, classType) {
+function read(path, classType, hash) {
   if (!exists(path)) return null
   if (classType == null) return console.error("Null class for " + path)
   try {
     const content = fse.readJSONSync(path)
-    return transformer.deserialize(classType, content)
+    if (hash)
+      return deserializeHash(classType, content)
+    else 
+      return deserialize(classType, content)
   } catch(e) {
     console.error("Error while reading " + path, e)
     return null
   }
 }
 
+function readHash(path, classType) {
+  return read(path, classType, true)
+}
+
 function write(path, content) {
   try {
     makeBackup(path)
-    const serialized = transformer.serialize(content, { excludePrefixes: ["_"] })
+    const serialized = serialize(content, { excludePrefixes: ["_"] })
     return fse.writeJSONSync(path, serialized)
   } catch(e) {
     console.error("Error while writing file", e)
