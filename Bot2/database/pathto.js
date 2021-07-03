@@ -68,9 +68,9 @@ class PathTo {
   }
 
   previousGameListFile() {
-    const parentPath = this.channel()
+    const parentPath = this.previousGames()
     if (parentPath == null) return null
-    return path.join(parentPath, PREVIOUS_GAME_LIST_FILE)
+    return path.join(parentPath, PREVIOUS_GAME_LIST_FILE_NAME)
   }
 
   previousGame(title) {

@@ -37,6 +37,8 @@ module.exports = class Game {
   }
 
   finishGame() {
+    this.endedAt = Date.now()
+    this.save()
     return this._database.outdateCurrentGame(this)
   }
 

@@ -10,8 +10,7 @@ module.exports = class GameEndCommand extends BaseCommand {
   masterOnly = true
 
   async execute() {
-    this.game.finish()
-    if (this.saveOrReturnWarning()) return
+    this.game.finishGame()
     // TODO: Make it return an embed AND SAVE THE GAME
     this.sendReply(`${this.game.name} is over!`)
   }
