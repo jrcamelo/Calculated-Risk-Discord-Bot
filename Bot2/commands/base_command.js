@@ -23,6 +23,7 @@ module.exports = class BaseCommand {
   needsAttachment = false
   acceptsPlayerNotInServer = false
   shouldCleanArgsLineBreaks = true
+  ignoreFirstArg = false
   // Database
   getsGame = true
   // Deletion
@@ -32,33 +33,42 @@ module.exports = class BaseCommand {
   ephemeral = false
   canMention = false
 
-
   constructor(message, args) {
     this.message = message
     this.args = args
-    this.joinArgsIntoArg()
+    this.limitDelete = this.message.limitDelete
+  }
+
+  prepare() {
+    this.prepareData()
+    this.prepareArgs()
+    if (this.shouldCleanArgsLineBreaks)
+      this.cleanArgsLineBreaks()
+  }
+
+  prepareData() {    
     this.user = this.message.author
     this.channel = this.message.channel
     this.database = new Database(this.channel)
     if (this.getsGame) this.game = this.database.getGame()
     if (this.game != null) this.turn = this.game._turn
     if (this.turn != null) this.player = this.turn.getPlayer(this.user)
-    this.limitDelete = this.message.limitDelete      
-    this.replyEphemeral = this.replyDeletable
+  }
+
+  prepareArgs() {
     this.mentionedUser = this.getMentionedUser()
     if (this.mentionedUser && this.turn)
       this.mentionedPlayer = this.turn.getPlayer(this.mentionedUser)
     this.attachment = this.getMessageAttachment()
-    if (this.shouldCleanArgsLineBreaks) {
-      this.cleanArgsLineBreaks()
-    }
+    if (this.ignoreFirstArg) 
+      this.args.shift();
+    this.joinArgsIntoArg()
   }
-
 
   async tryExecute() {
     const validationError = await this.validate()
     if (validationError) {
-      return this.replyDeletable(validationError)
+      return this.replyEphemeral(validationError)
     }
 
     try {
@@ -90,7 +100,7 @@ module.exports = class BaseCommand {
     if (this.needsMention && !this.mentionedUser)
       return "You need to mention a user."
     if (this.needsMentionedPlayer && !this.mentionedPlayer)
-      return "User is not in this game."
+      return "That user is not playing this game."
   }
 
   isArgsBlank() {
@@ -99,7 +109,7 @@ module.exports = class BaseCommand {
 
   // Need to override
   async execute() {
-    return this.replyDeletable("This command is blank for some reason.")
+    return this.replyEphemeral("This command is blank for some reason.")
   }
 
 
@@ -116,17 +126,25 @@ module.exports = class BaseCommand {
   }
 
   async replyDeletable(content) {
-    return this.sendReply(content, true)
+    this.sendReply(content, true)
+  }
+
+  async replyEphemeral(content) {
+    this.ephemeral = true
+    this.limitDelete = false
+    this.replyDeletable(content)
   }
 
   async doSendReply(content, options) {
-    this.message.channel.send(content, options)
+    return this.message.channel.send(content, options)
   }
 
   async afterReply(options) {
-    if (this.canDelete || options.overrideDeletable) {
+    this.prepareToListenForReactions()
+    if (this.canDelete || options.overrideDeletable)
       await this.addDeleteReaction()
-    }
+    if (this.reactions && Object.keys(this.reactions).length)
+      this.waitReplyReaction()
   }
 
 
@@ -142,13 +160,18 @@ module.exports = class BaseCommand {
   }
 
   async waitReplyReaction() {
-    const options = { max: 1, time: 30000, errors: ['time'] };
+    const time = this.ephemeral ? 10000 : 60000
+    const options = { max: 1, time, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
-          this.reactions[collected.first().emoji](collected.first(), this); 
+        this.reactions[collected.first().emoji](collected.first(), this); 
       })
       .catch(collected => {
+        if (this.ephemeral) {
+          this.reply.delete()
+        } else {
           this.reply.reactions.removeAll();
+        }
       });
   }
 
@@ -202,7 +225,7 @@ module.exports = class BaseCommand {
   saveOrReturnWarning() {
     if (!this.save()) {
       console.log("ERROR: Could not save at " + this.message.content)
-      return this.replyDeletable("There was an error while saving this game.")
+      return this.replyEphemeral("There was an error while saving this game.")
     }
     return false
   }
@@ -216,14 +239,11 @@ module.exports = class BaseCommand {
   }
   
   cleanArgsLineBreaks() {
-    if (Array.isArray(this.args)) {
-      for (let i = 0; i < this.args.length; i++) {
-        const arg = this.args[i]
-        this.args[i] = this.cleanLineBreak(arg)
-      }
-    } else {
-      this.args = this.cleanLineBreak(this.args)
+    for (let i = 0; i < this.args.length; i++) {
+      const arg = this.args[i]
+      this.args[i] = this.cleanLineBreak(arg)
     }
+    this.arg = this.cleanLineBreak(this.arg)
   }
 
   cleanLineBreak(text) {

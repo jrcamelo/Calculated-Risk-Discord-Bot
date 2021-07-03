@@ -59,6 +59,7 @@ module.exports = class Conductor {
     try {
       const command = new Parser(message).getCommand();
       if (command) {
+        await command.prepare()
         await command.tryExecute()
       }
     } catch(e) {

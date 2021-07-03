@@ -18,8 +18,11 @@ module.exports = class PlayerKickCommand extends BaseCommand {
   canMention = true
 
   async execute() {
+    if (this.mentionedPlayer.removed) {
+      return this.replyDeletable(`Kicking ${this.mentionedPlayer.name || this.mentionedPlayer.username}'s corpse will lead nowhere, try purging instead.`)
+    } 
     this.turn.kickPlayer(this.mentionedPlayer)
-    if (this.saveOrReturnWarning) return
+    if (this.saveOrReturnWarning()) return
     this.sendReply(`${this.mentionedPlayer.ping()} has fallen and will be removed next turn.`)
   }
 }

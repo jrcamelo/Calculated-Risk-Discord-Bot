@@ -17,7 +17,7 @@ module.exports = class PlayerRagequitCommand extends BaseCommand {
 
   async execute() {
     this.turn.kickPlayer(this.player)
-    if (this.saveOrReturnWarning) return
+    if (this.saveOrReturnWarning()) return
     this.sendReply(`${this.player.ping()} has given up and will be removed next turn.`)
   }
 }

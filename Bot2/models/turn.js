@@ -26,7 +26,7 @@ module.exports = class Turn {
   static playersToNewTurn(oldPlayers) {
     const newPlayers = {};
     for (let player of Object.values(oldPlayers)) {
-      if (player.left != true) {
+      if (player.removed != true) {
         const newPlayer = Player.newTurn(player);
         newPlayers[newPlayer.id] = newPlayer;
       }
@@ -44,6 +44,7 @@ module.exports = class Turn {
 
   addPlayer(discordUser, factionName) {
     this._players[discordUser.id] = new Player(discordUser, factionName)
+    return this._players[discordUser.id]
   }
 
   renamePlayer(player, factionName) {
@@ -52,19 +53,19 @@ module.exports = class Turn {
 
   kickPlayer(player) {
     player.alive = false;
-    player.left = true;
+    player.removed = true;
   }
 
   banPlayer(player) {
-    delete this.players[player.user.id]
+    delete this._players[player.id]
   }
 
   revivePlayer(player) {
-    player.alive = true
+    this._players[player.id].alive = true
   }
 
   pingNotPlayed() {
-    if (!Object.keys(this.players).length) {
+    if (!Object.keys(this._players).length) {
       return "Nobody is playing yet."
     }
     let text = ""

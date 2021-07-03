@@ -10,21 +10,21 @@ module.exports = class PlayerAddCommand extends BaseCommand {
 
   needsGame = true
   needsMention = true
+
+  ignoreFirstArg = true
   
   canMention = true
 
   async execute() {   
-    this.args.shift();
-    this.joinArgsIntoArg();
-    this.cleanArgsLineBreaks();
-    
     if (this.mentionedPlayer) {
       const existingPlayerName = this.mentionedPlayer ? this.mentionedPlayer.name : "[Blank]"
+      if (existingPlayerName == this.arg || "[Blank]")
+        return this.replyDeletable("No point in doing that...")
       this.turn.renamePlayer(this.mentionedPlayer, this.arg)
       if (this.saveOrReturnWarning()) return
-      return this.sendReply(`${existingPlayerName} has been changed to ${newPlayer.name || "[Blank]"}`)
+      return this.sendReply(`${existingPlayerName} has been changed to ${this.arg || "[Blank]"}`)
     } else {
-      const newPlayer = this.turn.getPlayer(this.mentionedUser)
+      const newPlayer = this.turn.addPlayer(this.mentionedUser, this.arg)
       if (this.saveOrReturnWarning()) return
       return this.sendReply(`${newPlayer.pingWithFaction()} has been added!`)
     }

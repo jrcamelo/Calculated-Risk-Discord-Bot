@@ -18,7 +18,7 @@ module.exports = class PlayerBanCommand extends BaseCommand {
 
   async execute() {
     this.turn.banPlayer(this.mentionedPlayer)
-    if (this.saveOrReturnWarning) return
+    if (this.saveOrReturnWarning()) return
     this.sendReply(`${this.mentionedPlayer.ping()} has been removed.`)
   }
 }

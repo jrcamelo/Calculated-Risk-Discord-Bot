@@ -16,7 +16,7 @@ module.exports = class PlayerReviveCommand extends BaseCommand {
 
   async execute() {
     this.turn.revivePlayer(this.mentionedPlayer)
-    if (this.saveOrReturnWarning) return
+    if (this.saveOrReturnWarning()) return
     this.sendReply(`${this.mentionedPlayer.ping()} has fallen and will be removed next turn.`)
   }
 }
