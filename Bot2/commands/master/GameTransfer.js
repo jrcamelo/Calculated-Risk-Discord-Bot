@@ -17,7 +17,7 @@ module.exports = class GameTransferCommand extends BaseCommand {
   async execute() {
     const oldMasterId = this.game.master.id
     this.game.transferMaster(this.mentionedUser)
-    if (saveOrReturnWarning()) return
+    if (this.saveOrReturnWarning()) return
     this.sendReply(`<@!${oldMasterId}}> is no more! All hail <@!${this.mentionedUser.id}>, the new Master!`)
   }
 }

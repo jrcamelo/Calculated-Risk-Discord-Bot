@@ -1,12 +1,11 @@
 const Discord = require('discord.js');
-const User = require("./user");
 const Player = require("./player");
 const Roll = require("./roll")
 const TextUtils = require("../utils/text")
 
 module.exports = class Turn {
-  constructor(database, mup = "", description = "", number = 0, players = null, rolls = null) {
-    this._database = database
+  constructor(_database, mup = "", description = "", number = 0, players = null, rolls = null) {
+    this._database = _database
     this.description = description
     this.mup = mup
     this.number = number
@@ -14,9 +13,9 @@ module.exports = class Turn {
     this._rolls = rolls || []
   }
 
-  static fromPreviousTurn(database, previous, mup, description) {
+  static fromPreviousTurn(_database, previous, mup, description) {
     return new Turn(
-      database,
+      _database,
       mup,
       description,
       (previous.number || 0) + 1,
@@ -36,7 +35,7 @@ module.exports = class Turn {
   }
 
   save() {
-    return this._database.saveTurn(hash)
+    return this._database.saveTurn(this)
   }
 
   getPlayer(discordUser) {

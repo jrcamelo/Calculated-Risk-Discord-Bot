@@ -20,7 +20,7 @@ module.exports = class PlayerAddCommand extends BaseCommand {
     const existingPlayerName = this.mentionedPlayer ? this.mentionedPlayer.name : ""
     this.turn.addPlayer(this.mentionedUser, this.arg)
     const newPlayer = this.turn.getPlayer(this.mentionedUser)
-    if (saveOrReturnWarning()) return
+    if (this.saveOrReturnWarning()) return
     this.sendReply(existingPlayerName
           ? `${existingPlayerName} has been changed to ${newPlayer.name || "[Blank]"}`
           : `${newPlayer.pingWithFaction()} has been added!`)

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fse = require('fs-extra')
 
 function getSubFolders(path) {
   return fs.readdirSync(path).filter(function(subFolder) {

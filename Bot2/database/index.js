@@ -32,9 +32,9 @@ class Database {
     return this.get(path, cls, true)
   }
 
-  set(path, content) {
+  set(path, content, cls) {
     if (path == null || content == null) return null
-    storage.write(path, content)
+    storage.write(path, content, cls)
     return true
   }
 
@@ -46,12 +46,12 @@ class Database {
     if (!storage.exists(this.gameFilePath))
       console.debug(`SAVEGAME: ${this.gameFilePath} did not exist, creating it`)
     storage.ensurePath(this.gameFolderPath)
-    this.set(this.gameFilePath, game)
+    this.set(this.gameFilePath, game, Game)
     return true
   }
 
   outdateCurrentGame(game) {
-    if (!storage.exists(this.gameFilePath))
+    if (!storage.exists(this.gameFolderPath))
       return console.debug(`OUTDATEGAME: ${this.gameFilePath} did not exist`)
     storage.ensurePath(this.pathTo.previousGames())
     this.writeGameOnPreviousGameList(game)
@@ -74,19 +74,17 @@ class Database {
     return true
   }
 
-  getTurn(turn="current") {
-    const turn = this.get(this.pathTo.turnFile(turn), Turn)
+  getTurn(turnNumber="current") {
+    const turn = this.get(this.pathTo.turnFile(turnNumber), Turn)
     if (!turn) return
     turn._players = this.getHash(this.pathTo.playersFile(turn), Player)
     turn._rolls = this.get(this.pathTo.rollsFile(turn), Roll)
   }
 
   saveTurn(turn, identifier = "current") {
-    if (!storage.exists(this.gameFilePath))
-      return console.debug(`SAVETURN: ${this.gameFilePath} does not exist`)
     storage.ensurePath(this.gameFolderPath)
     storage.ensurePath(this.pathTo.turnFolder(identifier))
-    this.set(this.pathTo.turnFile(identifier), turn)
+    this.set(this.pathTo.turnFile(identifier), turn, Turn)
     this.set(this.pathTo.playersFile(identifier), turn._players)
     this.set(this.pathTo.rollsFile(identifier), turn._rolls)
     return true

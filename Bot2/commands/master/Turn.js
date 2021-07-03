@@ -11,7 +11,7 @@ module.exports = class TurnCommand extends BaseCommand {
 
   async execute() {
     this.game.nextTurn(this.attachment, this.arg);
-    if (saveOrReturnWarning()) return
+    if (this.saveOrReturnWarning()) return
     // TODO: MAKE GAME EMBED
     this.sendReply(`New turn is ${this.game._turn.number}`)
   }

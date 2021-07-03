@@ -43,8 +43,6 @@ module.exports = class BaseCommand {
     if (this.game != null) this.turn = this.game._turn
     if (this.turn != null) this.player = this.turn.getPlayer(this.user)
     this.limitDelete = this.message.limitDelete      
-    this.parseMessageOptions()
-    this.doSendReply = this.doSendReplyMessage
     this.replyEphemeral = this.replyDeletable
     this.mentionedUser = this.getMentionedUser()
     if (this.mentionedUser && this.turn)
@@ -53,7 +51,6 @@ module.exports = class BaseCommand {
     if (this.shouldCleanArgsLineBreaks) {
       this.cleanArgsLineBreaks()
     }
-    this.args = this.joinArgsIntoArg()
   }
 
 
@@ -229,6 +226,7 @@ module.exports = class BaseCommand {
   }
 
   cleanLineBreak(text) {
+    if (!text) return text
     return text.replace(/(\r\n|\n|\r)/gm, "");
   }
 

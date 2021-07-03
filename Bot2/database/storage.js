@@ -6,7 +6,7 @@ function read(path, classType, hash) {
   if (!exists(path)) return null
   if (classType == null) return console.error("Null class for " + path)
   try {
-    const content = fse.readJSONSync(path)
+    const content = fse.readFileSync(path)
     if (hash)
       return deserializeHash(classType, content)
     else 
@@ -21,11 +21,14 @@ function readHash(path, classType) {
   return read(path, classType, true)
 }
 
-function write(path, content) {
+function write(path, content, cls) {
   try {
     makeBackup(path)
-    const serialized = serialize(content, { excludePrefixes: ["_"] })
-    return fse.writeJSONSync(path, serialized)
+    console.log(content)
+    const serialized = false
+      ? serialize<cls>(content, { excludePrefixes: ["_"] })
+      : serialize(content, { excludePrefixes: ["_"] })
+    return fse.writeFileSync(path, serialized)
   } catch(e) {
     console.error("Error while writing file", e)
     if (restoreBackup(path))

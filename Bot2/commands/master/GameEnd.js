@@ -11,7 +11,7 @@ module.exports = class GameEndCommand extends BaseCommand {
 
   async execute() {
     this.game.finish()
-    if (saveOrReturnWarning()) return
+    if (this.saveOrReturnWarning()) return
     // TODO: Make it return an embed AND SAVE THE GAME
     this.sendReply(`${this.game.name} is over!`)
   }

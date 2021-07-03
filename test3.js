@@ -35,3 +35,5 @@ users[0].roll()
 // }
 
 fse.writeFileSync("test5.json", ct.serialize(users, { excludePrefixes: ["_"]}))
+
+fse.writeFileSync("test6.json", ct.serialize(users[0], { excludePrefixes: ["_"]}))

@@ -1,15 +1,14 @@
 require('dotenv').config()
-const Discord = require("discord.js-commando");
+const Discord = require("discord.js");
 const Conductor = require("./handler/conductor")
 const Parser = require("./handler/parser")
 
-const client = new Discord.Client({
-  partials: ['MESSAGE', 'CHANNEL', 'REACTION'], 
-  intents: ['GUILDS', 'GUILD_WEBHOOKS', 'GUILD_MESSAGES', 'GUILD_INTEGRATIONS'],
-  allowedMentions: { 
-    parse: ['users', 'roles', 'everyone'], 
-    repliedUser: true
-  } 
+const client = new Discord.Client({ 
+  intents: [
+    'GUILDS',
+    'GUILD_MESSAGES',
+    'GUILD_MESSAGE_REACTIONS',
+  ] 
 })
 
 console.log("Connecting to Discord")

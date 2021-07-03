@@ -7,6 +7,7 @@ module.exports = class Parser {
 
   static readCommands() {
     for (const commandType of requireCommands()) {
+      if (commandType.name == null) continue
       Parser.commands[commandType.name.toLowerCase()] = commandType
       commandType.aliases.forEach(alias => {
         Parser.commands[alias.toLowerCase()] = commandType
@@ -43,7 +44,7 @@ module.exports = class Parser {
   getCommand() {
     if (this.command in Parser.commands) {
       const commandType = Parser.commands[this.command]
-      return new commandType(this.message, null, this.args)
+      return new commandType(this.message, this.args)
     }
   }
 }

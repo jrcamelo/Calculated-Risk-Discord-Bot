@@ -9,11 +9,11 @@ const PREVIOUS_GAME_LIST_FILE_NAME = "previous.json"
 const PLAYERS_FILE_NAME = "players.json"
 const ROLLS_FILE_NAME = "rolls.json"
 const TURN_FILE_NAME = "turn.json"
-function TURN_FOLDER_NAME(turn) { return `turn-${turn}.json` }
+function TURN_FOLDER_NAME(turn) { return `turn-${turn}` }
 
 class PathTo {  
   constructor(channel) {
-    this.base = process.env.DATABASE_PATH
+    this.base = path.join(process.cwd(), process.env.DATABASE_PATH)
     if (channel != null && channel.guild != null) {
       this.channelId = channel.id
       this.serverId = channel.guild.id

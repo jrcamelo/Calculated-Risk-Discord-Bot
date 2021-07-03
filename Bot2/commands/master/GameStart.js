@@ -20,7 +20,7 @@ module.exports = class GameStartCommand extends BaseCommand {
     this.game = new Game(this.database, this.args, this.user)
     if (this.attachment)
       this.game._turn.mup = this.attachment
-    if (saveOrReturnWarning()) return
+    if (this.saveOrReturnWarning()) return
     // TODO: Make it return an embed
     this.sendReply(`${this.game.name} has started!`)
   }

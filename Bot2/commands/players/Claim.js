@@ -15,7 +15,7 @@ module.exports = class ClaimCommand extends BaseCommand {
     const existingPlayerName = this.player ? this.player.name : ""
     this.turn.addPlayer(this.user, this.arg)
     const newPlayer = this.turn.getPlayer(this.mentionedUser)
-    if (saveOrReturnWarning()) return
+    if (this.saveOrReturnWarning()) return
     this.sendReply(existingPlayerName
           ? `${existingPlayerName} has been changed to ${newPlayer.name || "[Blank]"}`
           : `${newPlayer.pingWithFaction()} has joined!`)
