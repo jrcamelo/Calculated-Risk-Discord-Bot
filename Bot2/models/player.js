@@ -1,7 +1,7 @@
 const Roll = require("./roll");
 
 module.exports = class Player {
-  constructor(discordUser, factionName, id, username, avatar, name, alliances, pacts, alive = true, left = false, rolled = false) {
+  constructor(discordUser, factionName, id, username, avatar, name, alliances, pacts, wars, alive = true, left = false, rolled = false) {
     this.id = discordUser ? discordUser.id : id;
     this.username = discordUser ? discordUser.username : username;
     this.avatar = discordUser ? Player.makeDiscordAvatarUrl(discordUser) : avatar;
@@ -9,6 +9,7 @@ module.exports = class Player {
     this.alive = alive != null ? alive : true;
     this.alliances = alliances != null && Object.keys(alliances) ? alliances : {}
     this.pacts = pacts != null && Object.keys(pacts) ? pacts : {}
+    this.wars = wars != null && Object.keys(wars) ? wars : {}
     this.left = left != null ? left : false;
     this.rolled = rolled != null ? rolled : false;
   }
@@ -23,6 +24,7 @@ module.exports = class Player {
       hash.name,
       hash.alliances,
       hash.pacts,
+      hash.wars,
       hash.alive
     )
   }
@@ -33,9 +35,9 @@ module.exports = class Player {
     return `<@!${this.id}>`
   }
 
-  usernameWithFaction() {
+  pingWithFaction() {
     const faction = this.name ? ` [${this.name}]` : ""
-    return `${this.username}${faction}`
+    return `${this.ping()}${faction}`
   }
 
   

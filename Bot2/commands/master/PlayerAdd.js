@@ -23,6 +23,6 @@ module.exports = class PlayerAddCommand extends BaseCommand {
     if (saveOrReturnWarning()) return
     this.sendReply(existingPlayerName
           ? `${existingPlayerName} has been changed to ${newPlayer.name || "[Blank]"}`
-          : `${newPlayer.usernameWithFaction()} has been added!`)
+          : `${newPlayer.pingWithFaction()} has been added!`)
   }
 }
