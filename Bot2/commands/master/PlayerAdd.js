@@ -17,12 +17,16 @@ module.exports = class PlayerAddCommand extends BaseCommand {
     this.args.shift();
     this.joinArgsIntoArg();
     this.cleanArgsLineBreaks();
-    const existingPlayerName = this.mentionedPlayer ? this.mentionedPlayer.name : ""
-    this.turn.addPlayer(this.mentionedUser, this.arg)
-    const newPlayer = this.turn.getPlayer(this.mentionedUser)
-    if (this.saveOrReturnWarning()) return
-    this.sendReply(existingPlayerName
-          ? `${existingPlayerName} has been changed to ${newPlayer.name || "[Blank]"}`
-          : `${newPlayer.pingWithFaction()} has been added!`)
+    
+    if (this.mentionedPlayer) {
+      const existingPlayerName = this.mentionedPlayer ? this.mentionedPlayer.name : "[Blank]"
+      this.turn.renamePlayer(this.mentionedPlayer, this.arg)
+      if (this.saveOrReturnWarning()) return
+      return this.sendReply(`${existingPlayerName} has been changed to ${newPlayer.name || "[Blank]"}`)
+    } else {
+      const newPlayer = this.turn.getPlayer(this.mentionedUser)
+      if (this.saveOrReturnWarning()) return
+      return this.sendReply(`${newPlayer.pingWithFaction()} has been added!`)
+    }
   }
 }

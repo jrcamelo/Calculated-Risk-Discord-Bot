@@ -42,6 +42,14 @@ module.exports = class Turn {
     return this._players[discordUser.id];    
   }
 
+  addPlayer(discordUser, factionName) {
+    this._players[discordUser.id] = new Player(discordUser, factionName)
+  }
+
+  renamePlayer(player, factionName) {
+    this._players[player.id].name = factionName
+  }
+
   kickPlayer(player) {
     player.alive = false;
     player.left = true;

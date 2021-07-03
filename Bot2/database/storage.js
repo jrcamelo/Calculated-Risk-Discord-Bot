@@ -18,13 +18,12 @@ function read(path, classType, hash) {
 }
 
 function readHash(path, classType) {
-  return read(path, classType, true)
+  return this.read(path, classType, true)
 }
 
 function write(path, content, cls) {
   try {
     makeBackup(path)
-    console.log(content)
     const serialized = false
       ? serialize<cls>(content, { excludePrefixes: ["_"] })
       : serialize(content, { excludePrefixes: ["_"] })
@@ -72,6 +71,7 @@ function restoreBackup(path) {
 
 module.exports = { 
   read, 
+  readHash,
   write, 
   createFolder,
   ensurePath, 

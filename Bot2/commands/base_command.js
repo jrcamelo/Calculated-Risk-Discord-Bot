@@ -36,6 +36,7 @@ module.exports = class BaseCommand {
   constructor(message, args) {
     this.message = message
     this.args = args
+    this.joinArgsIntoArg()
     this.user = this.message.author
     this.channel = this.message.channel
     this.database = new Database(this.channel)
@@ -71,9 +72,9 @@ module.exports = class BaseCommand {
     if (this.needsGame && this.game == null)
       return "There is no game being hosted in this channel."
     if (this.masterOnly)
-      if (this.isMaster() 
-          || (this.acceptModerators && this.isModerator())
-          || (this.acceptAdmins && this.isAdmin()))
+      if (!this.isMaster() 
+          || (this.acceptModerators && !this.isModerator())
+          || (this.acceptAdmins && !this.isAdmin()))
         return "You are not allowed to use this command."
     if (this.playerOnly && this.player == null)
       return "You are not playing this game."
@@ -171,20 +172,20 @@ module.exports = class BaseCommand {
 
   isMaster() {
     if (this.game == null) return true
-    return this.user.id == this.game.master.id;
+    return this.user.id == this.game.masterId;
   }
 
   isModerator() {
-    return this.hasPermission(['MANAGE_MESSAGES']);
+    return this.hasPermissions('MANAGE_MESSAGES');
   }
 
   isAdmin() {
-    return this.hasPermission(['ADMINISTRATOR']);
+    return this.hasPermissions('ADMINISTRATOR');
   }
 
-  hasPermissions(permissions) {
+  hasPermissions(permission) {
     const member = this.message.channel.guild.members.cache.get(this.user.id);
-    return member.hasPermission(permissions) || this.user.id == "464911746088304650";
+    return member.permissions.has(permission) || this.user.id == process.env.OWNER;
   }
 
   /* -------------------------------------------------------------------------- */

@@ -39,7 +39,9 @@ class Database {
   }
 
   getGame() {
-    return this.get(this.gameFilePath, Game)
+    const game = this.get(this.gameFilePath, Game)
+    if (game) game.loadDatabase(this)
+    return game
   }
 
   saveGame(game) {
@@ -77,8 +79,10 @@ class Database {
   getTurn(turnNumber="current") {
     const turn = this.get(this.pathTo.turnFile(turnNumber), Turn)
     if (!turn) return
-    turn._players = this.getHash(this.pathTo.playersFile(turn), Player)
-    turn._rolls = this.get(this.pathTo.rollsFile(turn), Roll)
+    turn._database = this
+    turn._players = this.getHash(this.pathTo.playersFile(turnNumber), Player)
+    turn._rolls = this.get(this.pathTo.rollsFile(turnNumber), Roll)
+    return turn
   }
 
   saveTurn(turn, identifier = "current") {
@@ -117,7 +121,7 @@ class Database {
   }
 
   readCurrentTurnNumber() {
-    const turn = this.get(this.currentTurnFilePath)
+    const turn = this.get(this.currentTurnFilePath, Turn)
     if (turn == null) return null
     return turn.number.toString()
   }  

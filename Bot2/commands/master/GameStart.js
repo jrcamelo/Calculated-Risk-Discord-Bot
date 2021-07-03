@@ -17,7 +17,7 @@ module.exports = class GameStartCommand extends BaseCommand {
   }
 
   async execute() {
-    this.game = new Game(this.database, this.args, this.user)
+    this.game = new Game(this.database, this.arg, this.user.id, this.user.username)
     if (this.attachment)
       this.game._turn.mup = this.attachment
     if (this.saveOrReturnWarning()) return
