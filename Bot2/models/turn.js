@@ -6,7 +6,7 @@ const TextUtils = require("../utils/text")
 
 module.exports = class Turn {
   constructor(database, mup = "", description = "", number = 0, players = null, rolls = null) {
-    this.database = database
+    this._database = database
     this.description = description
     this.mup = mup
     this.number = number
@@ -36,13 +36,41 @@ module.exports = class Turn {
   }
 
   save() {
-    this.database.saveTurn(hash)
+    return this._database.saveTurn(hash)
   }
 
-
   getPlayer(discordUser) {
+    return this._players[discordUser.id];    
+  }
 
+  kickPlayer(player) {
+    player.alive = false;
+    player.left = true;
+  }
 
-    
+  banPlayer(player) {
+    delete this.players[player.user.id]
+  }
+
+  revivePlayer(player) {
+    player.alive = true
+  }
+
+  pingNotPlayed() {
+    if (!Object.keys(this.players).length) {
+      return "Nobody is playing yet."
+    }
+    let text = ""
+    for (let player of this.playerHashToList()) {
+      if (player.alive && !player.rolled) {
+        text += `${player.ping()} `
+      }
+    }
+    return text || "No players need to roll.";
+  }
+
+  
+  playerHashToList() {
+    return Object.values(this._players);
   }
 }

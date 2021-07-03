@@ -8,6 +8,7 @@ const Roll = require("../models/roll")
 
 class Database {
   constructor(channel) {
+    this.channel = channel
     this.pathTo = new PathTo(channel)
     this.gameFolderPath = this.pathTo.game()
     this.gameFilePath = this.pathTo.gameFile()
@@ -75,6 +76,7 @@ class Database {
 
   getTurn(turn="current") {
     const turn = this.get(this.pathTo.turnFile(turn), Turn)
+    if (!turn) return
     turn._players = this.getHash(this.pathTo.playersFile(turn), Player)
     turn._rolls = this.get(this.pathTo.rollsFile(turn), Roll)
   }
