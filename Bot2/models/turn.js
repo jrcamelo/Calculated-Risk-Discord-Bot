@@ -48,7 +48,7 @@ module.exports = class Turn {
   }
 
   renamePlayer(player, factionName) {
-    this._players[player.id].name = factionName
+    player.name = factionName
   }
 
   kickPlayer(player) {
@@ -60,21 +60,48 @@ module.exports = class Turn {
     delete this._players[player.id]
   }
 
+  killPlayer(player) {
+    player.alive = false
+  }
+
   revivePlayer(player) {
-    this._players[player.id].alive = true
+    player.alive = true
   }
 
   pingNotPlayed() {
+    const text = this.pingPlayers(function(player) {
+      if (player.alive && !player.rolled) {
+        return `${player.ping()} `
+      }
+    })    
+    return text || "Everyone has already rolled. Mup when?";
+  }
+
+  pingAlive() {
+    const text = this.pingPlayers(function(player) {
+      if (player.alive) {
+        return `${player.ping()} `
+      }
+    })    
+    return text || "War leads nowhere. Everyone is dead.";
+  }
+
+  pingEveryone() {
+    const text = this.pingPlayers(function(player) {
+      return `${player.ping()} `
+    })    
+    return text;
+  }
+
+  pingPlayers(callback) {
+    let text = ""
     if (!Object.keys(this._players).length) {
       return "Nobody is playing yet."
     }
-    let text = ""
     for (let player of this.playerHashToList()) {
-      if (player.alive && !player.rolled) {
-        text += `${player.ping()} `
-      }
+      text += callback(player) || ""
     }
-    return text || "No players need to roll.";
+    return text
   }
 
   
