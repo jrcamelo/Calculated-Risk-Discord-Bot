@@ -9,7 +9,6 @@ module.exports = class ClaimCommand extends BaseCommand {
 
   needsGame = true  
   canMention = true
-  shouldCleanArgsLineBreaks = false
 
   async execute() {
     if (this.player) {

@@ -43,6 +43,12 @@ module.exports = class Game {
   }
 
   transferMaster(newMaster) {
-    this.master = newMaster
+    this.masterId = newMaster.id
+    this.masterUsername = newMaster.username
+  }
+
+  // TODO: Presenter
+  pingMaster() {
+    return `<@!${this.masterId}>`
   }
 }

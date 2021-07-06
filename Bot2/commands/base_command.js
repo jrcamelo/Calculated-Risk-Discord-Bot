@@ -1,5 +1,6 @@
 const emotes = require("../utils/emotes")
 const Database = require("../database")
+const { MessageEmbed } = require("discord.js")
 
 module.exports = class BaseCommand {
   // Command Settings
@@ -17,7 +18,7 @@ module.exports = class BaseCommand {
   playerOnly = false
   aliveOnly = false
   // Args
-  needsArgs = false
+  neededArgsAmount = 0
   needsMention = false
   needsMentionedPlayer = false
   needsAttachment = false
@@ -68,7 +69,7 @@ module.exports = class BaseCommand {
   async tryExecute() {
     const validationError = await this.validate()
     if (validationError) {
-      return this.replyEphemeral(validationError)
+      return this.replyDeletable(validationError)
     }
 
     try {
@@ -93,7 +94,7 @@ module.exports = class BaseCommand {
     if (this.game && this.turn == null)
       return "Something went wrong and the current turn was not found."
 
-    if (this.needsArgs && this.isArgsBlank())
+    if (this.args.length < this.neededArgsAmount)
       return `Try again with ${this.argsDescription}`
     if (this.needsAttachment && !this.attachment)
       return "You need to attach an image."
@@ -136,7 +137,11 @@ module.exports = class BaseCommand {
   }
 
   async doSendReply(content, options) {
-    return this.message.channel.send(content, options)
+    if (content instanceof MessageEmbed) {
+      return this.message.channel.send(content)
+    } else {
+      return this.message.channel.send(content, options)
+    }
   }
 
   async afterReply(options) {
@@ -228,6 +233,12 @@ module.exports = class BaseCommand {
       return this.replyEphemeral("There was an error while saving this game.")
     }
     return false
+  }
+
+  takeFirstArg() {
+    const firstArg = this.args.shift()
+    this.joinArgsIntoArg()
+    return firstArg
   }
 
   joinArgsIntoArg() {
