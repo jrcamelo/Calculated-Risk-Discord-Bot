@@ -41,12 +41,10 @@ module.exports = class Turn {
   getPlayer(discordUser) {
     return this._players[discordUser.id];    
   }
-
   addPlayer(discordUser, factionName) {
     this._players[discordUser.id] = new Player(discordUser, factionName)
     return this._players[discordUser.id]
   }
-
   renamePlayer(player, factionName) {
     player.name = factionName
   }
@@ -55,7 +53,6 @@ module.exports = class Turn {
     player.alive = false;
     player.removed = true;
   }
-
   banPlayer(player) {
     delete this._players[player.id]
   }
@@ -63,10 +60,20 @@ module.exports = class Turn {
   killPlayer(player) {
     player.alive = false
   }
-
   revivePlayer(player) {
     player.alive = true
   }
+
+  addRoll(roll) {
+    this._rolls.push(roll)
+    this._players[roll.playerId].rolled = true
+  }
+  
+  playerHashToList() {
+    return Object.values(this._players);
+  }
+
+  // TODO: Move those to Presenter
 
   pingNotPlayed() {
     const text = this.pingPlayers(function(player) {
@@ -105,7 +112,4 @@ module.exports = class Turn {
   }
 
   
-  playerHashToList() {
-    return Object.values(this._players);
-  }
 }

@@ -1,3 +1,10 @@
+function randomNumber(min=0, max=10000000000) {
+  return Math.floor(
+    Math.random() * (max - min + 1) + min
+  )
+}
+
+
 function splice(str, index, stringToAdd){
   return str.substring(0, index) + stringToAdd + str.substring(index, str.length);
 }
@@ -89,6 +96,7 @@ function isReverseStraight(str) {
 
 
 module.exports = {
+  randomNumber,
   splice,
   spliceFromEnd,
   findPalindromeSize,

@@ -1,0 +1,22 @@
+const BaseRollCommand = require("../roll_command")
+const Roll = require("../../models/roll")
+
+module.exports = class RollDiceCommand extends BaseRollCommand {
+  static aliases = ["RollD", "RD", "D"]
+  static description = "Roll with a specified limit. 10¹¹ is the maximum value."
+  static argsDescription = "<Limit> [Intention] {Attachment}"
+
+  neededArgsAmount = 1
+
+  async execute() {
+    this.limit = +this.takeFirstArg()
+    if (this.sendWarningOnInvalidLimit()) return
+
+    this.addAttachmentToIntention()
+    this.roll = new Roll(this.message, this.arg, this.limit)
+    this.roll.doRollWithLimit()
+    if (this.saveRollOrReturnWarning()) return
+    // TODO: Use Presenter
+    return this.sendReply(`${this.game.pingMaster()} --- ${this.player.pingWithFaction()} has rolled ${this.roll.formattedValue}`)
+  }
+}
