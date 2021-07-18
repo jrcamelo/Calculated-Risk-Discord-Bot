@@ -3,6 +3,7 @@ module.exports ={
   previousReactionEmoji: "⬅️",
   nextReactionEmoji: "➡️",
   fReactionEmoji: "🇫",
-  plusReactionEmoji: "➕",
+  plusReactionEmoji: "📖",
   xReactionEmoji: "❌",
+  extrasReactionEmoji: "💬",
 }

@@ -10,6 +10,4 @@ module.exports = class TestJokeRollSwordCommand extends TestRollCommand {
   limit = 20
   arg = "Attack with my sword"
   isTest = true
-
-  // TODO: Make presenter work without a master or a player
 }

@@ -9,6 +9,4 @@ module.exports = class TestJokeRollPizzaCommand extends TestRollCommand {
 
   limit = 8
   isTest = true
-
-  // TODO: Make presenter work without a master or a player
 }

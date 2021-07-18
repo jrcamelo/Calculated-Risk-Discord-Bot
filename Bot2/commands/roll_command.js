@@ -1,4 +1,5 @@
 const BaseCommand = require("./base_command")
+const RollPresenter = require("../presenters/roll_presenter")
 
 module.exports = class BaseRollCommand extends BaseCommand {
   canDelete = false
@@ -63,5 +64,15 @@ module.exports = class BaseRollCommand extends BaseCommand {
       return false
     }
     return true
+  }
+
+  async sendSingleRollResult() {
+    let masterId = this.game ? this.game.masterId : null
+    if (this.isTest) masterId = null
+    let text = (new RollPresenter(this.roll)).describeJustRolled(masterId)
+    if (!this.isTest && this.turn && this.turn.everyoneHasRolled()) {
+      text += "\n\n**All players have rolled this turn!**"
+    }
+    return await this.sendReply(text)
   }
 }

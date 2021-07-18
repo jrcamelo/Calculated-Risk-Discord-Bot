@@ -73,6 +73,21 @@ module.exports = class Turn {
     return Object.values(this._players);
   }
 
+  rollListToPlayerHash() {
+    const groupedByPlayer = {}
+    for (let roll of this._rolls) {
+      if (!groupedByPlayer[roll.playerId]) {
+        groupedByPlayer[roll.playerId] = []
+      }
+      groupedByPlayer[roll.playerId].push(roll)
+    }
+    return groupedByPlayer
+  }
+
+  everyoneHasRolled() {
+    return this.playerHashToList().every(player => player.rolled)
+  }
+
   // TODO: Move those to Presenter
 
   pingNotPlayed() {

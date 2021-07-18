@@ -21,6 +21,11 @@ module.exports = class Game {
       this._turn = this._database.getTurn()
   }
 
+  getTurn(number) {
+    if (number == this.turnNumber || number === undefined) return this._turn
+    return this._database.getTurn(number)
+  }
+
   nextTurn(mup, description) {
     this.turnNumber += 1
     this._turn = Turn.fromPreviousTurn(this._database, this._turn, mup, description)

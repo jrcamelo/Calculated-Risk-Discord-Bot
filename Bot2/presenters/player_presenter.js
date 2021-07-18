@@ -1,0 +1,81 @@
+const RollPresenter = require('./roll_presenter');
+
+module.exports = class PlayerPresenter {
+  constructor(player) {
+    this.player = player;
+  }
+
+  makeDescription(rolls, isExpanded) {
+    if (isExpanded) {
+      return this.makeExpandedDescription(rolls);
+    } else {
+      return this.makeCollapsedDescription(rolls);
+    }
+  }
+
+  makeExpandedDescription(rolls) {
+    if (!this.player.alive) return `${this.pingWithFaction()} has fallen.`;
+    return `${this.pingWithFaction()}${this.describeBonus()} ${this.describeRolledWithLink(rolls)}${this.describeExtraRolls(rolls)}`;
+  }
+
+  makeCollapsedDescription(rolls) {
+    if (!this.player.alive) return `~~${this.player.username}~~`;
+    return `${this.pingWithFaction()} ${this.describeRollWithLink(rolls)}${this.describeExtraRolls(rolls)}`;
+  }
+
+  makeField(rolls) {
+    if (!this.player.alive) return { name: `${this.player.username} has fallen`, value: `-`, inline: true }
+    return {
+      name: `${this.usernameWithFaction()}${this.describeBonus()}`,
+      value: `${this.describeRolledWithLink(rolls)}${this.describeExtraRolls(rolls)}`,
+      inline: true
+    }
+  }
+
+  makeFieldWithIntention(rolls) {
+    if (!this.player.alive) return { name: `${this.player.username} has fallen`, value: `-`, inline: true }
+    return {
+      name: `${this.usernameWithFaction()}${this.describeBonus()}`,
+      value: `${this.describeRollWithIntention(rolls)}`,
+      inline: true
+    }
+  }
+
+  ping() {
+    return `<@!${this.player.id}>`
+  }
+
+  usernameWithFaction() {
+    const faction = this.player.name ? ` [${this.player.name}]` : ""
+    return `${this.player.username}${faction}`
+  }
+
+  pingWithFaction() {
+    const faction = this.player.name ? ` [${this.player.name}]` : ""
+    return `${this.ping()}${faction}`
+  }
+
+  describeBonus() {
+    return this.player.bonus ? ` **+${this.player.bonus}**` : ""
+  }
+
+  describeRolledWithLink(rolls) {
+    if (!rolls || rolls.length === 0) return "-";
+    return `${new RollPresenter(rolls[0]).makeRolledWithLink()}`;
+  }
+
+  describeRollWithLink(rolls) {
+    if (!rolls || rolls.length === 0) return "-";
+    return `${new RollPresenter(rolls[0]).makeRollWithLink()}`;
+  }
+
+  describeExtraRolls(rolls) {
+    if (!rolls || rolls.length < 2) return "";
+    return ` (and +${rolls.length - 1})`;
+  }
+
+  describeRollWithIntention(rolls) {
+    if (!rolls || rolls.length === 0) return "-";
+    return `${new RollPresenter(rolls[0]).makeRollWithIntention()}`;
+  }
+}

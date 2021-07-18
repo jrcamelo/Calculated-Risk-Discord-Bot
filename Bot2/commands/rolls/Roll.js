@@ -13,7 +13,6 @@ module.exports = class RollCommand extends BaseRollCommand {
     this.roll = new Roll(this.message, this.arg, this.limit, this.isTest, this.isRanked)
     this.roll.doRollWithLimit()
     if (this.saveRollOrReturnWarning()) return
-    // TODO: Use Presenter
-    return this.sendReply(`${this.game.pingMaster()} --- ${this.player.pingWithFaction()} has rolled ${this.roll.formattedValue}`)
+    this.sendSingleRollResult()
   }
 }

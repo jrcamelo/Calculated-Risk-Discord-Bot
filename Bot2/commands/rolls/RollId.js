@@ -11,7 +11,6 @@ module.exports = class RollIdCommand extends BaseRollCommand {
     this.roll = new Roll(this.message, this.arg, null, this.isTest, this.isRanked)
     this.roll.doRollWithID()
     if (this.saveRollOrReturnWarning()) return
-    // TODO: Use Presenter
-    return this.sendReply(`${this.game.pingMaster()} --- ${this.player.pingWithFaction()} has rolled ID ${this.roll.formattedValue}`)
+    this.sendSingleRollResult()
   }
 }

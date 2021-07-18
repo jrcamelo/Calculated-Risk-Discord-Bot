@@ -22,7 +22,6 @@ module.exports = class TestRollCommand extends RollCommand {
     this.roll.doRollWithLimit()
     this.roll.value = +this.arg
     this.roll.calculateRoll()
-    // TODO: Use Presenter
     return this.sendReply(`For reference, if someone rolled that it would look like ${this.roll.formattedValue}`)
   }
 }
