@@ -16,6 +16,6 @@ module.exports = class RollDiceCommand extends BaseRollCommand {
     this.roll = new Roll(this.message, this.arg, this.limit, this.isTest, this.isRanked)
     this.roll.doRollWithLimit()
     if (this.saveRollOrReturnWarning()) return
-    this.sendSingleRollResult()
+    this.sendRollResult()
   }
 }

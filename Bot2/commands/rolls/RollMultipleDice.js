@@ -22,10 +22,11 @@ module.exports = class RollMultipleDiceCommand extends BaseRollCommand {
     }
 
     if (this.saveMultipleRollsOrReturnWarning()) return
-    // TODO: Use Presenter
-    for (const roll of this.rolls) {
-      this.sendReply(`${this.game.pingMaster()} --- ${this.player.pingWithFaction()} has rolled ${roll.formattedValue}`)
-    }
+    this.sendRollResult()
+  }
+
+  async sendRollResult() {
+    return await this.sendMultipleRollResult()
   }
 
   getMultipleAndLimit() {

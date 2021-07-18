@@ -11,6 +11,6 @@ module.exports = class RollIdCommand extends BaseRollCommand {
     this.roll = new Roll(this.message, this.arg, null, this.isTest, this.isRanked)
     this.roll.doRollWithID()
     if (this.saveRollOrReturnWarning()) return
-    this.sendSingleRollResult()
+    this.sendRollResult()
   }
 }

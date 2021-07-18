@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "fs-extra": "^10.0.0",
     "is-image-url": "^1.1.8",
+    "ordinal": "^1.0.3",
     "reflect-metadata": "^0.1.13",
     "regenerate": "^1.4.2",
     "wait-queue": "^1.1.4"

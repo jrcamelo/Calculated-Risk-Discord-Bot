@@ -66,10 +66,24 @@ module.exports = class BaseRollCommand extends BaseCommand {
     return true
   }
 
+  async sendRollResult() {
+    return await this.sendSingleRollResult()
+  }
+
   async sendSingleRollResult() {
     let masterId = this.game ? this.game.masterId : null
     if (this.isTest) masterId = null
     let text = (new RollPresenter(this.roll)).describeJustRolled(masterId)
+    if (!this.isTest && this.turn && this.turn.everyoneHasRolled()) {
+      text += "\n\n**All players have rolled this turn!**"
+    }
+    return await this.sendReply(text)
+  }
+
+  async sendMultipleRollResult() {
+    let masterId = this.game ? this.game.masterId : null
+    if (this.isTest) masterId = null
+    let text = (new RollPresenter(null, this.rolls)).describeMultipleJustRolled(masterId)
     if (!this.isTest && this.turn && this.turn.everyoneHasRolled()) {
       text += "\n\n**All players have rolled this turn!**"
     }

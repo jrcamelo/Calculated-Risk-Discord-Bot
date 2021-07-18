@@ -1,6 +1,9 @@
+const ordinal = require('ordinal')
+
 module.exports = class RollPresenter {
-  constructor(roll) {
+  constructor(roll, rolls) {
     this.roll = roll
+    this.rolls = rolls
   }
 
   makeRolledWithLink() {
@@ -30,18 +33,26 @@ module.exports = class RollPresenter {
   }
 
   describeJustRolled(masterId) {
-    if (masterId) return this.describeJustRolledAndPingMaster(masterId)
     const intention = this.roll.intention ? `\n**${this.roll.intention}**` : "" 
-    return `${this.ping()} rolled ${this.roll.formattedValue}${intention}`
-  }
-
-  describeJustRolledAndPingMaster(masterId) {
-    const intention = this.roll.intention ? `\n**${this.roll.intention}**` : "" 
-    return `<@!${masterId}> —— ${this.ping()} rolled ${this.roll.formattedValue}${intention}`
+    return `${this.pingMaster(masterId)}${this.ping()} rolled ${this.roll.formattedValue}${intention}`
   }
   
+  describeMultipleJustRolled(masterId) {
+    if (!this.rolls) return
+    const intention = this.rolls[0].intention ? `\n**${this.rolls[0].intention}**` : ""
+    let text = `${this.pingMaster(masterId)}${this.ping()} rolled ${this.rolls.length} times${intention}`
+    for (let i = 0; i < this.rolls.length; i++) {
+      text += `\n${ordinal(i+1)} - ${this.rolls[i].formattedValue}`
+    }
+    return text
+  }
+
   ping() {
-    return `<@${this.roll.playerId}>`
+    return `<@${this.roll ? this.roll.playerId : this.rolls[0].playerId}>`
+  }
+
+  pingMaster(masterId) {
+    return masterId ? `<@!${masterId}> —— ` : ""
   }
 
 }

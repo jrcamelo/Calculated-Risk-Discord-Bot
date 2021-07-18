@@ -11,4 +11,8 @@ module.exports = class RollDiceMultipleCommand extends RollMultipleDiceCommand {
     this.limit = +this.takeFirstArg()
     this.multiple = +this.takeFirstArg()
   }
+
+  async sendRollResult() {
+    return await this.sendMultipleRollResult()
+  }
 }
