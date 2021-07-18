@@ -33,6 +33,25 @@ module.exports = class GamePresenter {
     return (new TurnPresenter(this.game, turn)).makeRollHistory(index, intentions)
   }
 
+  makeListOfAllMupsEmbed(index) {
+    return new Discord.MessageEmbed()
+      .addFields(this.makeMupFields(this.game.getMups(), index))
+      .setFooter(`${index}/${this.game.turnNumber}`)
+  }
+
+  makeMupFields(mups, index=0) {
+    let fields = []
+    for (let i = index; i < Math.min(mups.length, index + 25); i++) {
+      if (!mups[i]) continue
+      fields.push({
+        name: `Turn ${index + i}`,
+        value: `[Link](${mups[i]})`,
+        inline: true
+      })
+    }
+    return fields
+  }
+
   getTurn(turnIndex) {
     return this.game.getTurn(turnIndex)
   }

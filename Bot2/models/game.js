@@ -37,6 +37,19 @@ module.exports = class Game {
     if (description) this._turn.description = description
   }
 
+  getAllTurns() {
+    const turns = []
+    for (let i = 0; i <= this.turnNumber; i++) {
+      const turn = this.getTurn(i)
+      if (turn) turns.push(turn)
+    }
+    return turns
+  }
+
+  getMups() {      
+    return this.getAllTurns().map(t => t.mup)
+  }
+
   save() {
     if (this._turn.save())
       return this._database.saveGame(this)
