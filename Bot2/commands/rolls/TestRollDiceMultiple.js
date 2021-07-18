@@ -5,5 +5,8 @@ module.exports = class TestRollDiceMultipleCommand extends RollDiceMultipleComma
   needsGame = false
   playerOnly = false
   canDelete = true
+
+  isTest = true
+  
   saveRollOrReturnWarning() {}
 }

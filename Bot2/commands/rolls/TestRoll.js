@@ -9,5 +9,7 @@ module.exports = class TestRollCommand extends RollCommand {
   canDelete = true
   saveRollOrReturnWarning() {}
 
+  isTest = true
+  
   // TODO: Make presenter work without a master or a player
 }

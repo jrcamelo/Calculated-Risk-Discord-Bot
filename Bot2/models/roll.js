@@ -23,7 +23,7 @@ module.exports = class Roll {
   }
 
   doRollWithLimit() {
-    this.value = Utils.randomNumber(0, this.limit || Roll.DEFAULT_MAX)
+    this.value = Utils.randomNumber(1, this.limit || Roll.DEFAULT_MAX)
     this.calculateRoll()
   }
   

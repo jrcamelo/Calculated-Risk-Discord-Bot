@@ -53,7 +53,7 @@ function findStraightSize(str) {
   return 0;
 }
 
-FUNNY_NUMBERS = ["69", "420", "69420", "42069", "1488", "1337", "80085", "8008135", "1350"]
+FUNNY_NUMBERS = ["69420", "42069", "1488", "1337", "80085", "8008135", "1350", "69", "420"]
 function findFunnyNumberSize(str) {
   for (let funny of FUNNY_NUMBERS) {
     if (str.endsWith(funny)) {
@@ -93,6 +93,15 @@ function isReverseStraight(str) {
   return true;
 }
 
+function getMultipleAndLimitFromDnD(text) {
+  if (!text) return
+  const dIndex = text.toLowerCase().indexOf("d")
+  if (dIndex < 0) return
+	const multiple = text.substring(0, dIndex) || 1
+  const limit = text.substring(dIndex + 1)
+  if (!multiple || isNaN(multiple) || isNaN(limit)) return
+  return { limit, multiple }
+}
 
 
 module.exports = {
@@ -107,4 +116,5 @@ module.exports = {
   isStraight,
   isReverseStraight,
   lastCharacters,
+  getMultipleAndLimitFromDnD
 }

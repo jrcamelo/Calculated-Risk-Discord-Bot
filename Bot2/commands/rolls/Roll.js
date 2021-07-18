@@ -6,9 +6,11 @@ module.exports = class RollCommand extends BaseRollCommand {
   static description = "State your intention and put your life on RNG's hands. It will roll a number from 0 to 10¹¹."
   static argsDescription = "[Intention] {Attachment}"
 
+  limit = null
+
   async execute() {
     this.addAttachmentToIntention()
-    this.roll = new Roll(this.message, this.arg)
+    this.roll = new Roll(this.message, this.arg, this.limit)
     this.roll.doRollWithLimit()
     if (this.saveRollOrReturnWarning()) return
     // TODO: Use Presenter

@@ -7,6 +7,8 @@ module.exports = class BaseRollCommand extends BaseCommand {
   aliveOnly = true
   canMention = true
 
+  isTest = false
+
   static MULTIPLE_ROLL_LIMIT = 10
 
 

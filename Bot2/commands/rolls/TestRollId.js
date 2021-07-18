@@ -5,5 +5,8 @@ module.exports = class TestRollIdCommand extends RollIdCommand {
   needsGame = false
   playerOnly = false
   canDelete = true
+  
+  isTest = true
+  
   saveRollOrReturnWarning() {}
 }
