@@ -2,15 +2,16 @@ const Discord = require("discord.js")
 const Turn = require("./turn")
 
 module.exports = class Game {
-  constructor(_database, name, masterId, masterUsername, turnNumber = 0, startedAt = Date.now(), endedAt = null) {
+  constructor(_database, name, masterId, masterUsername, channel, turnNumber = 0, startedAt = Date.now(), endedAt = null) {
     this._database = _database
-    this.channel = _database ? _database.channel.id : null
+    this.channel = channel
     this.name = name
     this.masterId = masterId
     this.masterUsername = masterUsername
     this.turnNumber = turnNumber
     this.startedAt = startedAt
     this.endedAt = endedAt
+    this.uniqueId = `${channel}-${startedAt}`
     this._turn = _database ? _database.getTurn() || new Turn(_database) : null
   }
 

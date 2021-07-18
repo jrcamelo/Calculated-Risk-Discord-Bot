@@ -93,16 +93,35 @@ function isReverseStraight(str) {
   return true;
 }
 
-function getMultipleAndLimitFromDnD(text) {
-  if (!text) return
-  const dIndex = text.toLowerCase().indexOf("d")
-  if (dIndex < 0) return
-	const multiple = text.substring(0, dIndex) || 1
-  const limit = text.substring(dIndex + 1)
-  if (!multiple || isNaN(multiple) || isNaN(limit)) return
-  return { limit, multiple }
+// Parse a DnD roll notation string into numbers
+// e.g. "2d6+3" -> { "multiple": 2, "limit": 6, "modifier": 3 }
+// e.g. "2d6-3" -> { "multiple": 2, "limit": 6, "modifier": -3 }
+// e.g. "2d6" -> { "multiple": 2, "limit": 6, "modifier": 0 }
+// e.g. "d6" -> { "multiple": 1, "limit": 6, "modifier": 0 }
+function getMultipleLimitModifierFromDnD(roll) {
+  if (!roll) return
+  const regex = /^(\d+)?d(\d+)(\+)?(\d+)?(\-)?(\d+)?$/
+  const matches = roll.match(regex)
+  if (matches == null) return
+  const multiple = +matches[1] || 1
+  const limit = +matches[2]
+  const modifier = matches[3] ? +matches[4] : (matches[5] ? -matches[6] : 0)
+  return { multiple, limit, modifier }
 }
 
+function calculateScore(repeated, palindrome, straight, funny, rollValue) {
+  let score = 0;
+  if (repeated) { score += repeated }
+  if (palindrome) { score += palindrome - 1 }
+  if (straight) { score += straight - 1 }
+  if (funny) { score += funny }
+  score *= 100
+
+  let rollLastDigit = +(rollValue.slice(-1)) || 0;
+  score += rollLastDigit * 10
+  if (rollLastDigit == 0 ) { score += 99 }
+  return score
+}
 
 module.exports = {
   randomNumber,
@@ -116,5 +135,6 @@ module.exports = {
   isStraight,
   isReverseStraight,
   lastCharacters,
-  getMultipleAndLimitFromDnD
+  getMultipleLimitModifierFromDnD,
+  calculateScore
 }

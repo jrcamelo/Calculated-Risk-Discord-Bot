@@ -10,7 +10,7 @@ module.exports = class RollCommand extends BaseRollCommand {
 
   async execute() {
     this.addAttachmentToIntention()
-    this.roll = new Roll(this.message, this.arg, this.limit)
+    this.roll = new Roll(this.message, this.arg, this.limit, this.isTest, this.isRanked)
     this.roll.doRollWithLimit()
     if (this.saveRollOrReturnWarning()) return
     // TODO: Use Presenter

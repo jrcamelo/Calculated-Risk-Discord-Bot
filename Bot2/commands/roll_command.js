@@ -8,6 +8,7 @@ module.exports = class BaseRollCommand extends BaseCommand {
   canMention = true
 
   isTest = false
+  isRanked = true
 
   static MULTIPLE_ROLL_LIMIT = 10
 

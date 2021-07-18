@@ -4,12 +4,15 @@ const { makeMessageLink } = require("../utils/discord");
 module.exports = class Roll {
   static DEFAULT_MAX = 100000000000;
 
-  constructor(message, intention, limit=null, messageId=null, messageLink=null, playerId=null, time=Date.now(), value=null, size=null, specialValue=null, formattedValue=null) {
+  constructor(message, intention, limit=null, test=false, ranked=true, messageId=null, messageLink=null, playerId=null, channelId=null, time=Date.now(), value=null, size=null, specialValue=null, formattedValue=null) {
     this.messageId = message ? message.id : messageId
     this.messageLink = message ? makeMessageLink(message) : messageLink
-    this.playerId = message ? message.author.id : playerId
+    this.playerId = playerId ? playerId : (message ? message.author.id : null)
+    this.channelId = channelId ? channelId : (message ? message.channel.id : null)
     this.intention = intention
     this.limit = limit
+    this.test = test
+    this.ranked = !test ? ranked : false
     this.time = time
     this.value = value
     this.size = size
@@ -36,6 +39,7 @@ module.exports = class Roll {
     this.size = Math.max(1, this.repeated, this.pali, this.straight, this.funny);
     this.specialValue = str.slice(-this.size)
     this.formattedValue = Utils.spliceFromEnd(str, this.size, "**") + "**";
+    this.score = Utils.calculateScore(this.repeated, this.pali,this.straight, this.funny, this.specialValue)
   }
 
   valueOf() {

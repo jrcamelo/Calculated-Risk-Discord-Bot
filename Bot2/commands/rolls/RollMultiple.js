@@ -15,7 +15,7 @@ module.exports = class RollMultipleCommand extends BaseRollCommand {
     this.addAttachmentToIntention()
     this.rolls = []
     for (let i = 0; i < this.multiple; i++) {
-      const roll = new Roll(this.message, this.arg)
+      const roll = new Roll(this.message, this.arg, null, this.isTest, this.isRanked)
       roll.doRollWithLimit()
       this.rolls.push(roll)
     }

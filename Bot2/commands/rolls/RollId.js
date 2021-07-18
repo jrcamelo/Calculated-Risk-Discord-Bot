@@ -8,7 +8,7 @@ module.exports = class RollIdCommand extends BaseRollCommand {
 
   async execute() {
     this.addAttachmentToIntention()
-    this.roll = new Roll(this.message, this.arg)
+    this.roll = new Roll(this.message, this.arg, null, this.isTest, this.isRanked)
     this.roll.doRollWithID()
     if (this.saveRollOrReturnWarning()) return
     // TODO: Use Presenter
