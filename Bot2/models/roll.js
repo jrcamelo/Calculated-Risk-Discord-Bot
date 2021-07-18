@@ -4,11 +4,13 @@ const { makeMessageLink } = require("../utils/discord");
 module.exports = class Roll {
   static DEFAULT_MAX = 100000000000;
 
-  constructor(message, intention, limit=null, test=false, ranked=true, messageId=null, messageLink=null, playerId=null, channelId=null, time=Date.now(), value=null, size=null, specialValue=null, formattedValue=null) {
+  constructor(message, intention, gameTime, turnNumber, limit=null, test=false, ranked=true, messageId=null, messageLink=null, playerId=null, channelId=null, time=Date.now(), value=null, size=null, specialValue=null, formattedValue=null) {
     this.messageId = message ? message.id : messageId
     this.messageLink = message ? makeMessageLink(message) : messageLink
     this.playerId = playerId ? playerId : (message ? message.author.id : null)
     this.channelId = channelId ? channelId : (message ? message.channel.id : null)
+    this.gameTime = gameTime
+    this.turnNumber = turnNumber
     this.intention = intention
     this.limit = limit
     this.test = test

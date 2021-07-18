@@ -13,6 +13,19 @@ module.exports = class BaseRollCommand extends BaseCommand {
 
   static MULTIPLE_ROLL_LIMIT = 10
 
+  prepare() {
+    super.prepare()
+    this.setGameAndTurn()
+  }
+
+  setGameAndTurn() {
+    if (this.isTest) return
+    if (this.game != null) {
+      console.log(this.game)
+      this.gameTime = this.game.startedAt
+      this.turnNumber = this.game.turnNumber
+    }
+  }    
 
   addAttachmentToIntention() {
     if (this.attachment) {

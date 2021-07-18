@@ -13,7 +13,7 @@ module.exports = class RollDiceCommand extends BaseRollCommand {
     if (this.sendWarningOnInvalidLimit()) return
 
     this.addAttachmentToIntention()
-    this.roll = new Roll(this.message, this.arg, this.limit, this.isTest, this.isRanked)
+    this.roll = new Roll(this.message, this.arg, this.gameTime, this.turnNumber, this.limit, this.isTest, this.isRanked)
     this.roll.doRollWithLimit()
     if (this.saveRollOrReturnWarning()) return
     this.sendRollResult()
