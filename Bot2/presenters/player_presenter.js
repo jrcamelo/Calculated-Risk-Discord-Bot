@@ -20,7 +20,7 @@ module.exports = class PlayerPresenter {
 
   makeCollapsedDescription(rolls) {
     if (!this.player.alive) return `~~${this.player.username}~~`;
-    return `${this.pingWithFaction()} ${this.describeRollWithLink(rolls)}${this.describeExtraRolls(rolls)}`;
+    return `${this.pingWithFaction()}${this.describeBonus()} ${this.describeRollWithLink(rolls)}${this.describeExtraRolls(rolls)}`;
   }
 
   makeField(rolls) {
@@ -41,6 +41,15 @@ module.exports = class PlayerPresenter {
     }
   }
 
+  makeNoteField() {
+    if (!this.player.note) return
+    return {
+      name: `${this.usernameWithFaction()}`,
+      value: this.player.note,
+      inline: true
+    }
+  }
+
   ping() {
     return `<@!${this.player.id}>`
   }
@@ -56,7 +65,22 @@ module.exports = class PlayerPresenter {
   }
 
   describeBonus() {
-    return this.player.bonus ? ` **+${this.player.bonus}**` : ""
+    if (!this.player.bonus) return ""
+    if (this.playerBonusIsAPositiveNumber()) {
+      return ` +${this.player.bonus}`
+    } else if (this.playerBonusIsANegativeNumber()) {
+      return ` ${this.player.bonus}`
+    } else {
+      return ` <${this.player.bonus}>`
+    }
+  }
+
+  playerBonusIsAPositiveNumber() {
+    return !isNaN(this.player.bonus) && this.player.bonus > 0;
+  }
+
+  playerBonusIsANegativeNumber() {
+    return !isNaN(this.player.bonus) && this.player.bonus < 0;
   }
 
   describeRolledWithLink(rolls) {
@@ -71,7 +95,7 @@ module.exports = class PlayerPresenter {
 
   describeExtraRolls(rolls) {
     if (!rolls || rolls.length < 2) return "";
-    return ` (and +${rolls.length - 1})`;
+    return ` (${rolls.length - 1} more)`;
   }
 
   describeRollWithIntention(rolls) {

@@ -2,31 +2,47 @@ const BaseCommand = require("../base_command")
 
 module.exports = class PlayerAddCommand extends BaseCommand {
   static aliases = ["Add", "Change"]
-  static description = "Adds a player to the game. Use it on an existing player to change their faction name."
-  static argsDescription = "<@User> [New faction name]"
+  static description = "Adds a player to the game. Existing players are renamed. (Accepts many players with | )"
+  static argsDescription = "<@User> [Faction name] | <@User> [Faction name]"
 
   canDelete = false
   masterOnly = true
 
   needsGame = true
   needsMention = true
-
-  ignoreFirstArg = true
   
-  canMention = true
-
-  async execute() {   
-    if (this.mentionedPlayer) {
-      const existingPlayerName = this.mentionedPlayer ? this.mentionedPlayer.name : "[Blank]"
-      if (existingPlayerName == this.arg || "[Blank]")
-        return this.replyDeletable("No point in doing that...")
-      this.turn.renamePlayer(this.mentionedPlayer, this.arg)
-      if (this.saveOrReturnWarning()) return
-      return this.sendReply(`${existingPlayerName} has been changed to ${this.arg || "[Blank]"}`)
-    } else {
-      const newPlayer = this.turn.addPlayer(this.mentionedUser, this.arg)
-      if (this.saveOrReturnWarning()) return
-      return this.sendReply(`${newPlayer.pingWithFaction()} has been added!`)
+  async execute() {
+    let resultMessage = ""
+    const mentionedUsersHash = this.getMentionedUsersAsHash()
+    for (const command of this.getMultipleMentionsAndArgs()) {
+      const { id, mention, arg } = command
+      const player = this.turn.getPlayer({ id })
+      if (player) {
+        resultMessage += this.renamePlayer(mention, arg, player)
+      } else {
+        resultMessage += this.addPlayer(mention, arg, id, mentionedUsersHash)
+      }
     }
+
+    if (this.saveOrReturnWarning()) return
+    return this.sendReply(resultMessage || "No valid players found.")
   }
+
+  renamePlayer(mention, arg, player) {
+    const existingPlayerName = player.name || "[Blank]"
+    console.log(player)
+    if (existingPlayerName == arg || existingPlayerName == "[Blank]") {
+      return `No point in renaming ${mention} as ${arg}...\n`
+    }
+    this.turn.renamePlayer(player, arg)
+    return `${mention} **${existingPlayerName}** has been changed to **${arg || "[Blank]"}**\n`
+  }
+
+  addPlayer(mention, arg, id, users) {
+    const user = users[id]
+    if (!user) return `${mention} is not a valid user!`
+    const newPlayer = this.turn.addPlayer(user, arg)
+    return `${newPlayer.pingWithFaction()} has been added!\n`
+  }
+
 }

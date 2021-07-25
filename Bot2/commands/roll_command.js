@@ -21,7 +21,6 @@ module.exports = class BaseRollCommand extends BaseCommand {
   setGameAndTurn() {
     if (this.isTest) return
     if (this.game != null) {
-      console.log(this.game)
       this.gameTime = this.game.startedAt
       this.turnNumber = this.game.turnNumber
     }

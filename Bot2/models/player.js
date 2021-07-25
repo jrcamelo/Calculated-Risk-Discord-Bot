@@ -27,6 +27,14 @@ module.exports = class Player {
     )
   }
 
+  setBonus(bonus) {
+    this.bonus = bonus || 0;
+  }
+
+  setNote(note) {
+    this.note = note || "";
+  }
+
   // Descriptions
 
   ping() {

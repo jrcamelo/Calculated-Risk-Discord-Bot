@@ -39,12 +39,15 @@ module.exports = class Turn {
   }
 
   getPlayer(discordUser) {
-    return this._players[discordUser.id];    
+    if (!discordUser) return null
+    return this._players[discordUser.id];
   }
+
   addPlayer(discordUser, factionName) {
     this._players[discordUser.id] = new Player(discordUser, factionName)
     return this._players[discordUser.id]
   }
+
   renamePlayer(player, factionName) {
     player.name = factionName
   }

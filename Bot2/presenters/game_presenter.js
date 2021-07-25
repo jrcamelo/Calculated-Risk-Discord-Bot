@@ -23,6 +23,11 @@ module.exports = class GamePresenter {
     return (new TurnPresenter(this.game, turn)).makeStatusEmbedExtras(isExpanded)
   }
 
+  makeNotesEmbed(turnIndex=this.game.turnNumber) {
+    const turn = this.getTurn(turnIndex)
+    return (new TurnPresenter(this.game, turn)).makeNotesEmbed()
+  }
+
   makeLinkListEmbed(turnIndex=this.game.turnNumber, index = 0) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeLinkListEmbed(index)

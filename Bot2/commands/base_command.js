@@ -1,14 +1,15 @@
 const emotes = require("../utils/emotes")
+const discordUtils = require("../utils/discord")
 const Database = require("../database")
 const { MessageEmbed } = require("discord.js")
 
 module.exports = class BaseCommand {
   // Command Settings
   static aliases = ["base"]
-  static name = this.aliases[0]
+  static name = this.constructor.aliases ? this.constructor.aliases[0] : 'base?'
   static description = "Description not set"
   static argsDescription = ""
-  static makeUsage(prefix) { return `${prefix}${this.name} ${this.argsDescription}` }
+  static makeUsage(prefix) { return `${prefix}${this.constructor.name} ${this.constructor.argsDescription}` }
 
   // Restrictions
   needsGame = false
@@ -65,7 +66,7 @@ module.exports = class BaseCommand {
       this.args.shift();
     this.joinArgsIntoArg()
   }
-
+  
   async tryExecute() {
     const validationError = await this.validate()
     if (validationError) {
@@ -95,7 +96,7 @@ module.exports = class BaseCommand {
       return "Something went wrong and the current turn was not found."
 
     if (this.args.length < this.neededArgsAmount)
-      return `Try again with ${this.argsDescription}`
+      return `Try again with ${this.constructor.argsDescription}`
     if (this.needsAttachment && !this.attachment)
       return "You need to attach an image."
     if (this.needsMention && !this.mentionedUser)
@@ -217,7 +218,7 @@ module.exports = class BaseCommand {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*                                    Utils                                  */
+  /*                                    Utils                                   */
   /* -------------------------------------------------------------------------- */ 
   
   save() {
@@ -265,15 +266,27 @@ module.exports = class BaseCommand {
   // Discord Utils
 
   getMentionedUser() {
-    if (this.message.mentions && 
-        this.message.mentions.users &&
-        this.message.mentions.users.size) {
-      return this.message.mentions.users.values().next().value;
-    }
+    const user = discordUtils.getMentionedUser(this.message)
+    if (user) return user
+
     if (this.acceptsPlayerNotInServer && this.turn) {
       return this.turn.getPlayer({id: this.args})
     }
     return null;
+  }
+
+  getMentionedUsers() {
+    console.log(discordUtils.getMentionedUsers(this.message))
+    return discordUtils.getMentionedUsers(this.message)
+  }
+
+  getMentionedUsersAsHash() {
+    const users = discordUtils.getMentionedUsers(this.message)
+    const hash = {}
+    users.forEach(user => {
+      hash[user.id] = user
+    })
+    return hash
   }
   
   getMessageAttachment() {
@@ -281,6 +294,44 @@ module.exports = class BaseCommand {
       return this.message.attachments.values().next().value.url;
     }
     return null;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Multiple                                  */
+  /* -------------------------------------------------------------------------- */ 
+
+  splitArgWithPipes() {
+    const multipleArgs = this.arg.split("|")
+    return multipleArgs.map(arg => { return arg.trim() })
+  }
+
+  getMultipleMentionsAndArgs() {
+    const multiple = []
+    for (let arg of this.splitArgWithPipes()) {
+      const mentionAndArg = discordUtils.getMentionAndArg(arg)
+      if (!mentionAndArg) continue
+      multiple.push(mentionAndArg)
+    }
+    return multiple
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Database                                  */
+  /* -------------------------------------------------------------------------- */ 
+  
+  save() {
+    if (this.game != null) {
+      return this.game.save()
+    }
+    return true
+  }
+
+  saveOrReturnWarning() {
+    if (!this.save()) {
+      console.log("ERROR: Could not save at " + this.message.content)
+      return this.replyEphemeral("There was an error while saving this game.")
+    }
+    return false
   }
 
 }

@@ -90,4 +90,21 @@ module.exports = class TurnPresenter {
     if (description) description = `**${index+1}~${index+10}/${this.turn._rolls.length} - Turn ${this.turn.number}/${this.game.turnNumber}**\n${description}`
     return description || "No rolls"
   }
+
+  makeNotesEmbed(index) {        
+    let embed = new Discord.MessageEmbed()
+        .setTitle(`Notes`)
+        .addFields(this.makeNoteFields())
+        .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
+    return embed
+  }
+
+  makeNoteFields() {
+    const fields = []
+    for (let player of this.turn.playerHashToList()) {
+      const field = (new PlayerPresenter(player)).makeNoteField()
+      if (field) fields.push(field)
+    }
+    return fields
+  }
 }

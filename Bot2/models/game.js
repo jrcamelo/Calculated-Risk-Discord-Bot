@@ -55,6 +55,10 @@ module.exports = class Game {
       return this._database.saveGame(this)
   }
 
+  renameGame(name) {
+    this.name = name || "THE NAMELESS GAME"
+  }
+
   finishGame() {
     this.endedAt = Date.now()
     this.save()
