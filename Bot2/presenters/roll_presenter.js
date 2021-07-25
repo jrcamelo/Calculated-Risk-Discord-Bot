@@ -40,9 +40,13 @@ module.exports = class RollPresenter {
   describeMultipleJustRolled(masterId) {
     if (!this.rolls) return
     const intention = this.rolls[0].intention ? `\n**${this.rolls[0].intention}**` : ""
-    let text = `${this.pingMaster(masterId)}${this.ping()} rolled ${this.rolls.length} times${intention}`
+    let text = `${this.pingMaster(masterId)}${this.ping()} rolled ${this.rolls.length} time${this.rolls.length > 1 ? "s": ""}${intention}`
     for (let i = 0; i < this.rolls.length; i++) {
-      text += `\n${ordinal(i+1)} - ${this.rolls[i].formattedValue}`
+      if (i == 0 && this.rolls.length == 1) {
+        text += `\n${this.rolls[i].formattedValue}`
+      } else {
+        text += `\n${ordinal(i+1)} - ${this.rolls[i].formattedValue}`
+      }
     }
     return text
   }

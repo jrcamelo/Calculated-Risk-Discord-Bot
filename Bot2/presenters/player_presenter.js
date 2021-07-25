@@ -89,7 +89,7 @@ module.exports = class PlayerPresenter {
   }
 
   describeRollWithLink(rolls) {
-    if (!rolls || rolls.length === 0) return "-";
+    if (!rolls || rolls.length === 0) return "";
     return `${new RollPresenter(rolls[0]).makeRollWithLink()}`;
   }
 

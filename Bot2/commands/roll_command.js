@@ -58,11 +58,11 @@ module.exports = class BaseRollCommand extends BaseCommand {
     return false
   }
 
-  sendWarningOnInvalidMultiple() {
+  sendWarningOnInvalidMultiple(maximum=BaseRollCommand.MULTIPLE_ROLL_LIMIT) {
     if (!this.isValidNumber(this.multiple)) {
       this.replyDeletable("<Multiple> is not a valid number.")
       return true
-    } else if (this.multiple > BaseRollCommand.MULTIPLE_ROLL_LIMIT) {
+    } else if (this.multiple > maximum) {
       this.replyDeletable(`Too many rolls, <Multiple> has to be lower than ${BaseRollCommand.MULTIPLE_ROLL_LIMIT}.`)
       return true
     }

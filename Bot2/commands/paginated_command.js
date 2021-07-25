@@ -51,10 +51,12 @@ module.exports = class PaginatedCommand extends BaseCommand {
   }
 
   async addPageReactions() {
-    this.addPrevious();
-    this.addNext();
-    this.addExpand();
-    this.addExtras();
+    if (this.game) {
+      this.addPrevious();
+      this.addNext();
+      this.addExpand();
+      this.addExtras();
+    }
   }
 
   async addNext() {
