@@ -37,6 +37,19 @@ module.exports = class Game {
     if (description) this._turn.description = description
   }
 
+  editOldTurnAndSave(mup, description, number) {
+    if (number === this.turnNumber) {
+      this.editTurn(mup, description)
+    } else {
+      const turn = this.getTurn(number)
+      if (turn) {
+        turn.mup = mup
+        turn.description = description
+        turn.saveOld()
+      }
+    }
+  }
+
   getAllTurns() {
     const turns = []
     for (let i = 0; i <= this.turnNumber; i++) {
@@ -70,7 +83,6 @@ module.exports = class Game {
     this.masterUsername = newMaster.username
   }
 
-  // TODO: Presenter
   pingMaster() {
     return `<@!${this.masterId}>`
   }

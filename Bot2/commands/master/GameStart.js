@@ -1,4 +1,5 @@
 const BaseCommand = require("../base_command")
+const StatusCommand = require("../info/Status")
 const Game = require("../../models/game")
 
 module.exports = class GameStartCommand extends BaseCommand {
@@ -21,7 +22,8 @@ module.exports = class GameStartCommand extends BaseCommand {
     if (this.attachment)
       this.game._turn.mup = this.attachment
     if (this.saveOrReturnWarning()) return
-    // TODO: Make it return an embed
-    this.sendReply(`${this.game.name} has started!`)
+    const status = new StatusCommand(this.message, this.args)
+    await status.prepare()
+    await status.tryExecute()
   }
 }

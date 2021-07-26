@@ -58,7 +58,4 @@ module.exports = class RollDnDCommand extends RollCommand {
     this.multiple = dnd.multiple
     this.modifier = dnd.modifier
   }
-
-  // TODO: Sum the rolls
-  // TODO: Use presenter
 }

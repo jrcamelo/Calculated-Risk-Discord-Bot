@@ -1,4 +1,6 @@
 const BaseCommand = require("../base_command")
+const StatusCommand = require("../info/Status")
+const PingCommand = require("./PlayerPing")
 
 module.exports = class TurnCommand extends BaseCommand {
   static aliases = ["Turn", "Mup"]
@@ -12,7 +14,11 @@ module.exports = class TurnCommand extends BaseCommand {
   async execute() {
     this.game.nextTurn(this.attachment, this.arg);
     if (this.saveOrReturnWarning()) return
-    // TODO: MAKE GAME EMBED
-    this.sendReply(`New turn is ${this.game._turn.number}`)
+    const status = new StatusCommand(this.message, this.args)
+    await status.prepare()
+    await status.tryExecute()
+    const ping = new PingCommand(this.message, this.args)
+    await ping.prepare()
+    await ping.tryExecute()
   }
 }

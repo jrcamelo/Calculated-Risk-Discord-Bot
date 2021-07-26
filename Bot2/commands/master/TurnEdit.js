@@ -1,4 +1,5 @@
 const BaseCommand = require("../base_command")
+const StatusCommand = require("../info/Status")
 
 module.exports = class TurnEditCommand extends BaseCommand {
   static aliases = ["TurnEdit", "MupEdit", "EditMup"]
@@ -14,7 +15,8 @@ module.exports = class TurnEditCommand extends BaseCommand {
   async execute() {
     this.game.editTurn(this.attachment, this.arg);
     if (this.saveOrReturnWarning()) return
-    // TODO: MAKE GAME EMBED
-    this.sendReply(`New turn is ${this.game._turn.number}`)
+    const status = new StatusCommand(this.message, this.args)
+    await status.prepare()
+    await status.tryExecute()
   }
 }

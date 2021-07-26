@@ -38,6 +38,10 @@ module.exports = class Turn {
     return this._database.saveTurn(this)
   }
 
+  saveOld() {
+    return this._database.saveTurn(this, this.number)
+  }
+
   getPlayer(discordUser) {
     if (!discordUser) return null
     return this._players[discordUser.id];

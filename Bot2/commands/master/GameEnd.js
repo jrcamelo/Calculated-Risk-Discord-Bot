@@ -1,8 +1,9 @@
 const BaseCommand = require("../base_command")
+const StatusCommand = require("../info/Status")
 
 module.exports = class GameEndCommand extends BaseCommand {
   static aliases = ["EndGame", "FinishGame", "PeaceMup"]
-  static description = "Finishes the current game." // TODO: And saves it.
+  static description = "Finishes the current game and saves it."
   static argsDescription = ""
 
   canDelete = false
@@ -10,8 +11,9 @@ module.exports = class GameEndCommand extends BaseCommand {
   masterOnly = true
 
   async execute() {
+    const status = new StatusCommand(this.message, this.args)
+    await status.prepare()
+    await status.tryExecute()
     this.game.finishGame()
-    // TODO: Make it return an embed AND SAVE THE GAME
-    this.sendReply(`${this.game.name} is over!`)
   }
 }
