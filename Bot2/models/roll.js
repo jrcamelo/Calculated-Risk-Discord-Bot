@@ -42,6 +42,7 @@ module.exports = class Roll {
     this.specialValue = str.slice(-this.size)
     this.formattedValue = Utils.spliceFromEnd(str, this.size, "**") + "**";
     this.score = Utils.calculateScore(this.repeated, this.pali,this.straight, this.funny, this.specialValue)
+    this.emote = Utils.getEmote(this.specialValue, this.score)
   }
 
   valueOf() {

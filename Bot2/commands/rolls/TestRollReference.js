@@ -22,6 +22,8 @@ module.exports = class TestRollCommand extends RollCommand {
     this.roll.doRollWithLimit()
     this.roll.value = +this.arg
     this.roll.calculateRoll()
-    return this.sendReply(`For reference, if someone rolled that it would look like ${this.roll.formattedValue}`)
+    await this.sendReply(`For reference, if someone rolled that, it would look like ${this.roll.formattedValue}`)
+    if (this.roll.emote)
+      this.reply.react(this.roll.emote)
   }
 }

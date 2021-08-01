@@ -1,3 +1,5 @@
+const emotes = require("./emotes")
+
 function randomNumber(min=0, max=10000000000) {
   return Math.floor(
     Math.random() * (max - min + 1) + min
@@ -53,7 +55,7 @@ function findStraightSize(str) {
   return 0;
 }
 
-FUNNY_NUMBERS = ["69420", "42069", "1488", "1337", "80085", "8008135", "1350", "69", "420"]
+FUNNY_NUMBERS = ["69420", "42069", "1488", "1337", "80085", "8008135", "80084", "69", "420", "1984", "666", "333"]
 function findFunnyNumberSize(str) {
   for (let funny of FUNNY_NUMBERS) {
     if (str.endsWith(funny)) {
@@ -123,6 +125,15 @@ function calculateScore(repeated, palindrome, straight, funny, rollValue) {
   return score
 }
 
+function getEmote(value, score) {
+  const special = emotes.rolls[+value]
+  if (special) return special
+
+  if (score > 1000)
+    return emotes.score[">1000"]
+  return null
+}
+
 module.exports = {
   randomNumber,
   splice,
@@ -136,5 +147,6 @@ module.exports = {
   isReverseStraight,
   lastCharacters,
   getMultipleLimitModifierFromDnD,
-  calculateScore
+  calculateScore,
+  getEmote
 }
