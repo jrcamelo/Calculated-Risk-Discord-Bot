@@ -1,5 +1,3 @@
-const Roll = require("./roll");
-
 module.exports = class Player {
   constructor(discordUser, factionName, id, username, avatar, name, alive, bonus, note, rolled = false, removed = false) {
     this.id = discordUser ? discordUser.id : id;

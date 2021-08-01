@@ -1,4 +1,3 @@
-const Discord = require("discord.js")
 const Turn = require("./turn")
 
 module.exports = class Game {

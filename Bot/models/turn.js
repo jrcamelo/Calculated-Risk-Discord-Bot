@@ -1,7 +1,4 @@
-const Discord = require('discord.js');
 const Player = require("./player");
-const Roll = require("./roll")
-const TextUtils = require("../utils/text")
 
 module.exports = class Turn {
   constructor(_database, mup = "", description = "", number = 0, players = null, rolls = null) {
