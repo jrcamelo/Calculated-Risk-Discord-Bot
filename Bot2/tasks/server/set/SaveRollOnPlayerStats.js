@@ -1,4 +1,4 @@
-const ServerTask = require('../../task_server');
+const ServerTask = require('../task_server');
 
 module.exports = class SaveRollOnPlayerStatsTask extends ServerTask {
   constructor(serverId, options) {

@@ -1,5 +1,5 @@
-const Task = require('./task_base');
-const TaskConductor = require('../handler/taskConductor');
+const Task = require('../task_base');
+const TaskConductor = require('../../handler/taskConductor');
 
 module.exports = class GlobalTask extends Task {
   constructor(options) {

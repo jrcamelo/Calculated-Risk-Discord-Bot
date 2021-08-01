@@ -1,4 +1,4 @@
-const ServerTask = require('../../task_server');
+const ServerTask = require('../task_server');
 
 module.exports = class GetRollLeaderboardTask extends ServerTask {
   constructor(serverId, options) {
