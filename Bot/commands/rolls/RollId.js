@@ -5,6 +5,7 @@ module.exports = class RollIdCommand extends BaseRollCommand {
   static aliases = ["RollID", "RID", "ID"]
   static description = "State your intention and put your life on Discord's hands."
   static argsDescription = "[Intention] {Attachment}"
+  static category = "Player"
 
   async execute() {
     this.addAttachmentToIntention()

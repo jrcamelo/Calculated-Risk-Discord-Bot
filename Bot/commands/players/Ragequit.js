@@ -4,6 +4,7 @@ module.exports = class PlayerRagequitCommand extends BaseCommand {
   static aliases = ["Ragequit", "Leave", "Quit"]
   static description = "Suicide then leave on the next turn."
   static argsDescription = ""
+  static category = "Player"
 
   canDelete = false
   acceptAdmins = false

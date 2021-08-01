@@ -6,6 +6,7 @@ module.exports = class RollDnDCommand extends RollCommand {
   static aliases = ["RollDnD", "RDnD", "DnD"]
   static description = `Roll using DnD notation. If multiple rolls, the result is the sum.`
   static argsDescription = "<Multiple>D<Limit>"
+  static category = "Player"
 
   neededArgsAmount = 0
 

@@ -5,6 +5,7 @@ module.exports = class LinksCommand extends PaginatedCommand {
   static aliases = ["Links", "L"]
   static description = "Shows a list of links to all the rolls."
   static argsDescription = "[Turn]"
+  static category = "Game"
 
   canDelete = true
   needsGame = true

@@ -2,8 +2,9 @@ const BaseCommand = require("../base_command")
 
 module.exports = class PlayerBonusCommand extends BaseCommand {
   static aliases = ["SetBonus", "Bonus", "B"]
-  static description = "Sets a bonus for a player's rolls. (Accepts many players with | )"
+  static description = "Sets a bonus for a players. \nAccepts many players with |"
   static argsDescription = "<@User> <Bonus> | <@User> <Bonus>"
+  static category = "Master"
 
   canDelete = false
   masterOnly = true

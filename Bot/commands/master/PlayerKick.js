@@ -4,6 +4,7 @@ module.exports = class PlayerKickCommand extends BaseCommand {
   static aliases = ["Kick"]
   static description = "Removes a player from the game on the next turn."
   static argsDescription = "<@User>"
+  static category = "Master"
 
   canDelete = false
   masterOnly = true

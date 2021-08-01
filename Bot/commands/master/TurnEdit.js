@@ -3,8 +3,9 @@ const StatusCommand = require("../info/Status")
 
 module.exports = class TurnEditCommand extends BaseCommand {
   static aliases = ["TurnEdit", "MupEdit", "EditMup"]
-  static description = "Updates the current Mup image and description, without changing turn and rolls."
-  static argsDescription = "[Description] {Map Attachment}"
+  static description = "Changes the current Mup image and description."
+  static argsDescription = "[Description] {Image}"
+  static category = "Master"
 
   canDelete = false
 

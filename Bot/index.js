@@ -2,6 +2,7 @@ require('dotenv').config()
 const Discord = require("discord.js");
 const Conductor = require("./handler/conductor")
 const Parser = require("./handler/parser")
+const BotInfo = require("./utils/bot_info")
 
 const client = new Discord.Client({ 
   intents: [
@@ -20,6 +21,7 @@ client.once("ready", async function() {
   await client.user.setActivity(`r.help`, { type: "PLAYING"});
   Parser.readCommands()
   Conductor.enable()
+  BotInfo.set(client)
   console.log("Waiting for commands.")
 })
 

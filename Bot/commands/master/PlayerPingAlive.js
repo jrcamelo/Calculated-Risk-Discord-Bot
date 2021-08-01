@@ -4,6 +4,7 @@ module.exports = class PlayerPingAliveCommand extends BaseCommand {
   static aliases = ["PingAlive"]
   static description = "Pings all players that are still alive."
   static argsDescription = ""
+  static category = "Master"
 
   canDelete = false
   masterOnly = true

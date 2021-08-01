@@ -5,6 +5,7 @@ module.exports = class RollMultipleCommand extends BaseRollCommand {
   static aliases = ["RollX", "RX", "X"]
   static description = `Do multiple rolls. No more than ${BaseRollCommand.MULTIPLE_ROLL_LIMIT}.`
   static argsDescription = "<Multiple> [Intention] {Attachment}"
+  static category = "Player"
 
   neededArgsAmount = 1
 

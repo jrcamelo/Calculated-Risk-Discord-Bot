@@ -5,6 +5,7 @@ module.exports = class GameEndCommand extends BaseCommand {
   static aliases = ["EndGame", "FinishGame", "PeaceMup"]
   static description = "Finishes the current game and saves it."
   static argsDescription = ""
+  static category = "Master"
 
   canDelete = false
   needsGame = true

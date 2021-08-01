@@ -4,6 +4,7 @@ const RollMultipleDiceCommand = require("./RollMultipleDice")
 module.exports = class RollDiceMultipleCommand extends RollMultipleDiceCommand {
   static aliases = ["RollDX", "RDX", "DX"]
   static argsDescription = "<Limit> <Multiple> [Intention] {Attachment}"
+  static category = "Player"
 
   neededArgsAmount = 2
 

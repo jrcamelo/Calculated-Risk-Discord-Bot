@@ -2,9 +2,10 @@ const PaginatedCommand = require("../paginated_command")
 const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class HistoryCommand extends PaginatedCommand {
-  static aliases = ["History", "H", "Rolls", "Rs"]
+  static aliases = ["History", "Rolls", "Rs"]
   static description = "Shows all rolls chronologically."
   static argsDescription = "[Turn]"
+  static category = "Game"
 
   canDelete = true
   needsGame = true

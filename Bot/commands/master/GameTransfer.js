@@ -1,9 +1,10 @@
 const BaseCommand = require("../base_command")
 
 module.exports = class GameTransferCommand extends BaseCommand {
-  static aliases = ["TransferGame", "ChangeHost"]
+  static aliases = ["TransferGame"]
   static description = "Makes a mentioned user the new master of the game."
   static argsDescription = "<@User>"
+  static category = "Master"
 
   canDelete = false
   masterOnly = true

@@ -5,6 +5,7 @@ module.exports = class NotesCommand extends PaginatedCommand {
   static aliases = ["Notes", "N"]
   static description = "Shows the notes of all players."
   static argsDescription = ""
+  static category = "Game"
 
   canDelete = true
   needsGame = true

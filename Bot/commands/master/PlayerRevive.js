@@ -4,6 +4,7 @@ module.exports = class PlayerReviveCommand extends BaseCommand {
   static aliases = ["Revive"]
   static description = "Revives a dead player."
   static argsDescription = "<@User>"
+  static category = "Master"
 
   canDelete = false
   masterOnly = true

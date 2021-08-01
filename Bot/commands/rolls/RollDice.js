@@ -5,6 +5,7 @@ module.exports = class RollDiceCommand extends BaseRollCommand {
   static aliases = ["RollD", "RD", "D"]
   static description = "Roll with a specified limit. 10¹¹ is the maximum value."
   static argsDescription = "<Limit> [Intention] {Attachment}"
+  static category = "Player"
 
   neededArgsAmount = 1
 

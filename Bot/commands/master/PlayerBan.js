@@ -3,7 +3,8 @@ const BaseCommand = require("../base_command")
 module.exports = class PlayerBanCommand extends BaseCommand {
   static aliases = ["Ban", "Purge"]
   static description = "Removes a player from the game."
-  static argsDescription = "<@User>"
+  static argsDescription = "<@User> | Just a User ID if can't ping"
+  static category = "Master"
 
   canDelete = false
   masterOnly = true

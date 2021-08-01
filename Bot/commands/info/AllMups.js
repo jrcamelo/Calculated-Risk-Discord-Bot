@@ -5,6 +5,7 @@ module.exports = class MupsCommand extends PaginatedCommand {
   static aliases = ["AllMups", "Mups"]
   static description = "Shows links for the mups of every turn."
   static argsDescription = ""
+  static category = "Game"
 
   canDelete = true
   needsGame = true

@@ -5,6 +5,7 @@ module.exports = class StatusCommand extends PaginatedCommand {
   static aliases = ["Status", "S", "Game", "G"]
   static description = "Shows the status of the current game."
   static argsDescription = "[Turn]"
+  static category = "Game"
 
   canDelete = true
   needsGame = true

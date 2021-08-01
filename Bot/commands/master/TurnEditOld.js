@@ -2,9 +2,10 @@ const BaseCommand = require("../base_command")
 const StatusCommand = require("../info/Status")
 
 module.exports = class TurnEditOldCommand extends BaseCommand {
-  static aliases = ["EditOld", "OldEdit"]
+  static aliases = ["EditOld"]
   static description = "Updates the description or mup of an old turn."
-  static argsDescription = "<Turn number> [Description] {Map Attachment}"
+  static argsDescription = "<Turn> [Description] {Image}"
+  static category = "Master"
 
   canDelete = false
 

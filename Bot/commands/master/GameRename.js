@@ -4,6 +4,7 @@ module.exports = class GameRename extends BaseCommand {
   static aliases = ["RenameGame", "ChangeTitle", "Title"]
   static description = "Renames the current game."
   static argsDescription = "<New name>"
+  static category = "Master"
 
   needsGame = true
   masterOnly = true

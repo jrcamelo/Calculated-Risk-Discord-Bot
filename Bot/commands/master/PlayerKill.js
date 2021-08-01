@@ -3,8 +3,9 @@ const emotes = require("../../utils/emotes")
 
 module.exports = class PlayerKillCommand extends BaseCommand {
   static aliases = ["Kill"]
-  static description = "Kills a player."
+  static description = "Kills a player. Try r.Revive to correct your mistakes."
   static argsDescription = "<@User>"
+  static category = "Master"
 
   canDelete = false
   masterOnly = true

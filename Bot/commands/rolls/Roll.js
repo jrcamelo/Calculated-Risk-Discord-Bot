@@ -5,6 +5,7 @@ module.exports = class RollCommand extends BaseRollCommand {
   static aliases = ["Roll", "R"]
   static description = "State your intention and put your life on RNG's hands. It will roll a number from 0 to 10¹¹."
   static argsDescription = "[Intention] {Attachment}"
+  static category = "Player"
 
   limit = null
 
