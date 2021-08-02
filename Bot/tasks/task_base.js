@@ -14,10 +14,10 @@ module.exports = class Task {
     }
   }
 
-  prepare() {
+  async prepare() {
   }
 
-  execute() {
+  async execute() {
   }
 
   addToQueue() {

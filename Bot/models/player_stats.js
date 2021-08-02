@@ -1,30 +1,30 @@
 module.exports = class PlayerStats {
 
-  constructor(discordId, serverId, username, avatar, games, wins, rollCount, totalScore, xp, rank) {
-    this.discordId = discordId;
+  static xpToLevel(xp) {
+    return Math.floor(0.05 * Math.sqrt(xp)) + 1;
+  }
+
+  static levelToXp(level) {
+    return ((level + 1)/0.05) ** 2;
+  }
+
+  constructor(id, serverId, username, avatar, games=0, wins=0, totalRolls=0, totalScore=0, totalXp=0) {
+    this.id = id;
     this.serverId = serverId;
     this.username = username;
     this.avatar = avatar;
     this.games = games;
     this.wins = wins;
-    this.rollCount = rollCount;
+    this.totalRolls = totalRolls;
     this.totalScore = totalScore;
-    this.xp = xp;
+    this.totalXp = totalXp;
     this.calculateLevelAndNextXp()
-    this.rank = rank;
   }
 
   calculateLevelAndNextXp() {
-    this.level = this.xpToLevel(this.xp);
-    this.nextXp = this.levelToXp(this.level+1);
-    this.neededXp = this.nextXp - this.xp;
+    this.level = PlayerStats.xpToLevel(this.totalXp);
+    this.nextXp = PlayerStats.levelToXp(this.level+1);
+    this.neededXp = this.nextXp - this.totalXp;
   }
 
-  xpToLevel(xp) {
-    return Math.floor(0.05 * Math.sqrt(xp)) + 1;
-  }
-
-  levelToXp(level) {
-    return ((level + 1)/0.05) ** 2;
-  }
 }

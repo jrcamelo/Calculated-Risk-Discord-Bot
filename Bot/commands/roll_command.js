@@ -1,5 +1,7 @@
 const BaseCommand = require("./base_command")
 const RollPresenter = require("../presenters/roll_presenter")
+const SaveRollOnPlayerStatsTask = require('../tasks/server/set/SaveRollOnPlayerStats')
+const SaveRollOnServerTask = require('../tasks/server/set/SaveRollOnServer')
 
 module.exports = class BaseRollCommand extends BaseCommand {
   canDelete = false
@@ -36,15 +38,23 @@ module.exports = class BaseRollCommand extends BaseCommand {
   }
 
   saveRollOrReturnWarning() {
+    this.saveRollStats(this.roll)
     this.turn.addRoll(this.roll)
     return this.saveOrReturnWarning()
   }
 
   saveMultipleRollsOrReturnWarning() {
     for (const roll of this.rolls) {
+      this.saveRollStats(roll)
       this.turn.addRoll(roll)
     }
     return this.saveOrReturnWarning()
+  }
+
+  async saveRollStats(roll) {
+    if (roll.isTest || !roll.isRanked) return
+    new SaveRollOnPlayerStatsTask(this.serverId, this.player, roll, !this.player.rolled).addToQueue()
+    new SaveRollOnServerTask(this.serverId, roll).addToQueue()
   }
 
   sendWarningOnInvalidLimit() {

@@ -1,5 +1,8 @@
 const Task = require('../task_base');
 const TaskConductor = require('../../handler/taskConductor');
+const GamesDb = require("../../database/nedb/server/games")
+const PlayerDb = require("../../database/nedb/server/players")
+const RollsDb = require("../../database/nedb/server/rolls")
 
 module.exports = class ServerTask extends Task {
   constructor(serverId, options) {
@@ -8,20 +11,22 @@ module.exports = class ServerTask extends Task {
     this.name = 'BASE SERVER TASK!?';
   }
   
-  prepare() {
+  async prepare() {
   }
 
-  execute() {
+  async execute() {
   }
 
-  loadServerGamesDatabase() {
+  loadGameDatabase() {
+    this.games = new GamesDb(this.serverId)
   }
 
   loadPlayerDatabase() {
-    if (!this.playerId) return
+    this.players = new PlayerDb(this.serverId)
   }
 
-  loadServerDatabase() {
+  loadRollDatabase() {
+    this.rolls = new RollsDb(this.serverId)
   }
 
   addToQueue() {

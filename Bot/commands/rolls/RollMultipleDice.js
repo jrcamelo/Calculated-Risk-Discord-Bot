@@ -18,7 +18,7 @@ module.exports = class RollMultipleDiceCommand extends BaseRollCommand {
 
     this.rolls = []
     for (let i = 0; i < this.multiple; i++) {
-      const roll = new Roll(this.message, this.arg, this.gameTime, this.turnNumber, this.limit, this.isTest, this.isRanked)
+      const roll = new Roll(this.message, this.arg, this.gameTime, this.turnNumber, this.limit, this.isTest, this.isRanked, i+1)
       roll.doRollWithLimit()
       this.rolls.push(roll)
     }

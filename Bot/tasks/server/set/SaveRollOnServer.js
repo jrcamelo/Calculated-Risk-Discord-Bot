@@ -1,14 +1,19 @@
 const ServerTask = require('../task_server');
 
 module.exports = class SaveRollOnServerTask extends ServerTask {
-  constructor(serverId, options) {
+  constructor(serverId, roll, options) {
     super(serverId, options);
+    this.roll = roll
     this.name = 'SaveRollOnServer';
   }
   
-  prepare() {
+  async prepare() {
+    if (!this.roll.ranked) return
+    return await this.loadRollDatabase();
   }
 
-  execute() {
+  async execute() {
+    if (!this.roll.ranked) return
+    return await this.rolls.insertRoll(this.roll);
   }
 }

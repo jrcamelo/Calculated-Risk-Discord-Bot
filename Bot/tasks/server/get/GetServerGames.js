@@ -6,9 +6,11 @@ module.exports = class GetServerGamesTask extends ServerTask {
     this.name = 'GetServerGames';
   }
   
-  prepare() {
+  async prepare() {
+    return await this.loadGameDatabase()
   }
 
-  execute() {
+  async execute() {
+    return await this.games.getGamesInServer(this.serverId);
   }
 }

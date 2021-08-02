@@ -21,7 +21,6 @@ module.exports = class Player {
       hash.name,
       hash.alive,
       hash.bonus,
-      hash.note
     )
   }
 

@@ -50,6 +50,7 @@ module.exports = class BaseCommand {
 
   prepareData() {    
     this.user = this.message.author
+    this.serverId = this.message.channel.guild.id
     this.channel = this.message.channel
     this.database = new Database(this.channel)
     if (this.getsGame) this.game = this.database.getGame()

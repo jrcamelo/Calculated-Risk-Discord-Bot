@@ -7,10 +7,10 @@ module.exports = class GlobalTask extends Task {
     this.name = 'BASE GLOBAL TASK!?';
   }
     
-  prepare() {
+  async prepare() {
   }
 
-  execute() {
+  async execute() {
   }
 
   addToQueue() {
