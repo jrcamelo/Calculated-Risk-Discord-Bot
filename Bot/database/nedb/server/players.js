@@ -6,23 +6,23 @@ module.exports = class ServerPlayersDatabase extends ServerDB {
   }
 
   async getPlayer(playerId) {
-    const player = await this.db.findId(playerId, 1)
+    const player = await this.db.findId(playerId)
     if (player) { return player[0] }
   }
 
   async getPlayers(query, sort, index=0, limit=10) {
     const sortQuery = sort || { totalXp: -1 }
-    return this.db.findSorted(query, sortQuery, index, limit)
+    return await this.db.findSorted(query, sortQuery, index, limit)
   }
 
   async getPlayersSortedByWins(index=0, limit=10) {
-    return this.getPlayers({ wins: { $gt: 0 } }, { wins: 1 }, index, limit)
+    return await this.getPlayers({ wins: { $gt: 0 } }, { wins: 1 }, index, limit)
   }
 
   async getPlayerRank(playerId) {
     const player = await this.getPlayer(playerId)
-    if (!player) return 0
-    return this.getPlayerRankFromXp(player.totalXp)
+    if (!player) return await 0
+    return await this.getPlayerRankFromXp(player.totalXp)
   }
 
   async getPlayerRankFromXp(xp) {
@@ -31,34 +31,34 @@ module.exports = class ServerPlayersDatabase extends ServerDB {
   }
 
   async updatePlayer(playerId, updateQuery) {
-    return this.db.update({ id: playerId }, updateQuery)
+    return await this.db.update({ id: playerId }, updateQuery)
   }
 
   async insertPlayer(player) {
-    return this.db.insert(player)
+    return await this.db.insert(player)
   }
 
   async upsertPlayer(player) {
-    return this.db.upsertId(player)
+    return await this.db.upsertId(player)
   }
 
   async updateAvatarAndUsername(playerId, avatar, username) {
-    return this.db.update({ id: playerId }, { avatar, username })
+    return await this.db.update({ id: playerId }, { avatar, username })
   }
 
   async addFirstRollToPlayer(playerId, roll) {
-    return this.db.updateWithQuery({ id: playerId }, { $inc: { totalRolls: 1, totalScore: roll.score, totalXp: roll.score + 100 } })
+    return await this.db.updateWithQuery({ id: playerId }, { $inc: { totalRolls: 1, totalScore: roll.score, totalXp: roll.score + 100 } }) // Business logic
   }
 
   async addRollToPlayer(playerId, roll) {
-    return this.db.updateWithQuery({ id: playerId }, { $inc: { totalRolls: 1, totalScore: roll.score } })
+    return await this.db.updateWithQuery({ id: playerId }, { $inc: { totalRolls: 1, totalScore: roll.score, totalXp: roll.score } })
   }
 
   async addWinToPlayer(playerId) {
-    return this.db.updateWithQuery({ id: playerId }, { $inc: { wins: 1, games: 1, totalXp: 1000 } })
+    return await this.db.updateWithQuery({ id: playerId }, { $inc: { wins: 1, games: 1, totalXp: 1000 } })
   }
 
   async addLossToPlayer(playerId) {
-    return this.db.updateWithQuery({ id: playerId }, { $inc: { games: 1 } })
+    return await this.db.updateWithQuery({ id: playerId }, { $inc: { games: 1 } })
   }
 }

@@ -12,19 +12,19 @@ module.exports = class ServerRollsDatabase extends ServerDB {
 
   async getRolls(query, sort, index=0, limit=10) {
     const sortQuery = sort || { time: -1 }
-    return this.db.findSorted(query, sortQuery, index, limit)
+    return await this.db.findSorted(query, sortQuery, index, limit)
   }
 
   async getRollsSortedByScore(query, sort, index=0, limit=10) {
     const sortQuery = sort || { score: -1 }
-    return this.db.findSorted(query, sortQuery, index, limit)
+    return await this.db.findSorted(query, sortQuery, index, limit)
   }
 
   async insertRoll(roll) {
-    return this.db.insert(roll)
+    return await this.db.insert(roll)
   }
 
   async upsertRoll(roll) {
-    return this.db.upsertId(roll)
+    return await this.db.upsertId(roll)
   }
 }

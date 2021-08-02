@@ -4,10 +4,10 @@ module.exports = class Task {
     this.name = "BASE TASK!?"
   }
 
-  tryExecute() {
+  async tryExecute() {
     try {
-      this.prepare()
-      return this.execute()
+      await this.prepare()
+      return await this.execute()
     } catch (e) {
       console.log(e)
       return null

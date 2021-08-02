@@ -51,7 +51,7 @@ module.exports = class TaskConductor {
 
   static async handleTask(task) {
     try {
-      await task.tryExecute()
+      return await task.tryExecute()
     } catch (e) {
       console.error("Error while running task: " + task.name, e);
     }

@@ -5,7 +5,7 @@ module.exports = class NeDB {
   static BASE_PATH = path.join(process.cwd(), process.env.DATABASE_PATH)
 
   static pathToServer(serverId) {
-    return path.join(NeDB.BASE_PATH, `/${serverId}/`)
+    return path.join(NeDB.BASE_PATH, `/servers/${serverId}/`)
   }
 
   static pathToServerWithFile(serverId, file) {
@@ -25,8 +25,8 @@ module.exports = class NeDB {
     try { return this.db.find(query).limit(limit).skip(skip) } catch(e) { return console.log(e) }
   }
 
-  async findId(id, skip=0, limit=0) {
-    try { return this.db.find({ id }).limit(limit).skip(skip) } catch(e) { return console.log(e) }
+  async findId(id) {
+    try { return this.db.find({ id }) } catch(e) { return console.log(e) }
   }
 
   async findOne(query) {

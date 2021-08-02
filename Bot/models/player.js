@@ -1,3 +1,5 @@
+const PlayerStats = require("./player_stats");
+
 module.exports = class Player {
   constructor(discordUser, factionName, id, username, avatar, name, alive, bonus, note, rolled = false, removed = false) {
     this.id = discordUser ? discordUser.id : id;
@@ -22,6 +24,10 @@ module.exports = class Player {
       hash.alive,
       hash.bonus,
     )
+  }
+
+  stats(serverId) {
+    return PlayerStats.fromPlayer(this, serverId);
   }
 
   setBonus(bonus) {

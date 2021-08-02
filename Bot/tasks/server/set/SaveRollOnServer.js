@@ -8,12 +8,10 @@ module.exports = class SaveRollOnServerTask extends ServerTask {
   }
   
   async prepare() {
-    if (!this.roll.ranked) return
     return await this.loadRollDatabase();
   }
 
   async execute() {
-    if (!this.roll.ranked) return
     return await this.rolls.insertRoll(this.roll);
   }
 }

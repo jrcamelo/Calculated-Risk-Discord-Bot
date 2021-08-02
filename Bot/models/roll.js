@@ -1,3 +1,4 @@
+const RollStats = require("./roll_stats")
 const Utils = require("../utils/rolls")
 const { makeMessageLink } = require("../utils/discord");
 
@@ -15,13 +16,16 @@ module.exports = class Roll {
     this.limit = limit
     this.test = test
     this.ranked = !test ? ranked : false
-    this.multiple = multiple
     this.time = time
     this.value = value
     this.size = size
     this.specialValue = specialValue
     this.formattedValue = formattedValue
-    this.id = id || messageId + (this.multiple ? `-${this.multiple}` : "")
+    this.id = id || this.messageId + (multiple ? `-${multiple}` : "")
+  }
+
+  stats() {
+    return RollStats.fromRoll(this)
   }
 
   doRollWithID() {
@@ -36,14 +40,14 @@ module.exports = class Roll {
   
   calculateRoll() {
     let str = this.value.toString();
-    this.repeated = Utils.findRepeatedSize(str);
-    this.pali = Utils.findPalindromeSize(str);
-    this.straight = Utils.findStraightSize(str);
-    this.funny = Utils.findFunnyNumberSize(str);
-    this.size = Math.max(1, this.repeated, this.pali, this.straight, this.funny);
+    const repeated = Utils.findRepeatedSize(str);
+    const pali = Utils.findPalindromeSize(str);
+    const straight = Utils.findStraightSize(str);
+    const funny = Utils.findFunnyNumberSize(str);
+    this.size = Math.max(1, repeated, pali, straight, funny);
     this.specialValue = str.slice(-this.size)
     this.formattedValue = Utils.spliceFromEnd(str, this.size, "**") + "**";
-    this.score = Utils.calculateScore(this.repeated, this.pali,this.straight, this.funny, this.specialValue)
+    this.score = Utils.calculateScore(repeated, pali, straight, funny, this.specialValue)
     this.emote = Utils.getEmote(this.specialValue, this.score)
   }
 

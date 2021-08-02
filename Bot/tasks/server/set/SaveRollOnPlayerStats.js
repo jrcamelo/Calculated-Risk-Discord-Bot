@@ -1,5 +1,4 @@
 const ServerTask = require('../task_server');
-const PlayerStats = require("../../../models/player_stats");
 
 module.exports = class SaveRollOnPlayerStatsTask extends ServerTask {
   constructor(serverId, player, roll, isFirst, options) {
@@ -12,17 +11,14 @@ module.exports = class SaveRollOnPlayerStatsTask extends ServerTask {
   }
   
   async prepare() {
-    if (!this.roll.ranked) return
     return await this.loadPlayerDatabase()
   }
 
   async execute() {
-    if (!this.roll.ranked) return
-    if (await !this.addRoll()) {
-      const stats = new PlayerStats(this.playerId, this.serverId, this.player.username, this.player.avatar);
-      await this.players.insertPlayer(stats)
-      await this.addRoll()
-    }
+    this.getPlayerRecord()
+    this.insertPlayerIfNotExists()
+    
+    await this.addRoll()
   }
 
   async addRoll() {

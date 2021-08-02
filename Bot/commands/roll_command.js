@@ -2,6 +2,8 @@ const BaseCommand = require("./base_command")
 const RollPresenter = require("../presenters/roll_presenter")
 const SaveRollOnPlayerStatsTask = require('../tasks/server/set/SaveRollOnPlayerStats')
 const SaveRollOnServerTask = require('../tasks/server/set/SaveRollOnServer')
+const SaveMultipleRollsOnPlayerStatsTask = require('../tasks/server/set/SaveMultipleRollsOnPlayerStats')
+const SaveMultipleRollsOnServerTask = require('../tasks/server/set/SaveMultipleRollsOnServer')
 
 module.exports = class BaseRollCommand extends BaseCommand {
   canDelete = false
@@ -38,23 +40,30 @@ module.exports = class BaseRollCommand extends BaseCommand {
   }
 
   saveRollOrReturnWarning() {
-    this.saveRollStats(this.roll)
+    this.saveRollStats()
     this.turn.addRoll(this.roll)
     return this.saveOrReturnWarning()
   }
 
   saveMultipleRollsOrReturnWarning() {
+    this.saveMultipleRollStats()
     for (const roll of this.rolls) {
-      this.saveRollStats(roll)
       this.turn.addRoll(roll)
     }
     return this.saveOrReturnWarning()
   }
 
-  async saveRollStats(roll) {
-    if (roll.isTest || !roll.isRanked) return
-    new SaveRollOnPlayerStatsTask(this.serverId, this.player, roll, !this.player.rolled).addToQueue()
-    new SaveRollOnServerTask(this.serverId, roll).addToQueue()
+  async saveRollStats() {
+    if (this.roll.isTest || !this.isRanked) return
+    new SaveRollOnPlayerStatsTask(this.serverId, this.player.stats(this.serverId), this.roll.stats(), !this.player.rolled).addToQueue()
+    new SaveRollOnServerTask(this.serverId, this.roll.stats()).addToQueue()
+  }
+
+  async saveMultipleRollStats() {
+    if (!this.isRanked) return
+    const stats = this.rolls.map(roll => roll.stats())
+    new SaveMultipleRollsOnPlayerStatsTask(this.serverId, this.player.stats(this.serverId), stats, !this.player.rolled).addToQueue()
+    new SaveMultipleRollsOnServerTask(this.serverId, stats).addToQueue()
   }
 
   sendWarningOnInvalidLimit() {
@@ -100,7 +109,6 @@ module.exports = class BaseRollCommand extends BaseCommand {
       text += "\n\n**All players have rolled this turn!**"
     }
     await this.sendReply(text)
-    console.log(this.roll.emote)
     if (this.roll.emote)
       this.reply.react(this.roll.emote)
     return this.reply
