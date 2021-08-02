@@ -1,8 +1,9 @@
 
 module.exports = class RollStats {
-  constructor(id, messageId, gameTime, turnNumber, time, value, size, specialValue, formattedValue, score) {
+  constructor(id, messageId, channelId, gameTime, turnNumber, time, value, size, specialValue, formattedValue, score) {
     this.id = id;
     this.messageId = messageId;
+    this.channelId = channelId
     this.gameTime = gameTime;
     this.turnNumber = turnNumber;
     this.time = time;
@@ -17,6 +18,7 @@ module.exports = class RollStats {
     return new RollStats(
       roll.id,
       roll.messageId,
+      roll.channelId,
       roll.gameTime,
       roll.turnNumber,
       roll.time,

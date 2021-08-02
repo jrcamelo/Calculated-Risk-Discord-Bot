@@ -10,17 +10,16 @@ module.exports = class PlayerStats {
     return ((level + 1)/0.1) ** 2;
   }
 
-  static fromPlayer(player, serverId) {
-    return new PlayerStats(player.id, serverId, player.username, player.avatar);
+  static fromPlayer(player) {
+    return new PlayerStats(player.id, player.username, player.avatar);
   }
 
   static fromObject(obj) {
-    return new PlayerStats(obj.id, obj.serverId, obj.username, obj.avatar);
+    return new PlayerStats(obj.id, obj.username, obj.avatar);
   }
 
-  constructor(id, serverId, username, avatar, games=0, wins=0, totalRolls=0, totalScore=0, totalXp=0) {
+  constructor(id, username, avatar, games=0, wins=0, totalRolls=0, totalScore=0, totalXp=0) {
     this.id = id;
-    this.serverId = serverId;
     this.username = username;
     this.avatar = avatar;
     this.games = games;

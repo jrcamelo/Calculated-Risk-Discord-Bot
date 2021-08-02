@@ -55,14 +55,14 @@ module.exports = class BaseRollCommand extends BaseCommand {
 
   async saveRollStats() {
     if (this.roll.isTest || !this.isRanked) return
-    new SaveRollOnPlayerStatsTask(this.serverId, this.player.stats(this.serverId), this.roll.stats(), !this.player.rolled).addToQueue()
+    new SaveRollOnPlayerStatsTask(this.serverId, this.player.stats(), this.roll.stats(), !this.player.rolled).addToQueue()
     new SaveRollOnServerTask(this.serverId, this.roll.stats()).addToQueue()
   }
 
   async saveMultipleRollStats() {
     if (!this.isRanked) return
     const stats = this.rolls.map(roll => roll.stats())
-    new SaveMultipleRollsOnPlayerStatsTask(this.serverId, this.player.stats(this.serverId), stats, !this.player.rolled).addToQueue()
+    new SaveMultipleRollsOnPlayerStatsTask(this.serverId, this.player.stats(), stats, !this.player.rolled).addToQueue()
     new SaveMultipleRollsOnServerTask(this.serverId, stats).addToQueue()
   }
 

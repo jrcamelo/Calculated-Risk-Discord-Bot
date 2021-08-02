@@ -26,8 +26,8 @@ module.exports = class Player {
     )
   }
 
-  stats(serverId) {
-    return PlayerStats.fromPlayer(this, serverId);
+  stats() {
+    return PlayerStats.fromPlayer(this);
   }
 
   setBonus(bonus) {
