@@ -1,6 +1,6 @@
 
 module.exports = class GameStats {
-  constructor(id, name, masterId, masterUsername, channel, turnNumber, startedAt, endedAt, players) {
+  constructor(id, name, masterId, masterUsername, channel, turnNumber, startedAt, endedAt, mup, players) {
     this.id = id;
     this.name = name;
     this.masterId = masterId;
@@ -9,6 +9,7 @@ module.exports = class GameStats {
     this.turnNumber = turnNumber;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
+    this.mup = mup;
     this.players = players;
   }
 
@@ -22,6 +23,7 @@ module.exports = class GameStats {
       game.turnNumber,
       game.startedAt,
       game.endedAt,
+      game._turn.mup,
       game._turn.playersToNewTurn(game._turn._players)
     );
   }
