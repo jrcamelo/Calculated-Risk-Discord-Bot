@@ -113,15 +113,14 @@ function getMultipleLimitModifierFromDnD(roll) {
 
 function calculateScore(repeated, palindrome, straight, funny, rollValue) {
   let score = 0;
-  if (repeated) { score += repeated }
-  if (palindrome) { score += palindrome - 1 }
-  if (straight) { score += straight - 1 }
-  if (funny) { score += funny }
+  if (repeated) score += repeated
+  if (palindrome) score += palindrome - 1
+  if (straight) score += straight - 1
+  if (funny) score += funny
   score *= 100
 
-  let rollLastDigit = +(rollValue.slice(-1)) || 0;
+  const rollLastDigit = +(rollValue.slice(-1)) || 10;
   score += rollLastDigit * 10
-  if (rollLastDigit == 0 ) { score += 100 }
   return score
 }
 
