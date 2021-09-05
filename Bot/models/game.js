@@ -11,13 +11,13 @@ module.exports = class Game {
     this.startedAt = startedAt
     this.endedAt = endedAt
     this.uniqueId = `${channel}-${startedAt}`
-    this._turn = _database ? _database.getTurn() || new Turn(_database) : null
+    this._turn = _database ? _database.getTurn(this.turnNumber) || new Turn(_database) : null
   }
 
   loadDatabase(database) {
     this._database = database
     if (!this._turn)
-      this._turn = this._database.getTurn()
+      this._turn = this._database.getTurn(this.turnNumber)
   }
 
   getTurn(number) {

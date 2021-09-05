@@ -12,10 +12,6 @@ class Database {
     this.pathTo = new PathTo(channel)
     this.gameFolderPath = this.pathTo.game()
     this.gameFilePath = this.pathTo.gameFile()
-    this.currentTurnFolderPath = this.pathTo.turnFolder("current")
-    this.currentTurnFilePath = this.pathTo.turnFile("current")
-    this.currentPlayersFilePath = this.pathTo.playersFile("current")
-    this.currentRollsFilePath = this.pathTo.rollsFile("current")
   }
 
   get(path, cls, hash) {
@@ -76,7 +72,7 @@ class Database {
     return true
   }
 
-  getTurn(turnNumber="current") {
+  getTurn(turnNumber) {
     const turn = this.get(this.pathTo.turnFile(turnNumber), Turn)
     if (!turn) return
     turn._database = this
@@ -85,7 +81,7 @@ class Database {
     return turn
   }
 
-  saveTurn(turn, identifier = "current") {
+  saveTurn(turn, identifier) {
     storage.ensurePath(this.gameFolderPath)
     storage.ensurePath(this.pathTo.turnFolder(identifier))
     this.set(this.pathTo.turnFile(identifier), turn, Turn)
@@ -97,33 +93,18 @@ class Database {
   saveNewTurn(turn) {
     if (!storage.exists(this.gameFilePath))
       return console.debug(`SAVETURN: ${this.gameFilePath} does not exist`)
-    this.saveTurn(turn, "new")
     try {
-      this.outdateCurrentTurn()
-    } finally {
-      storage.move(this.pathTo.turnFolder("new"), this.currentTurnFolderPath)
+      this.saveTurn(turn, turn.number)
+    } catch (e) {
+      console.log("SAVETURN: ERROR - Could not save new turn")
+      console.error(e)
+      if (storage.exists(this.pathTo.turnFolder(turn.number))) {
+        storage.delete(this.pathTo.turnFolder(turn.number))
+        console.debug(`SAVETURN: ${this.pathTo.turnFolder(turn.number)} was deleted`)
+      }
+      return false
     }
     return true
   }
-
-  outdateCurrentTurn() {
-    if (storage.exists(this.currentTurnFolderPath)) {
-      const oldNumber = this.readCurrentTurnNumber()
-      if (oldNumber == null) { // Shouldn't happen
-        console.debug(`OUTDATE: ${this.currentTurnFilePath} had null turn number`)
-        storage.remove(this.currentTurnFolderPath)
-      } else {
-        storage.move(this.currentTurnFolderPath, this.pathTo.turnFolder(oldNumber))
-      }
-      return true
-    }
-    return false
-  }
-
-  readCurrentTurnNumber() {
-    const turn = this.get(this.currentTurnFilePath, Turn)
-    if (turn == null) return null
-    return turn.number.toString()
-  }  
 }
 module.exports = Database

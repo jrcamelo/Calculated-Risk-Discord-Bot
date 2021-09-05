@@ -32,7 +32,7 @@ module.exports = class Turn {
   }
 
   save() {
-    return this._database.saveTurn(this)
+    return this._database.saveTurn(this, this.number)
   }
 
   saveOld() {

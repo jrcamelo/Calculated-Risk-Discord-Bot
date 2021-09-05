@@ -37,25 +37,25 @@ class PathTo {
     return path.join(parentPath, GAME_FILE_NAME)
   }
 
-  turnFolder(turn="current") {
+  turnFolder(turn) {
     const parentPath = this.game()
     if (parentPath == null) return null
     return path.join(parentPath, TURN_FOLDER_NAME(turn))
   }
 
-  turnFile(turn="current") {
+  turnFile(turn) {
     const parentPath = this.turnFolder(turn)
     if (parentPath == null) return null
     return path.join(parentPath, TURN_FILE_NAME)
   }
 
-  playersFile(turn="current") {
+  playersFile(turn) {
     const parentPath = this.turnFolder(turn)
     if (parentPath == null) return null
     return path.join(parentPath, PLAYERS_FILE_NAME)
   }
 
-  rollsFile(turn="current") {
+  rollsFile(turn) {
     const parentPath = this.turnFolder(turn)
     if (parentPath == null) return null
     return path.join(parentPath, ROLLS_FILE_NAME)
