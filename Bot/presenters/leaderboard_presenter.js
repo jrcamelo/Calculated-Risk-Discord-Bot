@@ -74,7 +74,6 @@ module.exports = class LeaderboardPresenter {
 
   makePlayerField(player, i) {
     let name = `#${i + 1}`
-    console.log(player)
     let value = `<@!${player.id}>`
     value += `\n**Level: ${PlayerStats.xpToLevel(player.totalXp)}**`
     value += `\nXP: ${player.totalXp}`

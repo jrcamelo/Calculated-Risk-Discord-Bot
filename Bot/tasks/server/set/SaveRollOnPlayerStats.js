@@ -1,9 +1,11 @@
 const ServerTask = require('../task_server');
 const PlayerStats = require('../../../models/player_stats')
+const Emotes = require('../../../utils/emotes')
 
 module.exports = class SaveRollOnPlayerStatsTask extends ServerTask {
-  constructor(serverId, player, roll, isFirst, options) {
+  constructor(serverId, message, player, roll, isFirst, options) {
     super(serverId, options);
+    this.message = message;
     this.playerId = player.id;
     this.player = player
     this.roll = roll;
@@ -25,7 +27,7 @@ module.exports = class SaveRollOnPlayerStatsTask extends ServerTask {
     await this.addRoll()
 
     if (oldLevel !== PlayerStats.xpToLevel(this.playerRecord.totalXp)) {
-      this.addLevelUpMessage()
+      this.addLevelUpReact()
     }
 
     this.updateLuck()
@@ -45,7 +47,7 @@ module.exports = class SaveRollOnPlayerStatsTask extends ServerTask {
     return await this.players.updateLuck(this.playerId, luck)
   }
 
-  async addLevelUpMessage() {
-    
+  async addLevelUpReact() {
+    if (this.message) this.message.react(Emotes.levelUp)
   }
 }

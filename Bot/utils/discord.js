@@ -30,6 +30,10 @@ function makeMessageLink(message) {
   return `https://discord.com/channels/${message.channel.guild.id}/${message.channel.id}/${message.id}`
 }
 
+function makeMessageLinkFromIDs(channelId, messageId) {
+  return `https://discord.com/channels/${channelId}/${messageId}`
+}
+
 function discordPingToUserID(text) {
   let regex = /<@!?(\d+)>/g;
   let match = regex.exec(text);
@@ -63,6 +67,7 @@ function getMentionAndArg(text) {
 
 module.exports = {
   makeMessageLink,
+  makeMessageLinkFromIDs,
   getMentionedUser,
   getMentionedUsers,
   getMessageAttachment,
