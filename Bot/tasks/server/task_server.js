@@ -42,6 +42,7 @@ module.exports = class ServerTask extends Task {
   async insertPlayerIfNotExists() {
     if (!this.players || !this.playerId || !this.player) return
     if (this.playerRecord) return // Exists
-    return await this.players.insertPlayer(this.player)
+    await this.players.insertPlayer(this.player)
+    this.playerRecord = this.player
   }
 }

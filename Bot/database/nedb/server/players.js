@@ -46,12 +46,8 @@ module.exports = class ServerPlayersDatabase extends ServerDB {
     return await this.db.update({ id: playerId }, { avatar, username })
   }
 
-  async addFirstRollToPlayer(playerId, roll) {
-    return await this.db.updateWithQuery({ id: playerId }, { $inc: { totalRolls: 1, totalScore: roll.score, totalXp: roll.score + 100 } }) // Business logic
-  }
-
-  async addRollToPlayer(playerId, roll) {
-    return await this.db.updateWithQuery({ id: playerId }, { $inc: { totalRolls: 1, totalScore: roll.score, totalXp: roll.score } })
+  async addRollToPlayer(playerId, score, xp) {
+    return await this.db.updateWithQuery({ id: playerId }, { $inc: { totalRolls: 1, totalScore: score, totalXp: xp } })
   }
 
   async addWinToPlayer(playerId) {
@@ -60,5 +56,9 @@ module.exports = class ServerPlayersDatabase extends ServerDB {
 
   async addLossToPlayer(playerId) {
     return await this.db.updateWithQuery({ id: playerId }, { $inc: { games: 1 } })
+  }
+
+  async updateLuck(playerId, luck) {
+    return await this.db.update({ id: playerId }, { $set: { luck } })
   }
 }

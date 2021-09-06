@@ -116,7 +116,7 @@ function calculateScore(repeated, palindrome, straight, funny, rollValue) {
   if (repeated) score += repeated
   if (palindrome) score += palindrome - 1
   if (straight) score += straight - 1
-  if (funny) score += funny
+  if (funny) score += funny - 1
   score *= 100
 
   const rollLastDigit = +(rollValue.slice(-1)) || 10;

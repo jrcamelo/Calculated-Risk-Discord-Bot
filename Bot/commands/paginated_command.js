@@ -31,7 +31,7 @@ module.exports = class PaginatedCommand extends BaseCommand {
   }
 
   async editReply() {
-    await this.reply.edit(this.getReply());
+    await this.reply.edit(await this.getReply());
     await this.afterEdit()
   }
 

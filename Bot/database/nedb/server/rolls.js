@@ -15,7 +15,10 @@ module.exports = class ServerRollsDatabase extends ServerDB {
     return await this.db.findSorted(query, sortQuery, index, limit)
   }
 
-  async getRollsSortedByScore(query, sort, index=0, limit=10) {
+  async getRollsSortedByScore(query, sort, index=0, limit=10, playerId) {
+    if (playerId && !query) {
+      query = { playerId }
+    }
     const sortQuery = sort || { score: -1 }
     return await this.db.findSorted(query, sortQuery, index, limit)
   }

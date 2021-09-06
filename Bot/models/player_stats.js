@@ -11,31 +11,40 @@ module.exports = class PlayerStats {
   }
 
   static fromPlayer(player) {
-    return new PlayerStats(player.id, player.username, player.avatar);
+    return new PlayerStats(player.id, player.username);
   }
 
   static fromObject(obj) {
-    return new PlayerStats(obj.id, obj.username, obj.avatar);
+    return new PlayerStats(obj.id, obj.username);
   }
 
-  constructor(id, username, avatar, games=0, wins=0, totalRolls=0, totalScore=0, totalXp=0) {
+  constructor(id, username, games=0, wins=0, totalRolls=0, totalScore=0, totalXp=0, luck) {
     this.id = id;
     this.username = username;
-    this.avatar = avatar;
     this.games = games;
     this.wins = wins;
     this.totalRolls = totalRolls;
     this.totalScore = totalScore;
     this.totalXp = totalXp;
+    this.luck = luck || -1;
+  }
+
+  calculate() {
+    this.setLevelAndNextXp();
+    this.setLuck();
+  }
+
+  getLevel() {
+    return PlayerStats.xpToLevel(this.totalXp);
   }
 
   setLevelAndNextXp() {
-    this.level = PlayerStats.xpToLevel(this.totalXp);
+    this.level = this.getLevel()
     this.nextXp = PlayerStats.levelToXp(this.level+1);
     this.neededXp = this.nextXp - this.totalXp;
   }
   
   setLuck() {
-    this.luck = this.totalScore / this.games;
+    this.luck = this.totalScore / this.totalRolls;
   }
 }

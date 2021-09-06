@@ -1,7 +1,7 @@
 const ServerTask = require('../task_server');
 
 module.exports = class GetPlayerLeaderboardTask extends ServerTask {
-  constructor(serverId, index, limit, options) {
+  constructor(serverId, index, limit, sorting, options) {
     super(serverId, options);
     this.index = index;
     this.limit = limit;
@@ -13,6 +13,6 @@ module.exports = class GetPlayerLeaderboardTask extends ServerTask {
   }
 
   async execute() {
-    return await this.players.getPlayers(null, null, this.index, this.limit);
+    return await this.players.getPlayers(null, this.sorting, this.index, this.limit);
   }
 }
