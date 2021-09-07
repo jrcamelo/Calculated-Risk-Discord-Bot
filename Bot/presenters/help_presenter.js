@@ -72,10 +72,10 @@ module.exports = class HelpPresenter {
 
   makeUtilHelpEmbed() {
     let description = "Risk is a simple game, but thanks to its social nature, it can get a little confusing. "
-    description += "\nThere are some commands, usable by both Players, Masters or onlookers, that can help understand what's happening "
+    description += "\nThere are some commands, usable by Players, Masters and onlookers, that help understand what's happening "
     description += "and check what happened over the course of those 800 messages you didn't read. "
 
-    description += "\n\nYou can also somewhat customize the bot by using some Admin commands so it fits your server needs."
+    // description += "\n\nYou can also somewhat customize the bot by using some Admin commands so it fits your server needs."
 
     description += "\n-"
 
@@ -128,6 +128,9 @@ module.exports = class HelpPresenter {
       Parser.commands["history"],
       Parser.commands["links"],
       Parser.commands["allmups"],
+      Parser.commands["top"],
+      Parser.commands["hall"],
+      Parser.commands["past"],
     ]
   }
 

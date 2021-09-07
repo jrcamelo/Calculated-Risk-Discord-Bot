@@ -10,14 +10,18 @@ module.exports = class ServerGamesDatabase extends ServerDB {
     return await this.db.findSorted({ ...query, ...extraQuery } , sortQuery, index, perPage)
   }
 
-  async getGamesInChannel(channelId, index=0, perPage=1, sort, query) {
+  async getGamesInChannel(channelId, extraQuery={}, index=0, perPage=1, sort) {
     return await this.getGamesInServer(
-      { channelId: channelId }, 
-      query, 
+      { channel: channelId }, 
+      extraQuery, 
       index,
       perPage,
       sort,
     )
+  }
+
+  async getFinishedGames(index=0, perPage=1, sort) {
+    return await this.getGamesInServer({ finishedAt: { $ne: null } }, {}, index, perPage, sort)
   }
 
   async getFinishedGamesInChannel(channelId, index=0, perPage=1, sort) {

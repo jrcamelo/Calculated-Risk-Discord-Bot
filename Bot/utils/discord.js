@@ -69,6 +69,10 @@ function getMentionAndArg(text) {
   return null;
 }
 
+function channelMention(channelId) {
+  return `<#${channelId}>`;
+}
+
 module.exports = {
   makeMessageLink,
   makeMessageLinkFromIDs,
@@ -79,5 +83,6 @@ module.exports = {
   discordPingToUserID,
   userIdtoDiscordPing,
   ignoreDiscordMention,
-  getMentionAndArg
+  getMentionAndArg,
+  channelMention,
 }

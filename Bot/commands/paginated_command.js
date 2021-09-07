@@ -37,11 +37,13 @@ module.exports = class PaginatedCommand extends BaseCommand {
 
   async afterReply() {
     this.prepareToListenForReactions()
-    if (this.canDelete || options.overrideDeletable)
+    if (this.canDelete || options.overrideDeletable) {
       await this.addDeleteReaction()
+    }
     await this.addPageReactions()
-    if (this.reactions && Object.keys(this.reactions).length)
+    if (this.reactions && Object.keys(this.reactions).length) {
       await this.waitReplyReaction()
+    }
   }
 
   async afterEdit() {
@@ -51,12 +53,11 @@ module.exports = class PaginatedCommand extends BaseCommand {
   }
 
   async addPageReactions() {
-    if (this.game) {
-      this.addPrevious();
-      this.addNext();
-      this.addExpand();
-      this.addExtras();
-    }
+    if (!this.valid) return
+    this.addPrevious();
+    this.addNext();
+    this.addExpand();
+    this.addExtras();
   }
 
   async addNext() {

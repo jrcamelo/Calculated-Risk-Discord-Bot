@@ -110,5 +110,11 @@ class Database {
     }
     return true
   }
+
+  getPreviousGame(gameId) {
+    const game = this.get(this.pathTo.previousGameFile(gameId), Game)
+    if (game) game.loadDatabase(this)
+    return game
+  }
 }
 module.exports = Database

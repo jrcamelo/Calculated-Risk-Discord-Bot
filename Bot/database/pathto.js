@@ -73,14 +73,14 @@ class PathTo {
     return path.join(parentPath, PREVIOUS_GAME_LIST_FILE_NAME)
   }
 
-  previousGame(title) {
+  previousGame(id) {
     const parentPath = this.previousGames()
     if (parentPath == null) return null
-    return path.join(parentPath, title)
+    return path.join(parentPath, id)
   }
   
-  previousGameFile(title) {
-    const parentPath = this.previousGame(title)
+  previousGameFile(id) {
+    const parentPath = this.previousGame(id)
     if (parentPath == null) return null
     return path.join(parentPath, GAME_FILE_NAME)
   }

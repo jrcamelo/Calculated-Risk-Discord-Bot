@@ -82,6 +82,9 @@ module.exports = class BaseCommand {
   }
   
   async validate() {
+    const previousShouldLoop = this.shouldLoop
+    this.shouldLoop = false
+    this.valid = false
     if (this.needsGame && this.game == null)
       return "There is no game being hosted in this channel."
     if (this.masterOnly)
@@ -104,6 +107,8 @@ module.exports = class BaseCommand {
       return "You need to mention a user."
     if (this.needsMentionedPlayer && !this.mentionedPlayer)
       return "That user is not playing this game."
+    this.valid = true
+    this.shouldLoop = previousShouldLoop
   }
 
   isArgsBlank() {
@@ -148,10 +153,12 @@ module.exports = class BaseCommand {
 
   async afterReply(options) {
     this.prepareToListenForReactions()
-    if (this.canDelete || options.overrideDeletable)
+    if (this.canDelete || options.overrideDeletable) {
       await this.addDeleteReaction()
-    if (this.reactions && Object.keys(this.reactions).length)
+    }
+    if (this.reactions && Object.keys(this.reactions).length) {
       this.waitReplyReaction()
+    }
   }
 
 
@@ -270,7 +277,7 @@ module.exports = class BaseCommand {
     const user = discordUtils.getMentionedUser(this.message)
     if (user) return user
 
-    if (this.acceptsPlayerNotInServer && this.turn) {
+    if (this.acceptsPlayerNotInServer && this.turn != null) {
       return this.turn.getPlayer({id: this.args})
     }
     return null;
