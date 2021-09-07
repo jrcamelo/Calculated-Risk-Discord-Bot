@@ -4,7 +4,7 @@ const PingCommand = require("./PlayerPing")
 
 module.exports = class TurnCommand extends BaseCommand {
   static aliases = ["Turn", "Mup"]
-  static description = "Starts next turn with an image and description."
+  static description = "Starts next turn with an image and description. You can edit with `TurnEdit`."
   static argsDescription = "[Description] {Image}"
   static category = "Master"
 

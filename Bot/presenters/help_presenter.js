@@ -113,7 +113,6 @@ module.exports = class HelpPresenter {
       Parser.commands["rolld"],
       Parser.commands["rollxd"],
       Parser.commands["testroll"],
-      Parser.commands["ref"],
       Parser.commands["ragequit"],
       Parser.commands["status"],
       Parser.commands["who"],

@@ -7,6 +7,7 @@ module.exports = class HelpCommand extends BaseCommand  {
   static argsDescription = ""
 
   canDelete = true
+  getsGame = false
 
   async execute() {
     this.helpPresenter = new HelpPresenter()

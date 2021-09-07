@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class PlayerSetNoteCommand extends BaseCommand {
   static aliases = ["SetNote", "Note"]
-  static description = "Sets a note for a player. \nAccepts many players with |"
+  static description = "Sets a note for a player, which can be seen by using `Notes`. \nAccepts many players with |"
   static argsDescription = "<@User> <Note> | <@User> <Note>"
   static category = "Master"
 

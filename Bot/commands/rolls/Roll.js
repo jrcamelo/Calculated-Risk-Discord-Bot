@@ -3,7 +3,7 @@ const Roll = require("../../models/roll")
 
 module.exports = class RollCommand extends BaseRollCommand {
   static aliases = ["Roll", "R"]
-  static description = "State your intention and put your life on RNG's hands. It will roll a number from 0 to 10¹¹."
+  static description = "State your intention and pray to RNG. Rolls a number from 1 to 10¹¹."
   static argsDescription = "[Intention] {Attachment}"
   static category = "Player"
 

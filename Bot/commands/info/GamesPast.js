@@ -5,7 +5,7 @@ const OldGamePresenter = require("../../presenters/old_game_presenter")
 
 module.exports = class GamesPastCommand extends PaginatedCommand  {
   static aliases = ["Past", "Old"]
-  static description = "Browse through old games. Try PastPlayer and PastHere as well."
+  static description = "Browse through old games. Try `PastPlayer` and `PastHere` as well."
   static argsDescription = "[@Master] [Title]"
 
   canDelete = true
