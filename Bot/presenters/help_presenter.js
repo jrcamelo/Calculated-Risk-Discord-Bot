@@ -148,8 +148,8 @@ module.exports = class HelpPresenter {
   }
 
   makeCommandDescriptionAndAliases(command) {
-    const args = `${command.argsDescription ? `\nArgs: **${command.argsDescription}**`: ""}`
-    const aliases = `${command.aliases.length > 1 ? `Aliases: ${command.aliases.slice(1).join(", ")}` : ""}`
+    const args = `${command.argsDescription ? `\nArgs: **${"`" + command.argsDescription + "`"}**`: ""}`
+    const aliases = `${command.aliases.length > 1 ? `Aliases: ${"`" + command.aliases.slice(1).join(", ") + "`"}` : ""}`
     return `${command.description}${args}${args && aliases ? " — " : "\n" }${aliases}`
   }
 
