@@ -50,12 +50,16 @@ module.exports = class ServerPlayersDatabase extends ServerDB {
     return await this.db.updateWithQuery({ id: playerId }, { $inc: { totalRolls: 1, totalScore: score, totalXp: xp } })
   }
 
-  async addWinToPlayer(playerId) {
-    return await this.db.updateWithQuery({ id: playerId }, { $inc: { wins: 1, games: 1, totalXp: 1000 } })
+  async addWinToPlayer(playerId, xp) {
+    return await this.db.updateWithQuery({ id: playerId }, { $inc: { wins: 1, games: 1, totalXp: xp } })
   }
 
-  async addLossToPlayer(playerId) {
-    return await this.db.updateWithQuery({ id: playerId }, { $inc: { games: 1 } })
+  async addLossToPlayer(playerId, xp) {
+    return await this.db.updateWithQuery({ id: playerId }, { $inc: { games: 1, totalXp: xp } })
+  }
+
+  async addHostedGameToMaster(playerId, xp) {
+    return await this.db.updateWithQuery({ id: playerId }, { $inc: { hostCount: 1, totalXp: xp } })
   }
 
   async updateLuck(playerId, luck) {

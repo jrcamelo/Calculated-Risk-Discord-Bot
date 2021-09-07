@@ -18,7 +18,7 @@ module.exports = class PlayerStats {
     return new PlayerStats(obj.id, obj.username);
   }
 
-  constructor(id, username, games=0, wins=0, totalRolls=0, totalScore=0, totalXp=0, luck) {
+  constructor(id, username, games=0, wins=0, totalRolls=0, totalScore=0, totalXp=0, luck=-1, hostCount=0) {
     this.id = id;
     this.username = username;
     this.games = games;
@@ -26,7 +26,8 @@ module.exports = class PlayerStats {
     this.totalRolls = totalRolls;
     this.totalScore = totalScore;
     this.totalXp = totalXp;
-    this.luck = luck || -1;
+    this.luck = luck;
+    this.hostCount = hostCount;
   }
 
   calculate() {

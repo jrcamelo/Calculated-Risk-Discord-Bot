@@ -14,6 +14,10 @@ class Database {
     this.gameFilePath = this.pathTo.gameFile()
   }
 
+  getServerId() {
+    return this.pathTo.serverId
+  }
+
   get(path, cls, hash) {
     if (path == null) return null
     if (!storage.exists(path)) 

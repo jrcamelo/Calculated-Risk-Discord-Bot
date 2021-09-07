@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const PlayerPresenter = require('./player_presenter');
 const TurnPresenter = require('./turn_presenter');
+const { makePing } = require('../utils/discord')
 
 module.exports = class GamePresenter {
   constructor(game) {
@@ -61,4 +62,15 @@ module.exports = class GamePresenter {
     return this.game.getTurn(turnIndex)
   }
   
+  makeGGMessage() {
+    let text = ""
+    for (let player of this.getTurn().playerHashToList()) {
+      text += makePing(player) + " "
+    }
+    text += "\n**GG, thanks for playing!**"
+    text += `\n\nGame Master earned **${this.game.calculateMasterXp()}** XP`
+    text += `\nWinners earned **${this.game.calculateWinnersXp()}** XP`
+    text += `\nLosers earned **${this.game.calculateLosersXp()}** XP`
+    return text
+  }
 }

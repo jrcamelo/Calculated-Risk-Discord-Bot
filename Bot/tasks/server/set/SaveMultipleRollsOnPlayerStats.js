@@ -1,4 +1,6 @@
 const ServerTask = require('../task_server');
+const PlayerStats = require('../../../models/player_stats')
+const Emotes = require('../../../utils/emotes')
 
 module.exports = class SaveMultipleRollsOnPlayerStatsTask extends ServerTask {
   constructor(serverId, message, player, multipleRolls, isFirst, options) {
@@ -37,7 +39,7 @@ module.exports = class SaveMultipleRollsOnPlayerStatsTask extends ServerTask {
   async addRoll(roll) {
     let xp = this.isFirst ? 100 : 0
     xp += roll.score + 100
-    this.playerRecord.totalScore += this.roll.score
+    this.playerRecord.totalScore += roll.score
     this.playerRecord.totalXp += xp
     this.playerRecord.totalRolls += 1
     return await this.players.addRollToPlayer(this.playerId, roll.score, xp);

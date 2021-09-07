@@ -3,8 +3,8 @@ const LeaderboardPresenter = require("../../presenters/leaderboard_presenter")
 
 module.exports = class LeaderboardPlayersCommand extends PaginatedCommand {
   static aliases = ["Top", "Ranks"]
-  static description = "Shows the leaderboard of players sorted by XP. Change the sorting with L, W, R."
-  static argsDescription = "[L, Luck, W, Wins, R, Rolls]"
+  static description = "Shows the leaderboard of players sorted by XP. Change the sorting with L, W, R, H"
+  static argsDescription = "[(L)uck, (W)ins, (R)olls, (H)ost]"
   static category = "Player"
 
   canDelete = true
@@ -40,6 +40,10 @@ module.exports = class LeaderboardPlayersCommand extends PaginatedCommand {
       case "R":
       case "ROLLS":
         this.sorting.totalRolls = -1
+        break
+      case "H":
+      case "HOST":
+        this.sorting.hostCount = -1
         break
     }
   }

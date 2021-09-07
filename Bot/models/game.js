@@ -1,4 +1,8 @@
 const Turn = require("./turn")
+const SaveGameOnPlayerStats = require("../tasks/server/set/SaveGameOnPlayerStats")
+const SaveGameOnServer = require("../tasks/server/set/SaveGameOnServer")
+const SaveGameOnMasterStats = require("../tasks/server/set/SaveGameOnMasterStats")
+const PlayerStats = require("./player_stats")
 
 module.exports = class Game {
   constructor(_database, name, masterId, masterUsername, channel, turnNumber = 0, startedAt = Date.now(), endedAt = null) {
@@ -74,7 +78,44 @@ module.exports = class Game {
   finishGame() {
     this.endedAt = Date.now()
     this.save()
+    this.saveOnServer()
+    this.saveOnPlayerStats()
+    this.saveOnMasterStats()
     return this._database.outdateCurrentGame(this)
+  }
+
+  saveOnServer() {
+    const task = new SaveGameOnServer(this._database.getServerId(), this)
+    task.addToQueue()
+  }
+
+  saveOnPlayerStats() {
+    for (const player of this.getTurn().playerHashToList()) {
+      let xp = this.calculateLosersXp()
+      if (player.alive) xp = this.calculateWinnersXp()
+      const task = new SaveGameOnPlayerStats(this._database.getServerId(), player.id, player.username, xp, player.alive)
+      task.addToQueue()
+    }
+  }
+
+  saveOnMasterStats() {
+    const masterObj = { id: this.masterId, username: this.masterUsername }
+    const masterStats = PlayerStats.fromObject(masterObj)
+    const task = new SaveGameOnMasterStats(this._database.getServerId(), masterStats, this.calculateMasterXp())
+    task.addToQueue()
+  }
+
+  calculateWinnersXp() {
+    return this.turnNumber * 50
+  }
+
+  calculateLosersXp() {
+    return this.turnNumber * 10
+  }
+
+  calculateMasterXp() {
+    const playerCount = this.getTurn().playerHashToList().length
+    return this.turnNumber * playerCount * 50
   }
 
   transferMaster(newMaster) {

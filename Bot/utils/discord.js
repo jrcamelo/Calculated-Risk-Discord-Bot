@@ -43,6 +43,10 @@ function discordPingToUserID(text) {
   return null;
 }
 
+function makePing(player) {
+  return `<@${player.id}>`;
+}
+
 function userIdtoDiscordPing(userId) {
   return `<@${userId}>`;
 }
@@ -71,6 +75,7 @@ module.exports = {
   getMentionedUser,
   getMentionedUsers,
   getMessageAttachment,
+  makePing,
   discordPingToUserID,
   userIdtoDiscordPing,
   ignoreDiscordMention,

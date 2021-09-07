@@ -1,8 +1,9 @@
 const BaseCommand = require("../base_command")
 const StatusCommand = require("../info/Status")
+const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class GameEndCommand extends BaseCommand {
-  static aliases = ["EndGame", "FinishGame", "PeaceMup"]
+  static aliases = ["EndGame", "FinishGame", "Peace"]
   static description = "Finishes the current game and saves it."
   static argsDescription = ""
   static category = "Master"
@@ -15,6 +16,8 @@ module.exports = class GameEndCommand extends BaseCommand {
     const status = new StatusCommand(this.message, this.args)
     await status.prepare()
     await status.tryExecute()
-    this.game.finishGame()
+    const presenter = new GamePresenter(this.game)
+    await this.game.finishGame()
+    this.sendReply(presenter.makeGGMessage())
   }
 }

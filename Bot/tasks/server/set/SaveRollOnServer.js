@@ -1,3 +1,4 @@
+const PlayerStats = require('../../../models/player_stats');
 const ServerTask = require('../task_server');
 
 module.exports = class SaveRollOnServerTask extends ServerTask {

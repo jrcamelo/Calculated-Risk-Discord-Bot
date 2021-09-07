@@ -1,4 +1,4 @@
-
+const Turn = require('./turn.js');
 module.exports = class GameStats {
   constructor(id, name, masterId, masterUsername, channel, turnNumber, startedAt, endedAt, mup, players) {
     this.id = id;
@@ -24,7 +24,7 @@ module.exports = class GameStats {
       game.startedAt,
       game.endedAt,
       game._turn.mup,
-      game._turn.playersToNewTurn(game._turn._players)
+      Turn.playersToNewTurn(game._turn._players)
     );
   }
 }
