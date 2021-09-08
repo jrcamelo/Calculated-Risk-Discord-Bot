@@ -154,7 +154,7 @@ module.exports = class BaseCommand {
 
   async afterReply(options) {
     this.prepareToListenForReactions()
-    if (this.canDelete || options.overrideDeletable) {
+    if (this.canDelete || (options && options.overrideDeletable)) {
       await this.addDeleteReaction()
     }
     if (this.reactions && Object.keys(this.reactions).length) {
