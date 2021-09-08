@@ -24,15 +24,15 @@ module.exports = class HelpPresenter {
     description += "\n\n**GAME MASTERS**"
     description += "\nGames are hosted in channels, only one per channel, "
     description += "with the user who started it being the Game Master and getting both the powers and responsibilities that come with the role. "
-    description += "\nFor more info on how to host games, check out the **r.HelpMaster** (r.hm) command. "
+    description += "\nFor more info on how to host games, check out the `r.HelpMaster` (r.hm) command. "
 
     description += "\n\n**PLAYERS**"
     description += "\nPlayers have a way simpler role, where they can join ongoing games, claim a Faction, ally or betray others, "
     description += "and roll to conquer the world, universe or whatever is at stake, or simply meet their demise. "
-    description += "\nFor more info on how to play and roll, check out the **r.HelpPlayer** (r.hp) command. "
+    description += "\nFor more info on how to play, check out the `r.HelpPlayer (r.hp)` and `r.HelpLevel (r.hl)` commands. "
 
     description += "\n\nThere are a lot of other commands that help you keep track of what's happening and has happened in the game, "
-    description += "as well as some Admin related features to customize the bot, so please check out **r.HelpUtil** (r.hu) for more info. "
+    description += "as well as some Admin related features to customize the bot, so please check out `r.HelpUtil` (r.hu) for more info. "
 
     description += "\n\nKeeping this bot up and running is only possible [thanks to the following awesome people](https://www.patreon.com/jrlol3): \n"
     description += this.getPatreonList()
@@ -58,9 +58,9 @@ module.exports = class HelpPresenter {
 
   makePlayerHelpEmbed() {
     let description = "\n\nPlayers claim a Faction in a game, then roll to kill each other, as the Master commands."
-    description += "\nIt is a social strategy game, where you can make allies, betray them, apply big brain tactics and roll high enough to decimate your enemies."
+    description += "\nIt is a social strategy game, where you can make allies, betray them, apply big brain tactics and roll high to decimate your enemies."
     
-    description += "\n\nEvery roll has a score, and there is a leaderboard for rolls in the server. The first roll each turn gives you XP according to its score."
+    description += "\n\nCheck `HelpLevel` for leaderboard and meta related commands."
 
     description += "\n-"
 
@@ -83,6 +83,23 @@ module.exports = class HelpPresenter {
       .setTitle("Utilities and Admin commands")
       .setDescription(description)
       .addFields(this.makeCommandFields(this.getUtilCommands()))
+  }
+
+  makeLevelHelpEmbed() {
+    let description = "By playing Risk, you can level up and set records. "
+    description += "\nThere's a Leaderboard of best players, a Hall of Rolls for the highest scored rolls in history, "
+    description += "and a neat Profile Card with some handy stats. "
+
+    description += "\n\nYou earn XP by rolling and winning games, or by being a Master."
+
+    description += "\n\nAh, and don't forget your mistakes are recorded forever, as every game is stored for eternity and can be checked at will. "
+
+    description += "\n-"
+
+    return this.makeBaseHelpEmbed()
+      .setTitle("Meta related commands")
+      .setDescription(description)
+      .addFields(this.makeCommandFields(this.getLevelCommands()))
   }
 
   getMasterCommands() {
@@ -115,7 +132,6 @@ module.exports = class HelpPresenter {
       Parser.commands["testroll"],
       Parser.commands["ragequit"],
       Parser.commands["status"],
-      Parser.commands["who"],
     ]
   }
 
@@ -127,6 +143,12 @@ module.exports = class HelpPresenter {
       Parser.commands["history"],
       Parser.commands["links"],
       Parser.commands["allmups"],
+    ]
+  }
+
+  getLevelCommands() {
+    return [
+      Parser.commands["profile"],
       Parser.commands["top"],
       Parser.commands["hall"],
       Parser.commands["past"],

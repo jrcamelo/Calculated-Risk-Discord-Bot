@@ -50,7 +50,8 @@ module.exports = class BaseCommand {
 
   prepareData() {    
     this.user = this.message.author
-    this.serverId = this.message.channel.guild.id
+    this.server = this.message.channel.guild
+    this.serverId = this.server.id
     this.channel = this.message.channel
     this.database = new Database(this.channel)
     if (this.getsGame) this.game = this.database.getGame()
@@ -159,6 +160,15 @@ module.exports = class BaseCommand {
     if (this.reactions && Object.keys(this.reactions).length) {
       this.waitReplyReaction()
     }
+  }
+
+  async sendImageMessage(image) {
+    const options = {
+      files: [image]
+    }
+    this.reply = await this.doSendReply("", options)
+    await this.afterReply()
+    return this.reply
   }
 
 

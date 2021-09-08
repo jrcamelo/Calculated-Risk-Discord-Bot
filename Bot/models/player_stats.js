@@ -3,11 +3,11 @@ module.exports = class PlayerStats {
   // Level 20 at 40000 XP
   // Average of 100 XP per roll + 100 XP per Mup = 200 Rolls
   static xpToLevel(xp) {
-    return Math.floor(0.1 * Math.sqrt(xp)) + 1;
+    return Math.floor(0.1 * Math.sqrt(xp));
   }
 
   static levelToXp(level) {
-    return ((level + 1)/0.1) ** 2;
+    return ((level)/0.1) ** 2;
   }
 
   static fromPlayer(player) {
@@ -16,6 +16,20 @@ module.exports = class PlayerStats {
 
   static fromObject(obj) {
     return new PlayerStats(obj.id, obj.username);
+  }
+
+  static fromDb(stats) {
+    return new PlayerStats(
+      stats.id, 
+      stats.username, 
+      stats.games, 
+      stats.wins, 
+      stats.totalRolls, 
+      stats.totalScore, 
+      stats.totalXp, 
+      stats.luck, 
+      stats.hostCount
+    ).calculate();
   }
 
   constructor(id, username, games=0, wins=0, totalRolls=0, totalScore=0, totalXp=0, luck=-1, hostCount=0) {
@@ -33,6 +47,7 @@ module.exports = class PlayerStats {
   calculate() {
     this.setLevelAndNextXp();
     this.setLuck();
+    return this;
   }
 
   getLevel() {
@@ -41,8 +56,8 @@ module.exports = class PlayerStats {
 
   setLevelAndNextXp() {
     this.level = this.getLevel()
-    this.nextXp = PlayerStats.levelToXp(this.level+1);
-    this.neededXp = this.nextXp - this.totalXp;
+    this.nextLevelXp = PlayerStats.levelToXp(this.level+1) - PlayerStats.levelToXp(this.level)
+    this.currentXp = this.totalXp - PlayerStats.levelToXp(this.level);
   }
   
   setLuck() {
