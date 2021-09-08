@@ -13,13 +13,13 @@ module.exports = class GifMaker {
   }
 
   getFolderPath() {
-    const path = `./storage/servers/${this.serverId}/gifs/${this.gameId}/`
+    const path = `./storage/gifs/${this.serverId}/${this.gameId}/`
     fse.ensureDirSync(path)
     return path
   }
 
   getDownloadFolderPath() {
-    const path = `./storage/servers/${this.serverId}/gifs/${this.gameId}/downloads/`
+    const path = `./storage/gifs/${this.serverId}/${this.gameId}/downloads/`
     fse.ensureDirSync(path)
     return path
   }
@@ -29,12 +29,10 @@ module.exports = class GifMaker {
   }
 
   async makeGif(callback) {
-    console.log("Downloading...")
+    console.log(`Making gif for ${this.serverId} ${this.gameId}...`)
     await this.downloadMups()
-    console.log("Making frames...")
     await this.makeGifFrames()
     if (this.gifFrames.length === 0) return callback()
-    console.log("Writing gif...")
     await this.writeGif()
     console.log("Done!")
     await callback(this.getGifPath())
