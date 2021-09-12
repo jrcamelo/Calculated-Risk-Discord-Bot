@@ -1,7 +1,7 @@
 const PaginatedCommand = require("../paginated_command.js");
 const OldGamePresenter = require("../../presenters/old_game_presenter")
-// const Database = require("../../database/")
-// const StatusCommand = require("./Status")
+const OldStatusCommand = require("../info/OldStatus")
+const { idToChannelAndGameId } = require("../../utils/text")
 
 module.exports = class GamesPastCommand extends PaginatedCommand  {
   static aliases = ["Past", "Old"]
@@ -11,7 +11,7 @@ module.exports = class GamesPastCommand extends PaginatedCommand  {
   canDelete = true
   shouldLoop = true
   getsGame = false
-  // hasExpand = true
+  hasExpand = true
 
   async execute() {
     this.index = 0
@@ -25,8 +25,8 @@ module.exports = class GamesPastCommand extends PaginatedCommand  {
   
     this.presenter = new OldGamePresenter(this.serverId, this.step)
     await this.getOldGames(this.arg, masterId)
-    this.ceiling = this.presenter.result ? this.presenter.result.length : 0
-    if (!this.ceiling) {
+    this.ceiling = this.presenter.result ? this.presenter.result.length - 1 : 0
+    if (this.ceiling <= 0) {
       this.message.channel.send("No games found in this server.")
       return
     }
@@ -41,21 +41,20 @@ module.exports = class GamesPastCommand extends PaginatedCommand  {
     return this.presenter.makeEmbed(this.index)
   }
   
-  // async doExpand(_collected, command) {
-  //   await command.sendGameDetails()
-  //   await command.deleteReply(_collected, command)
-  // }
+  async doExpand(_collected, command) {
+    await command.sendGameDetails()
+    await command.deleteReply(_collected, command)
+  }
 
-  // async sendGameDetails() {
-  //   const oldGame = this.presenter.result[this.index]
-  //   if (!oldGame) return
-  //   const split = oldGame.id.split("-")
-  //   const channelId = split[0]
-  //   const gameId = split[1]
-  //   const channelObject = { id: channelId, guild: { id: this.serverId } }
-  //   const database = new Database(channelObject)
-  //   const game = await database.getPreviousGame(gameId)
-  //   if (!game) return
-  //   game.getTurn()
-  // }
+  async sendGameDetails() {
+    const oldGame = this.presenter.result[this.index]
+    if (!oldGame) return
+    const oldIds = idToChannelAndGameId(oldGame.id)
+    if (!oldIds) return
+    const { channelId, gameId } = oldIds
+
+    const oldStatus = new OldStatusCommand(this.message, channelId, this.serverId, gameId)
+    await oldStatus.prepare()
+    await oldStatus.tryExecute()
+  }
 }

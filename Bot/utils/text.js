@@ -14,9 +14,18 @@ function timestampToLocale(timestamp) {
   return new Date(timestamp).toLocaleDateString();
 }
 
+function idToChannelAndGameId(id) {
+  const split = id.split("-");
+  return {
+    channelId: split[0],
+    gameId: split[1]
+  };
+}
+
 module.exports = {
   cleanLineBreaks,
   timestampToDate,
   timestampToDateTime,
-  timestampToLocale
+  timestampToLocale,
+  idToChannelAndGameId,
 }

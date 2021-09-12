@@ -9,7 +9,6 @@ module.exports = class GamesPastPlayerCommand extends GamesPastCommand  {
   shouldLoop = true
   getsGame = false
   needsMention = true
-  // hasExpand = true
 
   async getOldGames(_title, userId) {
     await this.presenter.getOldGamesWithPlayer(userId)

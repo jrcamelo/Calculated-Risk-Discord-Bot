@@ -43,6 +43,7 @@ module.exports = class BaseCommand {
 
   prepare() {
     this.prepareData()
+    this.prepareGameData()
     this.prepareArgs()
     if (this.shouldCleanArgsLineBreaks)
       this.cleanArgsLineBreaks()
@@ -52,6 +53,9 @@ module.exports = class BaseCommand {
     this.user = this.message.author
     this.server = this.message.channel.guild
     this.serverId = this.server.id
+  }
+
+  prepareGameData() {
     this.channel = this.message.channel
     this.database = new Database(this.channel)
     if (this.getsGame) this.game = this.database.getGame()
