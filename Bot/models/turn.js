@@ -1,11 +1,13 @@
 const Player = require("./player");
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, players = null, rolls = null) {
+  constructor(_database, mup = "", description = "", number = 0, poll = "", votes = {}, players = null, rolls = null) {
     this._database = _database
     this.description = description
     this.mup = mup
     this.number = number
+    this.poll = poll
+    this.votes = votes
     this._players = players || {}
     this._rolls = rolls || []
   }
@@ -90,6 +92,14 @@ module.exports = class Turn {
 
   everyoneHasRolled() {
     return this.playerHashToList().every(player => player.rolled)
+  }
+
+  setPlayerVote(player, vote) {
+    this.votes[player.id] = vote
+  }
+
+  setPoll(poll) {
+    this.poll = poll
   }
 
   // TODO: Move those to Presenter
