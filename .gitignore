@@ -5,3 +5,5 @@
 */commands-/
 /testing/
 */temporary/*
+*/migration/*.json
+*/migration/storage/

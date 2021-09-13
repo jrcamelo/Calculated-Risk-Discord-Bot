@@ -18,6 +18,7 @@
   "homepage": "https://github.com/jrcamelo/Calculated-Risk-Discord-Bot#readme",
   "description": "",
   "dependencies": {
+    "base32": "0.0.6",
     "class-transformer": "^0.4.0",
     "discord.js": "^12.5.3",
     "dotenv": "^9.0.1",
@@ -29,6 +30,7 @@
     "nedb-promises": "^5.0.0",
     "ordinal": "^1.0.3",
     "reflect-metadata": "^0.1.13",
+    "sanitize-filename": "^1.6.3",
     "wait-queue": "^1.1.4"
   }
 }
