@@ -15,7 +15,7 @@ module.exports = class RollPresenter {
   }
 
   makeRollWithIntention() {
-    const intention = this.roll.intention ? ` -${this.roll.intention.substring(0, 128)}` : ''
+    const intention = this.roll.intention ? ` - ${this.roll.intention.substring(0, 128)}` : ''
     return `[${this.roll.formattedValue}](${this.roll.messageLink})${intention}`
   }
 

@@ -2,15 +2,14 @@ const PaginatedCommand = require("../paginated_command")
 const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class StatusCommand extends PaginatedCommand {
-  static aliases = ["Status", "S", "Game", "G"]
-  static description = "Shows the status of the current game."
+  static aliases = ["Status", "Game"]
+  static description = "Shows the status of the current game. Try `S` or `G` for a shorter version."
   static argsDescription = "[Turn]"
   static category = "Game"
 
   canDelete = true
   needsGame = true
-  hasExpand = true
-  isExpanded = false
+  isExpanded = true
   hasExtras = true
 
   async execute() {

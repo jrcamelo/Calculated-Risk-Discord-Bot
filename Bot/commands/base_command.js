@@ -188,18 +188,20 @@ module.exports = class BaseCommand {
   }
 
   async waitReplyReaction() {
-    const time = this.ephemeral ? 30000 : 60000
+    const time = this.ephemeral ? 10000 : 30000
     const options = { max: 1, time, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
         this.reactions[collected.first().emoji](collected.first(), this); 
       })
       .catch(collected => {
-        if (this.ephemeral) {
-          this.reply.delete()
-        } else {
-          this.reply.reactions.removeAll();
-        }
+        try {
+          if (this.ephemeral) {
+            this.reply.delete()
+          } else {
+            this.reply.reactions.removeAll();
+          }
+        } catch(e) { } // Message was already deleted
       });
   }
 

@@ -1,7 +1,7 @@
 const Player = require("./player");
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, poll = "", votes = {}, players = null, rolls = null) {
+  constructor(_database, mup = "", description = "", number = 0, players = null, rolls = null, poll = "", votes = {}) {
     this._database = _database
     this.description = description
     this.mup = mup
