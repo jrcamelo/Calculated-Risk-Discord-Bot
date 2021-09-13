@@ -1,4 +1,4 @@
-const Jimp = require('Jimp')
+const Jimp = require('jimp')
 const fse = require('fs-extra')
 const GetPlayerStats = require('../tasks/server/get/GetPlayerStats')
 const PlayerStats = require('../models/player_stats')
