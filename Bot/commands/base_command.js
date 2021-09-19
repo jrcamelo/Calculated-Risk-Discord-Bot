@@ -94,8 +94,8 @@ module.exports = class BaseCommand {
       return "There is no game being hosted in this channel."
     if (this.masterOnly)
       if (!this.isMaster() 
-          || (this.acceptModerators && !this.isModerator())
-          || (this.acceptAdmins && !this.isAdmin()))
+          && !(this.acceptModerators && this.isModerator())
+          && !(this.acceptAdmins && this.isAdmin()))
         return "You are not allowed to use this command."
     if (this.playerOnly && this.player == null)
       return "You are not playing this game."
