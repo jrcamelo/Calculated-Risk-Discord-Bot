@@ -188,7 +188,7 @@ module.exports = class BaseCommand {
   }
 
   async waitReplyReaction() {
-    const time = this.ephemeral ? 10000 : 30000
+    const time = this.ephemeral ? 10000 : 60000
     const options = { max: 1, time, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
