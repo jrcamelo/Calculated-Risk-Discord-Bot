@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class SlotRemoveCommand extends BaseCommand {
   static aliases = ["FactionRemove", "FRemove", "SlotRemove"]
-  static description = "Removes a faction slot. Accepts multiple factions with |"
+  static description = "Removes a faction slot. Accepts |"
   static argsDescription = "<Faction> | <Faction>"
   static category = "Master"
 

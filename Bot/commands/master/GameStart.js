@@ -4,7 +4,7 @@ const Game = require("../../models/game")
 
 module.exports = class GameStartCommand extends BaseCommand {
   static aliases = ["StartGame", "NewGame", "Host"]
-  static description = "Starts a new game in this channel."
+  static description = "Starts a new game in this channel. Rename it with `RenameGame`."
   static argsDescription = "<Title of the Game> {First Mup}"
   static category = "Master"
 

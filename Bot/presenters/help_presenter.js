@@ -109,13 +109,12 @@ module.exports = class HelpPresenter {
       Parser.commands["kill"],
       Parser.commands["turn"],
       Parser.commands["turnedit"],
+      Parser.commands["faction"],
       Parser.commands["setbonus"],
       Parser.commands["setnote"],
       Parser.commands["ping"],
       Parser.commands["kick"],
       Parser.commands["purge"],
-      Parser.commands["editold"],
-      Parser.commands["transfergame"],
       Parser.commands["renamegame"],
     ]
   }
@@ -136,7 +135,6 @@ module.exports = class HelpPresenter {
 
   getUtilCommands() {
     return [
-      Parser.commands["status"],
       Parser.commands["who"],
       Parser.commands["notes"],
       Parser.commands["history"],
