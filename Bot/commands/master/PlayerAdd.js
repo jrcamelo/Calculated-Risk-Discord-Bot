@@ -34,8 +34,8 @@ module.exports = class PlayerAddCommand extends BaseCommand {
     if (existingPlayerName == arg || existingPlayerName == "[Blank]") {
       return `No point in renaming ${mention} as ${arg}...\n`
     }
-    this.turn.renamePlayer(player, arg)
-    return `${mention} **${existingPlayerName}** has been changed to **${arg || "[Blank]"}**\n`
+    const renamedPlayer = this.turn.renamePlayer(player, arg)
+    return `${mention} **${existingPlayerName}** has been changed to **${renamedPlayer.name || "[Blank]"}**\n`
   }
 
   addPlayer(mention, arg, id, users) {

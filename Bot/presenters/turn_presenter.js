@@ -12,6 +12,7 @@ module.exports = class TurnPresenter {
     let embed = new Discord.MessageEmbed()
         .setTitle(`${this.game.name}`)
         .addFields(this.makeFields())
+        .addFields(this.makeFactionFields())
         .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
         .setImage(this.turn.mup)
     return embed
@@ -20,6 +21,7 @@ module.exports = class TurnPresenter {
   makeStatusEmbedCollapsed() {
     let embed = new Discord.MessageEmbed()
       .setDescription(this.makeDescription(false))
+      .addFields(this.makeFactionFields())
       .setFooter(`Turn ${this.turn.number}/${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
       .setThumbnail(this.turn.mup)
     return embed
@@ -47,6 +49,7 @@ module.exports = class TurnPresenter {
     let embed = new Discord.MessageEmbed()
         .setTitle(`${this.game.name}`)
         .addFields(this.makeFieldsWithIntentions())
+        .addFields(this.makeFactionFields())
         .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
     isExpanded ? embed.setImage(this.turn.mup) : embed.setThumbnail(this.turn.mup)
     return embed
@@ -59,6 +62,19 @@ module.exports = class TurnPresenter {
       fields.push((new PlayerPresenter(player)).makeFieldWithIntention(rolls[player.id]))
     }
     return fields
+  }
+
+  makeFactionFields() {
+    const factions = []
+    for (let i = 0; i < this.turn.factionSlots.length; i++) {
+      const faction = this.turn.factionSlots[i];
+      factions.push(`${i+1}. ${faction}`)
+    }
+    if (factions.length > 0) {
+      return [{name: "Unclaimed Factions", value: factions.join("\n")}]
+    } else {
+      return []
+    }
   }
 
   makeLinkListEmbed(index) {

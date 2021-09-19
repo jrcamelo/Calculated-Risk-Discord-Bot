@@ -16,17 +16,17 @@ module.exports = class ClaimCommand extends BaseCommand {
       const blank = "[Blank]"
       const ping = this.player.ping()
       const existingPlayerName = this.player.name || blank
-      this.turn.renamePlayer(this.player, this.arg)
+      const renamedPlayer = this.turn.renamePlayer(this.player, this.arg)
       if (this.saveOrReturnWarning()) return
       const newName = this.arg || blank
       if (existingPlayerName == blank && newName == blank) {
-        return this.sendReply(`${ping} is already in this game`)
-      } else if (existingPlayerName == newName) {
-        return this.sendReply(`${ping}'s faction is already ${existingPlayerName}`)
+        return this.sendReply(`You are already playing this game`)
+      } else if (existingPlayerName == renamedPlayer.name) {
+        return this.sendReply(`Your faction is already ${renamedPlayer.name}`)
       } else if (newName == blank) {
-        return this.sendReply(`${ping}'s faction name has been removed`)
+        return this.sendReply(`Your faction name has been removed`)
       } else {
-        return this.sendReply(`${ping}'s faction has been renamed to ${newName}`)
+        return this.sendReply(`Your faction has been renamed to ${renamedPlayer.name}`)
       }
     } else {
       this.turn.addPlayer(this.user, this.arg)

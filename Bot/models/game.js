@@ -31,7 +31,7 @@ module.exports = class Game {
 
   nextTurn(mup, description) {
     this.turnNumber += 1
-    this._turn = Turn.fromPreviousTurn(this._database, this._turn, mup, description)
+    this._turn = Turn.fromPreviousTurn(this._database, this._turn, mup, description, this._turn.slots)
     this._database.saveNewTurn(this._turn)
   }
 

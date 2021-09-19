@@ -1,24 +1,26 @@
 const Player = require("./player");
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, players = null, rolls = null, poll = "", votes = {}) {
+  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, rolls = null, poll = "", votes = null) {
     this._database = _database
     this.description = description
     this.mup = mup
     this.number = number
     this.poll = poll
-    this.votes = votes
+    this.votes = votes || {}
+    this.factionSlots = factionSlots || []
     this._players = players || {}
     this._rolls = rolls || []
   }
 
-  static fromPreviousTurn(_database, previous, mup, description) {
+  static fromPreviousTurn(_database, previous, mup, description, factionSlots) {
     return new Turn(
       _database,
       mup,
       description,
       (previous.number || 0) + 1,
       this.playersToNewTurn(previous._players),
+      factionSlots,
     )
   }
   
@@ -47,12 +49,24 @@ module.exports = class Turn {
   }
 
   addPlayer(discordUser, factionName) {
-    this._players[discordUser.id] = new Player(discordUser, factionName)
+    const faction = this.getAndRemoveFactionIfExists(factionName)
+    this._players[discordUser.id] = new Player(discordUser, faction)
     return this._players[discordUser.id]
   }
 
   renamePlayer(player, factionName) {
-    player.name = factionName
+    player.name = this.getAndRemoveFactionIfExists(factionName)
+    return player
+  }
+
+  getAndRemoveFactionIfExists(faction) {
+    const existingFaction = this.getFaction(faction)
+    if (existingFaction) {
+      this.removeFaction(existingFaction)
+      return existingFaction
+    } else {
+      return faction
+    }
   }
 
   kickPlayer(player) {
@@ -100,6 +114,31 @@ module.exports = class Turn {
 
   setPoll(poll) {
     this.poll = poll
+  }
+
+  addFaction(faction) {
+    this.factionSlots.push(faction)
+  }
+
+  getFaction(faction) {
+    if (!isNaN(faction) && +faction > 0) {
+      if (faction <= this.factionSlots.length) {
+        return this.factionSlots[faction - 1]
+      }
+    }
+    return this.factionSlots.find(slot => slot.match(faction))
+  }
+
+  factionExists(faction) {
+    return this.factionSlots.includes(faction)
+  }
+
+  removeFaction(faction) {
+    this.factionSlots = this.factionSlots.filter(slot => slot != faction)
+  }
+
+  clearFactions() {
+    this.factionSlots = []
   }
 
   // TODO: Move those to Presenter

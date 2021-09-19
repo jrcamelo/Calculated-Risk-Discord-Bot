@@ -125,29 +125,25 @@ module.exports = class PaginatedCommand extends BaseCommand {
   // Reactions
   async addNextReactionToReply(callback) {
     if (this.reply != null) {
-      await this.reply.react(emotes.nextReactionEmoji);
-      this.reactions[emotes.nextReactionEmoji] = callback;
+      await this.addReact(emotes.nextReactionEmoji, callback);
     }
   }
 
   async addPreviousReactionToReply(callback) {
     if (this.reply != null) {
-      await this.reply.react(emotes.previousReactionEmoji);
-      this.reactions[emotes.previousReactionEmoji] = callback;
+      await this.addReact(emotes.previousReactionEmoji, callback);
     }
   }
 
   async addExpandReactionToReply(callback) {
     if (this.reply != null) {
-      await this.reply.react(emotes.plusReactionEmoji);
-      this.reactions[emotes.plusReactionEmoji] = callback;
+      await this.addReact(emotes.plusReactionEmoji, callback);
     }
   }
 
   async addExtrasReactionToReply(callback) {
     if (this.reply != null) {
-      await this.reply.react(emotes.extrasReactionEmoji);
-      this.reactions[emotes.extrasReactionEmoji] = callback;
+      await this.addReact(emotes.extrasReactionEmoji, callback);
     }
   }
 

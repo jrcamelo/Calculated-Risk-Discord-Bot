@@ -204,17 +204,27 @@ module.exports = class BaseCommand {
         } catch(e) { } // Message was already deleted
       });
   }
+  
+  async addReact(emote, callback) {
+    if (!this.valid) return
+    if (this.reply == null) return
+    try {
+      await this.reply.react(emote)
+    } catch(e) { } // Message deleted at the same time as adding reaction 
+    this.reactions[emote] = callback
+  }
 
   async addDeleteReaction() {
     if (this.reply == null) return
-    await this.reply.react(emotes.deleteReactionEmoji);
-    this.reactions[emotes.deleteReactionEmoji] = this.deleteReply;
+    await this.addReact(emotes.deleteReactionEmoji, this.deleteReply);
   }
 
   async deleteReply(collected, command) {
     if (command.limitDelete) 
       if (!collected.users.cache.has(command.game.master.id))
         return await command.waitReplyReaction();
+    command.reactions = []
+    command.valid = false
     return await collected.message.delete();
   }
 
