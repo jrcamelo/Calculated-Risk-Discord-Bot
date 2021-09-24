@@ -1,5 +1,5 @@
 const BaseCommand = require("../base_command")
-const StatusCommand = require("../info/Status")
+const StatusCommand = require("../info/StatusShorter")
 
 module.exports = class TurnEditCommand extends BaseCommand {
   static aliases = ["TurnEdit", "MupEdit", "EditMup"]
