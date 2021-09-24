@@ -11,7 +11,7 @@ module.exports = class TurnPresenter {
   makeStatusEmbed() {    
     let embed = new Discord.MessageEmbed()
         .setTitle(`${this.game.name}`)
-        .addFields(this.makeFields())
+        .setDescription(this.makeDescription(false))
         .addFields(this.makeFactionFields())
         .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
         .setImage(this.turn.mup)

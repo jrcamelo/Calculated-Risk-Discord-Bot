@@ -1,7 +1,7 @@
 const BaseCommand = require("../base_command")
 
 module.exports = class SlotAddCommand extends BaseCommand {
-  static aliases = ["FactionClear", "FClear", "SlotClear"]
+  static aliases = ["SlotClear", "SClear"]
   static description = "Removes all faction slots."
   static argsDescription = ""
   static category = "Master"
