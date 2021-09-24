@@ -1,7 +1,7 @@
 const BaseCommand = require("../base_command")
 
 module.exports = class ClaimCommand extends BaseCommand {
-  static aliases = ["Claim", "Join", "Rename"]
+  static aliases = ["Claim", "Join", "Rename", "Faction"]
   static description = "Joins the current game as a player or rename your faction. Get unclaimed factions with a number or its name."
   static argsDescription = "[Faction]"
   static category = "Player"
