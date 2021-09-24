@@ -87,10 +87,13 @@ module.exports = class Turn {
   addRoll(roll) {
     this._rolls.push(roll)
     this._players[roll.playerId].rolled = true
+    this._players[roll.playerId].rollTime = roll.time;
   }
   
   playerHashToList() {
-    return Object.values(this._players);
+    const list = Object.values(this._players)
+    list.sort((a, b) => a.compareToOtherPlayer(b))
+    return list;
   }
 
   rollListToPlayerHash() {
