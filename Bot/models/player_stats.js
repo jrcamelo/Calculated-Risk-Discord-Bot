@@ -1,13 +1,13 @@
 module.exports = class PlayerStats {
 
-  // Level 20 at 40000 XP
-  // Average of 100 XP per roll + 100 XP per Mup = 200 Rolls
+  // Level 20 at 160000 XP
+  // Average of 100 XP per roll + 100 XP per Mup = 800 Rolls
   static xpToLevel(xp) {
-    return Math.floor(0.1 * Math.sqrt(xp));
+    return Math.floor(0.05 * Math.sqrt(xp));
   }
 
   static levelToXp(level) {
-    return ((level)/0.1) ** 2;
+    return ((level)/0.05) ** 2;
   }
 
   static fromPlayer(player) {
