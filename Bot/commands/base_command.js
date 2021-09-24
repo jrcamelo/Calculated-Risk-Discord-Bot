@@ -14,8 +14,8 @@ module.exports = class BaseCommand {
   // Restrictions
   needsGame = false
   masterOnly = false
-  acceptModerators = true
-  acceptAdmins = true
+  acceptModerators = false
+  acceptAdmins = false
   playerOnly = false
   aliveOnly = false
   // Args
@@ -246,9 +246,13 @@ module.exports = class BaseCommand {
     return this.hasPermissions('ADMINISTRATOR');
   }
 
+  isOwner() {
+    return this.user.id == process.env.OWNER;
+  }
+
   hasPermissions(permission) {
     const member = this.message.channel.guild.members.cache.get(this.user.id);
-    return member.permissions.has(permission) || this.user.id == process.env.OWNER;
+    return member.permissions.has(permission) || this.isOwner();
   }
 
   /* -------------------------------------------------------------------------- */

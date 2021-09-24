@@ -10,6 +10,8 @@ module.exports = class MakeGifCommand extends BaseCommand {
   canDelete = false
   masterOnly = true
   acceptAdmins = true
+  acceptModerators = true
+  acceptAdmins = true
 
   needsGame = true
 

@@ -126,4 +126,10 @@ module.exports = class Game {
   pingMaster() {
     return `<@!${this.masterId}>`
   }
+
+  saveOldGameAsNew() {
+    if (!this._database.isOld) return false
+    this._database.saveAsNew()
+    return true
+  }
 }

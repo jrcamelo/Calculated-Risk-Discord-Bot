@@ -8,8 +8,8 @@ module.exports = class PlayerKickCommand extends BaseCommand {
 
   canDelete = false
   masterOnly = true
-  acceptAdmins = true
   acceptModerators = true
+  acceptAdmins = true
 
   needsGame = true
   needsMention = true

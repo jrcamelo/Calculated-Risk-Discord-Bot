@@ -10,6 +10,8 @@ module.exports = class PollCommand extends PaginatedCommand  {
   canDelete = true
   masterOnly = true
   needsGame = true
+  acceptModerators = true
+  acceptAdmins = true
   
   async execute() {
     this.index = this.game.turnNumber

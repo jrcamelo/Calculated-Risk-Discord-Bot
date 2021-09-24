@@ -11,6 +11,9 @@ module.exports = class GameEndCommand extends BaseCommand {
   canDelete = false
   needsGame = true
   masterOnly = true
+  acceptModerators = true
+  acceptAdmins = true
+  canMention = true
 
   async execute() {
     const status = new StatusCommand(this.message, this.args)

@@ -8,6 +8,7 @@ module.exports = class GameTransferCommand extends BaseCommand {
 
   canDelete = false
   masterOnly = true
+  acceptModerators = true
   acceptAdmins = true
 
   needsGame = true
