@@ -70,10 +70,10 @@ module.exports = class Player {
       return -1;
     }
     if (this.rollTime < otherPlayer.rollTime) {
-      return 1;
+      return -1;
     }
     if (this.rollTime > otherPlayer.rollTime) {
-      return -1;
+      return 1;
     }
     return 0;
   }
