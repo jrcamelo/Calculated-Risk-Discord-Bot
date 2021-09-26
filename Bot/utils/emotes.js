@@ -7,6 +7,7 @@ module.exports = {
   xReactionEmoji: "❌",
   extrasReactionEmoji: "💬",
   okReactionEmoji: "👌",
+  stopEphemeralReactionEmoji: "🔒",
   levelUp: "884286417621123122",
 
   rolls: {

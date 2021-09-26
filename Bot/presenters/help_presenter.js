@@ -9,6 +9,15 @@ module.exports = class HelpPresenter {
   makeHelpEmbed() {
   }
 
+  makeCommandEmbed(commandText) {
+    const command = Parser.commands[commandText];
+    if (!command) return null
+    const field = this.makeCommandField(command);
+    if (!field) return null;
+    return this.makeBaseHelpEmbed()
+      .addFields([field])
+  }
+
   makeBaseHelpEmbed() {
     return new Discord.MessageEmbed()
       .setAuthor("Calculated Risk — Host Risk games on Discord", BotInfo.botAvatar)

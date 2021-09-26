@@ -6,7 +6,7 @@ const Game = require("../../models/game")
 
 module.exports = class GameStartCommand extends BaseCommand {
   static aliases = ["ReopenGame", "RestartGame"]
-  static description = "Reopens the last finished game in the channel."
+  static description = "Reopens the last finished game in the channel. Currently not available."
   static argsDescription = ""
   static category = "Master"
 

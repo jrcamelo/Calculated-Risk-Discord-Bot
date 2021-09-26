@@ -33,6 +33,7 @@ module.exports = class BaseCommand {
   limitDelete = false
   // Reply options
   ephemeral = false
+  canStopEphemeral = false
   canMention = false
 
   constructor(message, args) {
@@ -188,7 +189,7 @@ module.exports = class BaseCommand {
   }
 
   async waitReplyReaction() {
-    const time = this.ephemeral ? 10000 : 60000
+    const time = this.ephemeral ? 20000 : 60000
     const options = { max: 1, time, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
       .then(collected => {
@@ -217,6 +218,9 @@ module.exports = class BaseCommand {
   async addDeleteReaction() {
     if (this.reply == null) return
     await this.addReact(emotes.deleteReactionEmoji, this.deleteReply);
+    if (this.canStopEphemeral) {
+      await this.addReact(emotes.stopEphemeralReactionEmoji, this.stopEphemeral);
+    }
   }
 
   async deleteReply(collected, command) {
@@ -228,6 +232,10 @@ module.exports = class BaseCommand {
     return await collected.message.delete();
   }
 
+  async stopEphemeral(collected, command) {
+    command.ephemeral = false
+    command.waitReplyReaction()
+  }
   
 /* -------------------------------------------------------------------------- */
 /*                                Permissions                                 */
