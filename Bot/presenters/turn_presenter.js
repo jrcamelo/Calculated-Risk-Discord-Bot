@@ -107,7 +107,7 @@ module.exports = class TurnPresenter {
     return description || "No rolls"
   }
 
-  makeNotesEmbed(index) {        
+  makeNotesEmbed() {        
     let embed = new Discord.MessageEmbed()
         .setTitle(`Notes`)
         .addFields(this.makeNoteFields())
@@ -122,5 +122,62 @@ module.exports = class TurnPresenter {
       if (field) fields.push(field)
     }
     return fields
+  }
+
+  makeAlliancesEmbed() {
+    let embed = new Discord.MessageEmbed()
+        .setTitle(`Alliances`)
+        .addFields(this.makeAllianceFields())
+        .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
+    return embed
+  }
+
+  // Makes alliance groups, one-sided alliances and loners
+  // Returns { alliances: [], onesided: [], loners: [] }
+  // e.g. { alliances: [ [player1, player2, player5], [player3, player4] ], onesided: [ [player5, player6] ], loners: [player7] }
+  makeAllianceGroups() {
+    const allies = {}
+    const onesided = []
+    const loners = []
+    const alreadyCounted = {}
+    const players = this.turn.playerHashToList()
+    for (let player of players) {
+      if (player.getAllies().length === 0) {
+        loners.push(player)
+      }
+      for (let allyId of player.getAllies()) {
+        const ally = this.turn.getPlayer({id: allyId})
+        if (!ally) continue
+        if (alreadyCounted[[player.id, ally.id]]) continue
+        alreadyCounted[[ally.id, player.id]] = true
+        if (ally.isAlliedWith(player.id)) {
+          allies[player, ally] = [player, ally]
+        } else {
+          onesided.push([player, ally])
+        }
+      }
+    }
+
+    // TODO
+
+
+  }
+
+  makeAllianceFields() {
+    const groups = this.makeAllianceGroups()
+    const fields = []
+    for (let group of groups) {
+      const field = this.makeAllianceField(group)
+      if (field) fields.push(field)
+    }
+  }
+
+  makeAllianceField(group) {
+    const players = group.map(player => player.ping()).join("\n")
+    if (group.length === 1) {
+      return {name: "Loner", value: players}
+    } else {
+      return {name: `Alliance of ${group.length}`, value: players}
+    }
   }
 }
