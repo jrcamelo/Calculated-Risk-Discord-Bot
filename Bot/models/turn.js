@@ -1,7 +1,8 @@
 const Player = require("./player");
+const bronKerbosch = require("../utils/bronkerbosch")
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, rolls = null, poll = "", votes = null) {
+  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy=null, rolls = null, poll = "", votes = null) {
     this._database = _database
     this.description = description
     this.mup = mup
@@ -9,11 +10,12 @@ module.exports = class Turn {
     this.poll = poll
     this.votes = votes || {}
     this.factionSlots = factionSlots || []
+    this.diplomacy = diplomacy
     this._players = players || {}
     this._rolls = rolls || []
   }
 
-  static fromPreviousTurn(_database, previous, mup, description, factionSlots) {
+  static fromPreviousTurn(_database, previous, mup, description, factionSlots, diplomacy) {
     return new Turn(
       _database,
       mup,
@@ -21,6 +23,7 @@ module.exports = class Turn {
       (previous.number || 0) + 1,
       this.playersToNewTurn(previous._players),
       factionSlots,
+      diplomacy,
     )
   }
   
@@ -48,8 +51,12 @@ module.exports = class Turn {
     return this._players[discordUser.id];
   }
 
+  getPlayerFromId(id) {
+    return this._players[id];
+  }
+
   addPlayer(discordUser, factionName) {
-    const faction = this.getAndRemoveFactionIfExists(factionName)
+    const faction = factionName ? this.getAndRemoveFactionIfExists(factionName) : ""
     this._players[discordUser.id] = new Player(discordUser, faction)
     return this._players[discordUser.id]
   }
@@ -144,7 +151,45 @@ module.exports = class Turn {
     this.factionSlots = []
   }
 
-  // TODO: Move those to Presenter
+  calculateDiplomacy() {
+    const players = this.playerHashToList()
+    const allies = {}
+    const onesided = []
+    const alreadyCounted = {}
+    for (let player of players) {
+      for (let allyId of player.getAllies()) {
+        const ally = this.getPlayerFromId(allyId)
+        if (!ally) continue
+        if (alreadyCounted[[player.id, allyId]]) continue
+        alreadyCounted[[allyId, player.id]] = true
+        if (ally.isAlly(player.id)) {
+          allies[[player.id, ally.id]] = [player, ally]
+        } else {
+          onesided.push([player.id, ally.id])
+        }
+      }
+    }
+
+    const loners = []
+    for (let player of players) {
+      let loner = true
+      for (let alliance of Object.values(allies)) {
+        for (let ally of alliance) {
+          if (ally.id === player.id) {
+            loner = false
+            break
+          }
+        }
+      }
+      if (loner) {
+        loners.push(player.id)
+      }
+    }
+
+    const alliances = bronKerbosch(allies)
+    this.diplomacy = { alliances, onesided, loners }
+  }
+
 
   pingNotPlayed() {
     const text = this.pingPlayers(function(player) {

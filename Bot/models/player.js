@@ -1,12 +1,13 @@
 const PlayerStats = require("./player_stats");
 
 module.exports = class Player {
-  constructor(discordUser, factionName, id, username, avatar, name, alive, bonus, note, rolled = false, rollTime = null, removed = false) {
+  constructor(discordUser, factionName, id, username, avatar, name, alive, allies, bonus, note, rolled = false, rollTime = null, removed = false) {
     this.id = discordUser ? discordUser.id : id;
     this.username = discordUser ? discordUser.username : username;
     this.avatar = discordUser ? Player.makeDiscordAvatarUrl(discordUser) : avatar;
     this.name = factionName || name || "";
     this.alive = alive != null ? alive : true;
+    this.allies = allies || {};
     this.rolled = rolled != null ? rolled : false;
     this.rollTime = rollTime != null ? rollTime : null;
     this.bonus = bonus != null ? bonus : 0
@@ -23,6 +24,7 @@ module.exports = class Player {
       hash.avatar, 
       hash.name,
       hash.alive,
+      hash.allies,
       hash.bonus,
     )
   }
@@ -37,6 +39,29 @@ module.exports = class Player {
 
   setNote(note) {
     this.note = note || "";
+  }
+
+  getAllies() {
+    return Object.keys(this.allies);
+  }
+
+  allyWith(player) {
+    this.allies[player.id] = true;
+  }
+
+  isAlly(player) {
+    const id = player.id || player;  
+    return this.allies[id] || false;
+  }
+
+  betray(player) {
+    if (this.isAlly(player)) {
+      delete this.allies[player.id];
+    }
+  }
+
+  getAllies() {
+    return Object.keys(this.allies)
   }
 
   // Descriptions

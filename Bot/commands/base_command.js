@@ -314,7 +314,6 @@ module.exports = class BaseCommand {
   }
 
   getMentionedUsers() {
-    console.log(discordUtils.getMentionedUsers(this.message))
     return discordUtils.getMentionedUsers(this.message)
   }
 

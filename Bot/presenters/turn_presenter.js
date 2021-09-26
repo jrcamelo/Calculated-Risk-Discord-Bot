@@ -132,52 +132,49 @@ module.exports = class TurnPresenter {
     return embed
   }
 
-  // Makes alliance groups, one-sided alliances and loners
-  // Returns { alliances: [], onesided: [], loners: [] }
-  // e.g. { alliances: [ [player1, player2, player5], [player3, player4] ], onesided: [ [player5, player6] ], loners: [player7] }
-  makeAllianceGroups() {
-    const allies = {}
-    const onesided = []
-    const loners = []
-    const alreadyCounted = {}
-    const players = this.turn.playerHashToList()
-    for (let player of players) {
-      if (player.getAllies().length === 0) {
-        loners.push(player)
-      }
-      for (let allyId of player.getAllies()) {
-        const ally = this.turn.getPlayer({id: allyId})
-        if (!ally) continue
-        if (alreadyCounted[[player.id, ally.id]]) continue
-        alreadyCounted[[ally.id, player.id]] = true
-        if (ally.isAlliedWith(player.id)) {
-          allies[player, ally] = [player, ally]
-        } else {
-          onesided.push([player, ally])
-        }
-      }
-    }
-
-    // TODO
-
-
-  }
-
   makeAllianceFields() {
-    const groups = this.makeAllianceGroups()
-    const fields = []
-    for (let group of groups) {
-      const field = this.makeAllianceField(group)
-      if (field) fields.push(field)
+    const diplomacy = this.turn.diplomacy
+    if (!diplomacy || (!diplomacy.alliances && !diplomacy.onesided && false)) {
+      const players = this.turn.playerHashToList()
+      return [
+        {name: "Enemies", value:  players.map(p => p.pingWithFaction()).join("\n")},
+      ]
     }
+
+    const fields = []
+    if (diplomacy.alliances.length) {
+      let text = ""
+      for (let alliance of diplomacy.alliances) {
+        text += alliance.map(p => this.getPlayerPingWithFaction(p)).join("\n") + "\n\n"
+      }
+      fields.push({name: "Alliances", value: text})
+    }
+
+    if (diplomacy.onesided.length) {
+      let text = ""
+      for (let unrequited of diplomacy.onesided) {
+        text += this.getPlayerPingWithFaction(unrequited[0]) + " -> " + this.getPlayerPingWithFaction(unrequited[1]) + "\n"
+      }
+      fields.push({name: "Unrequited Alliances", value: text})
+    }
+
+    if (diplomacy.loners.length) {
+      let text = ""
+      for (let loner of diplomacy.loners) {
+        text += this.getPlayerPingWithFaction(loner) + "\n"
+      }
+      fields.push({name: "Loners", value: text})
+    }
+
+    return fields
   }
 
-  makeAllianceField(group) {
-    const players = group.map(player => player.ping()).join("\n")
-    if (group.length === 1) {
-      return {name: "Loner", value: players}
+  getPlayerPingWithFaction(id) {
+    const player = this.turn.getPlayer(id)
+    if (player) {
+      return player.pingWithFaction()
     } else {
-      return {name: `Alliance of ${group.length}`, value: players}
+      return `<@!${id}>`
     }
   }
 }

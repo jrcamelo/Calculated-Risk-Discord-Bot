@@ -130,12 +130,14 @@ module.exports = class HelpPresenter {
       Parser.commands["testroll"],
       Parser.commands["ragequit"],
       Parser.commands["status"],
+      Parser.commands["ally"],
     ]
   }
 
   getUtilCommands() {
     return [
       Parser.commands["who"],
+      Parser.commands["alliances"],
       Parser.commands["notes"],
       Parser.commands["history"],
       Parser.commands["links"],
