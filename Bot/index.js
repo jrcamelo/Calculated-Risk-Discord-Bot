@@ -22,6 +22,8 @@ client.once("ready", async function() {
   Parser.readCommands()
   Conductor.enable()
   BotInfo.set(client)
+
+  // migrate(client)
 })
 
 client.on("message", Conductor.onNewMessage)

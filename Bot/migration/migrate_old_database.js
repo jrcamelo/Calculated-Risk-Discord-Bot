@@ -76,7 +76,7 @@ module.exports = class Migrator {
 
   readTurnData(turnData, number) {
     return {
-      turnNumber: number,
+      number: number,
       mup: base32.decode(turnData.mup || ""),
       description: base32.decode(turnData.description || ""),
     }
