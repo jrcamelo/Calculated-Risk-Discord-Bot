@@ -62,7 +62,7 @@ module.exports = class Turn {
   }
 
   renamePlayer(player, factionName) {
-    player.name = this.getAndRemoveFactionIfExists(factionName)
+    player.name = factionName ? this.getAndRemoveFactionIfExists(factionName) : ""
     return player
   }
 
@@ -131,7 +131,7 @@ module.exports = class Turn {
   }
 
   getFaction(faction) {
-    if (!isNaN(faction) && +faction > 0) {
+    if (faction && !isNaN(faction) && +faction > 0) {
       if (faction <= this.factionSlots.length) {
         return this.factionSlots[faction - 1]
       }
