@@ -108,7 +108,7 @@ module.exports = class BaseRollCommand extends BaseCommand {
     if (!this.isTest && this.turn && this.turn.everyoneHasRolled()) {
       text += "\n\n**All players have rolled this turn!**"
     }
-    await this.sendReply(text)
+    await this.sendReply(text + (this.isTest ? " (test)" : ""))
     if (this.roll.emote)
       this.reply.react(this.roll.emote)
     return this.reply
