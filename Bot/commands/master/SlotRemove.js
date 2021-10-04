@@ -16,12 +16,12 @@ module.exports = class SlotRemoveCommand extends BaseCommand {
     for (const faction of this.splitArgWithPipes()) {
       const existingFaction = this.turn.getFaction(faction)
       if (existingFaction) {
+        this.turn.removeFaction(existingFaction)
         resultMessage += `**${existingFaction}** was removed.\n`
       } else {
         resultMessage += `**${faction}** was not found.\n`
       }
     }
-
     if (this.saveOrReturnWarning()) return
     return this.sendReply(resultMessage)
   }

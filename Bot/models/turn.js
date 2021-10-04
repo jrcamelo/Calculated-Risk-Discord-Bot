@@ -136,7 +136,7 @@ module.exports = class Turn {
         return this.factionSlots[faction - 1]
       }
     }
-    return this.factionSlots.find(slot => slot.match(faction))
+    return this.factionSlots.find(slot => slot.toLowerCase().match(faction.toLowerCase()))
   }
 
   factionExists(faction) {
@@ -144,6 +144,7 @@ module.exports = class Turn {
   }
 
   removeFaction(faction) {
+    if (!faction) return
     this.factionSlots = this.factionSlots.filter(slot => slot != faction)
   }
 
