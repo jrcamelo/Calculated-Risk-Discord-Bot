@@ -56,7 +56,7 @@ module.exports = class RollPresenter {
   }
 
   ping() {
-    return `<@${this.roll ? this.roll.playerId : this.rolls[0].playerId}>`
+    return `<@!${this.roll ? this.roll.playerId : this.rolls[0].playerId}>`
   }
 
   pingMaster(masterId) {

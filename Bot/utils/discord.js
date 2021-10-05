@@ -44,11 +44,11 @@ function discordPingToUserID(text) {
 }
 
 function makePing(player) {
-  return `<@${player.id}>`;
+  return `<@!${player.id}>`;
 }
 
 function userIdtoDiscordPing(userId) {
-  return `<@${userId}>`;
+  return `<@!${userId}>`;
 }
 
 function ignoreDiscordMention(text) {

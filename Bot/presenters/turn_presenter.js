@@ -101,7 +101,7 @@ module.exports = class TurnPresenter {
         const roll = this.turn._rolls[i]
         const player = this.turn.getPlayerFromId(roll.playerId)
         const playerPresenter = new PlayerPresenter(player)
-        const ping = playerPresenter.pingWithFaction() || `<@${roll.playerId}>`
+        const ping = playerPresenter.pingWithFaction() || `<@!${roll.playerId}>`
         const presenter = new RollPresenter(roll)
         const text = intentions ? presenter.makeDescriptionWithIntention() : presenter.makeDescription()
         description += ping + text + "\n";
@@ -159,7 +159,7 @@ module.exports = class TurnPresenter {
       for (let unrequited of diplomacy.onesided) {
         text += this.getPlayerPingWithFaction(unrequited[0]) + " -> " + this.getPlayerPingWithFaction(unrequited[1]) + "\n"
       }
-      fields.push({name: "Unrequited Alliances", value: text})
+      fields.push({name: "Pending Alliances", value: text})
     }
 
     if (diplomacy.loners.length) {
