@@ -14,7 +14,6 @@ module.exports = class ClaimCommand extends BaseCommand {
   async execute() {
     if (this.player) {
       const blank = "[Blank]"
-      const ping = this.player.ping()
       const existingPlayerName = this.player.name || blank
       const renamedPlayer = this.turn.renamePlayer(this.player, this.arg)
       if (this.saveOrReturnWarning()) return

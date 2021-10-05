@@ -51,15 +51,18 @@ module.exports = class PlayerPresenter {
   }
 
   ping() {
+    if (!this.player) return null
     return `<@!${this.player.id}>`
   }
 
   usernameWithFaction() {
+    if (!this.player) return null
     const faction = this.player.name ? ` [${this.player.name}]` : ""
     return `${this.player.username}${faction}`
   }
 
   pingWithFaction() {
+    if (!this.player) return null
     const faction = this.player.name ? ` [${this.player.name}]` : ""
     return `${this.ping()}${faction}`
   }

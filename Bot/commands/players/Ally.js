@@ -46,7 +46,7 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
   }
 
   alreadyAllied(player) {
-    return `${player.ping()} is already allied with you. If you don't want that, use \`Betray\`.\n`
+    return `${player.pingWithFaction()} is already allied with you. If you don't want that, use \`Betray\`.\n`
   }
 
   allyingWithYourself() {
@@ -55,11 +55,11 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
 
   allyingWithPlayer(player) {
     if (!player.alive) {
-      return `You are now allied with the already dead ${player.ping()}. That's okay.\n`
+      return `You are now allied with the already dead ${player.pingWithFaction()}. That's okay.\n`
     } else if (player.isAlly(this.player)) {
-      return `You are now allied with ${player.ping()}.\n`
+      return `You are now allied with ${player.pingWithFaction()}.\n`
     } else {
-      return `You are now allied with ${player.ping()}, but they need to ally with you as well.\n`
+      return `You are now allied with ${player.pingWithFaction()}, but they need to ally with you as well.\n`
     }
   }
 }

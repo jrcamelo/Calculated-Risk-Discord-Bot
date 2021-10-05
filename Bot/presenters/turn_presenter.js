@@ -98,9 +98,13 @@ module.exports = class TurnPresenter {
     let description = "";
     for (let i = index; i < index + 10; i++) {
       if (i < this.turn._rolls.length) {
-        const presenter = new RollPresenter(this.turn._rolls[i])
-        const text = intentions ? presenter.makeDescriptionWithPingAndIntention() : presenter.makeDescriptionWithPing()
-        description += text + "\n";
+        const roll = this.turn._rolls[i]
+        const player = this.turn.getPlayerFromId(roll.playerId)
+        const playerPresenter = new PlayerPresenter(player)
+        const ping = playerPresenter.pingWithFaction() || `<@${roll.playerId}>`
+        const presenter = new RollPresenter(roll)
+        const text = intentions ? presenter.makeDescriptionWithIntention() : presenter.makeDescription()
+        description += ping + text + "\n";
       }
     }
     if (description) description = `**${index+1}~${index+10}/${this.turn._rolls.length} - Turn ${this.turn.number}/${this.game.turnNumber}**\n${description}`

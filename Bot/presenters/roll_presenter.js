@@ -19,17 +19,21 @@ module.exports = class RollPresenter {
     return `[${this.roll.formattedValue}](${this.roll.messageLink})${intention}`
   }
 
+  makeDescription() {
+    return ` rolled ${this.roll.formattedValue}`
+  }
+
+  makeDescriptionWithIntention() {
+    const intention = this.roll.intention ? ` - ${this.roll.intention.substring(0, 256)}` : ''
+    return ` rolled ${this.roll.formattedValue} ${intention}`
+  }
+
   makeDescriptionWithPing() {
     return `${this.ping()} rolled ${this.roll.formattedValue}`
   }
 
   makeDescriptionWithPingAndLink() {
     return `${this.ping()} [rolled](${this.roll.messageLink}) ${this.roll.formattedValue}`
-  }
-
-  makeDescriptionWithPingAndIntention() {
-    const intention = this.roll.intention ? ` - ${this.roll.intention.substring(0, 256)}` : ''
-    return `${this.ping()} rolled ${this.roll.formattedValue} ${intention}`
   }
 
   describeJustRolled(masterId) {

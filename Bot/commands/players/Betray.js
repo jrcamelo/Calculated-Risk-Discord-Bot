@@ -58,11 +58,11 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
   }
 
   notAllied(player) {
-    return `You are not allied with ${player.ping()}.\n`
+    return `You are not allied with ${player.pingWithFaction()}.\n`
   }
 
   betrayNonAlly(player) {
-    return `${player.ping()}'s alliance with you is broken.\n`
+    return `${player.pingWithFaction()}'s alliance with you is broken.\n`
   }
 
   betrayingYourself() {
@@ -73,9 +73,9 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
     if (!player.alive) {
       return `Abandoning dead allies... Classic.\n`
     } else if (player.isAlly(this.player)) {
-      return `You have betrayed ${player.ping()}. Their alliance with you is also broken.\n`
+      return `You have betrayed ${player.pingWithFaction()}. Their alliance with you is also broken.\n`
     } else {
-      return `You have betrayed ${player.ping()}, but it seems they already expected that.\n`
+      return `You have betrayed ${player.pingWithFaction()}, but it seems they already expected that.\n`
     }
   }
 }
