@@ -1,9 +1,10 @@
 const ordinal = require('ordinal')
 
 module.exports = class RollPresenter {
-  constructor(roll, rolls) {
+  constructor(roll, rolls, players) {
     this.roll = roll
     this.rolls = rolls
+    this.players = players
   }
 
   makeRolledWithLink() {
@@ -28,12 +29,17 @@ module.exports = class RollPresenter {
     return ` rolled ${this.roll.formattedValue} ${intention}`
   }
 
-  makeDescriptionWithPing() {
-    return `${this.ping()} rolled ${this.roll.formattedValue}`
+  makeDescriptionWithUser() {
+    return `${this.usernameWithFaction()} rolled ${this.roll.formattedValue}`
   }
 
-  makeDescriptionWithPingAndLink() {
-    return `${this.ping()} [rolled](${this.roll.messageLink}) ${this.roll.formattedValue}`
+  makeDescriptionWithUserAndIntention() {
+    const intention = this.roll.intention ? ` - ${this.roll.intention.substring(0, 256)}` : ''
+    return `${this.usernameWithFaction()} rolled ${this.roll.formattedValue} ${intention}`
+  }
+
+  makeDescriptionWithUserAndLink() {
+    return `${this.usernameWithFaction()} [rolled](${this.roll.messageLink}) ${this.roll.formattedValue}`
   }
 
   describeJustRolled(masterId) {
@@ -61,6 +67,22 @@ module.exports = class RollPresenter {
 
   pingMaster(masterId) {
     return masterId ? `<@!${masterId}> —— ` : ""
+  }
+
+  getPlayer(playerId) {
+    if (!this.players) return
+    return this.players[playerId]
+  }
+
+  usernameWithFaction(playerId) {
+    const player = this.getPlayer(playerId)
+    if (!player) return `<@!${playerId}>`
+    return `**${player.username}**${this.getFactionText(player)})`
+  }
+
+  getFactionText(player) {
+    if (player.name) return ` [${player.name}]`
+    return ""
   }
 
 }

@@ -83,7 +83,7 @@ module.exports = class TurnPresenter {
     let description = "";
     for (let i = index; i < index + 10; i++) {
       if (i < this.turn._rolls.length) {
-        description += (new RollPresenter(this.turn._rolls[i])).makeDescriptionWithPingAndLink() + "\n";
+        description += (new RollPresenter(this.turn._rolls[i], null, this.turn._players)).makeDescriptionWithUserAndLink() + "\n";
       }
     }
     let embed = new Discord.MessageEmbed()
@@ -99,13 +99,9 @@ module.exports = class TurnPresenter {
     for (let i = index; i < index + 10; i++) {
       if (i < this.turn._rolls.length) {
         const roll = this.turn._rolls[i]
-        const player = this.turn.getPlayerFromId(roll.playerId)
-        const playerPresenter = new PlayerPresenter(player)
-        let ping = playerPresenter.usernameWithFaction()
-        ping = ping ? `**${ping}**` : `<@!${roll.playerId}>`
-        const presenter = new RollPresenter(roll)
-        const text = intentions ? presenter.makeDescriptionWithIntention() : presenter.makeDescription()
-        description += ping + text + "\n";
+        const presenter = new RollPresenter(roll, null, this.turn._players)
+        const text = intentions ? presenter.makeDescriptionWithUserAndIntention() : presenter.makeDescriptionWithUser()
+        description += text + "\n";
       }
     }
     if (description) description = `**${index+1}~${index+10}/${this.turn._rolls.length} - Turn ${this.turn.number}/${this.game.turnNumber}**\n${description}`

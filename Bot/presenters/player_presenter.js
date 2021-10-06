@@ -14,13 +14,13 @@ module.exports = class PlayerPresenter {
   }
 
   makeExpandedDescription(rolls) {
-    if (!this.player.alive) return `${this.pingWithFaction()} has fallen.`;
-    return `${this.pingWithFaction()}${this.describeBonus()} ${this.describeRolledWithLink(rolls)}${this.describeExtraRolls(rolls)}`;
+    if (!this.player.alive) return `${this.usernameWithFaction()} has fallen.`;
+    return `${this.usernameWithFaction()}${this.describeBonus()} ${this.describeRolledWithLink(rolls)}${this.describeExtraRolls(rolls)}`;
   }
 
   makeCollapsedDescription(rolls) {
     if (!this.player.alive) return `~~${this.player.username}~~`;
-    return `${this.pingWithFaction()}${this.describeBonus()} ${this.describeRollWithLink(rolls)}${this.describeExtraRolls(rolls)}`;
+    return `${this.usernameWithFaction()}${this.describeBonus()} ${this.describeRollWithLink(rolls)}${this.describeExtraRolls(rolls)}`;
   }
 
   makeField(rolls) {
@@ -55,16 +55,16 @@ module.exports = class PlayerPresenter {
     return `<@!${this.player.id}>`
   }
 
-  usernameWithFaction() {
-    if (!this.player) return null
-    const faction = this.player.name ? ` [${this.player.name}]` : ""
-    return `${this.player.username}${faction}`
-  }
-
   pingWithFaction() {
     if (!this.player) return null
     const faction = this.player.name ? ` [${this.player.name}]` : ""
     return `${this.ping()}${faction}`
+  }
+
+  usernameWithFaction() {
+    if (!this.player) return null
+    const faction = this.player.name ? ` [${this.player.name}]` : ""
+    return `**${this.player.username}**${faction}`
   }
 
   describeBonus() {
