@@ -30,16 +30,16 @@ module.exports = class RollPresenter {
   }
 
   makeDescriptionWithUser() {
-    return `${this.usernameWithFaction()} rolled ${this.roll.formattedValue}`
+    return `${this.usernameWithFaction(this.roll.playerId)} rolled ${this.roll.formattedValue}`
   }
 
   makeDescriptionWithUserAndIntention() {
     const intention = this.roll.intention ? ` - ${this.roll.intention.substring(0, 256)}` : ''
-    return `${this.usernameWithFaction()} rolled ${this.roll.formattedValue} ${intention}`
+    return `${this.usernameWithFaction(this.roll.playerId)} rolled ${this.roll.formattedValue} ${intention}`
   }
 
   makeDescriptionWithUserAndLink() {
-    return `${this.usernameWithFaction()} [rolled](${this.roll.messageLink}) ${this.roll.formattedValue}`
+    return `${this.usernameWithFaction(this.roll.playerId)} [rolled](${this.roll.messageLink}) ${this.roll.formattedValue}`
   }
 
   describeJustRolled(masterId) {
@@ -77,7 +77,7 @@ module.exports = class RollPresenter {
   usernameWithFaction(playerId) {
     const player = this.getPlayer(playerId)
     if (!player) return `<@!${playerId}>`
-    return `**${player.username}**${this.getFactionText(player)})`
+    return `**${player.username}**${this.getFactionText(player)}`
   }
 
   getFactionText(player) {
