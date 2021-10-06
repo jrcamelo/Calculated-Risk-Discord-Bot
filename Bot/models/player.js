@@ -29,6 +29,11 @@ module.exports = class Player {
     )
   }
 
+  update(discordUser) {
+    this.username = discordUser ? discordUser.username : this.username;
+    this.avatar = discordUser ? Player.makeDiscordAvatarUrl(discordUser) : this.avatar;
+  }
+
   stats() {
     return PlayerStats.fromPlayer(this);
   }
