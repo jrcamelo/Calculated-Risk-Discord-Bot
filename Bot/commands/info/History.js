@@ -11,6 +11,7 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   needsGame = true
   hasExtras = true
   shouldLoop = false
+  isShowingExtras = true
   index = 0
   step = 10
 
@@ -26,6 +27,11 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   }
 
   getReply() {
-    return this.gamePresenter.makeRollHistory(this.turnIndex, this.index, this.isShowingExtras)
+    let text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, this.isShowingExtras)
+    if (this.isShowingExtras && text.length > 2000) {
+      this.isShowingExtras = false
+      text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, this.isShowingExtras)
+    }
+    return text
   }
 }
