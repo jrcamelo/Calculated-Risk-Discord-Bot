@@ -191,6 +191,14 @@ module.exports = class Turn {
     this.diplomacy = { alliances, onesided, loners }
   }
 
+  listNotPlayed() {
+    const text = this.pingPlayers(function(player) {
+      if (player.alive && !player.rolled) {
+        return `${player.usernameWithFaction()}\n`
+      }
+    })    
+    return text || "Everyone has already rolled. Mup when?";
+  }
 
   pingNotPlayed() {
     const text = this.pingPlayers(function(player) {

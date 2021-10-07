@@ -171,9 +171,9 @@ module.exports = class TurnPresenter {
   }
 
   getPlayerPingWithFaction(id) {
-    const player = this.turn.getPlayer(id)
+    const player = this.turn.getPlayerFromId(id)
     if (player) {
-      return player.pingWithFaction()
+      return player.usernameWithFaction()
     } else {
       return `<@!${id}>`
     }

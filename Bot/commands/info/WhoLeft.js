@@ -9,4 +9,8 @@ module.exports = class WhoIsLeftCommand extends PlayerPingCommand {
   canDelete = true
   masterOnly = false  
   canMention = false
+  
+  async execute() {
+    this.sendReply(this.turn.listNotPlayed())
+  }
 }
