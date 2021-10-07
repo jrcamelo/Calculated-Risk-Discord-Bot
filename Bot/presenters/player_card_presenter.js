@@ -58,7 +58,7 @@ module.exports = class PlayerCardPresenter {
     this.resizeAndPrint()
     this.card.composite(this.avatar, 20, 21)
     this.background.composite(this.card, 0, 0)
-    this.background.write(this.getResultPath())
+    await this.background.writeAsync(this.getResultPath())
     return this.getResultPath()
   }
 
