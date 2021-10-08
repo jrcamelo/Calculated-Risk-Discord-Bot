@@ -127,7 +127,6 @@ module.exports = class TurnPresenter {
 
   makeAlliancesEmbed() {
     let embed = new Discord.MessageEmbed()
-        .setTitle(`Alliances`)
         .addFields(this.makeAllianceFields())
         .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
     return embed
@@ -154,7 +153,7 @@ module.exports = class TurnPresenter {
     if (diplomacy.onesided.length) {
       let text = ""
       for (let unrequited of diplomacy.onesided) {
-        text += this.getPlayerPingWithFaction(unrequited[0]) + " -> " + this.getPlayerPingWithFaction(unrequited[1]) + "\n"
+        text += this.getPlayerPingWithFaction(unrequited[0]) + " → " + this.getPlayerPingWithFaction(unrequited[1]) + "\n"
       }
       fields.push({name: "Pending Alliances", value: text})
     }
@@ -173,7 +172,7 @@ module.exports = class TurnPresenter {
   getPlayerPingWithFaction(id) {
     const player = this.turn.getPlayerFromId(id)
     if (player) {
-      return player.usernameWithFaction()
+      return player.usernameWithFactionNotBold()
     } else {
       return `<@!${id}>`
     }
