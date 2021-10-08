@@ -1,0 +1,10 @@
+.env
+/node_modules
+/node_modules/*
+*/storage/*/
+*/commands-/
+/testing/
+*/temporary/*
+*/assets/temporary/*
+*/migration/*.json
+*/migration/storage/
