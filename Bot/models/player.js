@@ -85,6 +85,11 @@ module.exports = class Player {
     return `**${this.username}**${faction}`
   }
 
+  usernameWithFactionNotBold() {
+    const faction = this.name ? ` [${this.name}]` : ""
+    return `${this.username}${faction}`
+  }
+
   compareToOtherPlayer(otherPlayer) {
     if (!this.alive && !otherPlayer.alive) {
       return 0;

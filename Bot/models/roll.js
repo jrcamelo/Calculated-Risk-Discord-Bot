@@ -29,7 +29,7 @@ module.exports = class Roll {
   }
 
   doRollWithID() {
-    this.value = this.messageId
+    this.value = this.messageId.substring(6)
     this.calculateRoll()
   }
 
