@@ -24,6 +24,11 @@ module.exports = class Game {
       this._turn = this._database.getTurn(this.turnNumber)
   }
 
+  updateMaster(discordUser) {
+    this.masterId = discordUser.id
+    this.masterUsername = discordUser.username
+  }
+
   getTurn(number) {
     if (number == this.turnNumber || number === undefined) return this._turn
     return this._database.getTurn(number)

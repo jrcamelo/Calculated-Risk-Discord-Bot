@@ -62,6 +62,8 @@ module.exports = class BaseCommand {
     if (this.getsGame) this.game = this.database.getGame()
     if (this.game != null) this.turn = this.game._turn
     if (this.turn != null) this.player = this.turn.getPlayer(this.user)
+    if (this.player != null) this.player.update(this.user)
+    if (this.game && this.isMaster()) this.game.updateMaster(this.user)
   }
 
   prepareArgs() {
