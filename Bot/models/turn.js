@@ -86,9 +86,11 @@ module.exports = class Turn {
 
   killPlayer(player) {
     player.alive = false
+    this.calculateDiplomacy()
   }
   revivePlayer(player) {
     player.alive = true
+    this.calculateDiplomacy()
   }
 
   addRoll(roll) {
@@ -158,9 +160,10 @@ module.exports = class Turn {
     const onesided = []
     const alreadyCounted = {}
     for (let player of players) {
+      if (!player.alive) continue
       for (let allyId of player.getAllies()) {
         const ally = this.getPlayerFromId(allyId)
-        if (!ally) continue
+        if (!ally || !ally.alive) continue
         if (alreadyCounted[[player.id, allyId]]) continue
         alreadyCounted[[allyId, player.id]] = true
         if (ally.isAlly(player.id)) {
@@ -182,7 +185,7 @@ module.exports = class Turn {
           }
         }
       }
-      if (loner) {
+      if (loner && player.alive) {
         loners.push(player.id)
       }
     }

@@ -163,7 +163,7 @@ module.exports = class TurnPresenter {
       for (let loner of diplomacy.loners) {
         text += this.getPlayerPingWithFaction(loner) + "\n"
       }
-      fields.push({name: "Loners", value: text})
+      fields.push({name: "Without Alliances", value: text})
     }
 
     return fields
