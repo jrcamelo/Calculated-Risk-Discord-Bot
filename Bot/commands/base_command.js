@@ -227,7 +227,7 @@ module.exports = class BaseCommand {
 
   async deleteReply(collected, command) {
     if (command.limitDelete) 
-      if (!collected.users.cache.has(command.game.master.id))
+      if (!collected.users.cache.has(command.game.masterId))
         return await command.waitReplyReaction();
     command.reactions = []
     command.valid = false
