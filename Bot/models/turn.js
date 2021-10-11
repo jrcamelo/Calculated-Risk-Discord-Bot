@@ -90,6 +90,7 @@ module.exports = class Turn {
   }
   revivePlayer(player) {
     player.alive = true
+    player.removed = false;
     this.calculateDiplomacy()
   }
 

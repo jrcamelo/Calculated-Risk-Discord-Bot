@@ -7,7 +7,7 @@ module.exports = class PlayerKickCommand extends BaseCommand {
   static category = "Master"
 
   canDelete = false
-  masterOnly = true
+  // masterOnly = true
   acceptModerators = true
   acceptAdmins = true
 
@@ -19,6 +19,12 @@ module.exports = class PlayerKickCommand extends BaseCommand {
   canMention = true
 
   async execute() {
+    if (!this.isMaster() && !this.isModerator() && !this.isAdmin()) {
+      if (this.mentionedPlayer && this.mentionedPlayer.id != this.user.id) {
+        return this.replyDeletable(`You are not allowed to use this command.`)
+      }
+    }
+
     if (this.mentionedPlayer.removed) {
       return this.replyDeletable(`Kicking ${this.mentionedPlayer.name || this.mentionedPlayer.username}'s corpse will lead nowhere, try purging instead.`)
     } 
