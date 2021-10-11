@@ -24,7 +24,8 @@ module.exports = class MakeGifCommand extends BaseCommand {
       return this.replyDeletable("Delay must be between 100 and 5000.")
     }
 
-    const mups = this.game.getMups()
+    const allTurns = this.game.getMups()
+    const mups = allTurns.filter(x => x && x.length > 0)    
     const gifMaker = new GifMaker(this.serverId, this.game.startedAt, mups, delay)
     this.message.react("🔄")
     gifMaker.makeGif(async (gif) => {
