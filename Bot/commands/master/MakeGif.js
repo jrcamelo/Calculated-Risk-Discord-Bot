@@ -29,7 +29,7 @@ module.exports = class MakeGifCommand extends BaseCommand {
     const allTurns = this.game.getMups()
     const mups = allTurns.filter(x => x && x.length > 0)    
     const gifMaker = new GifMaker(this.serverId, this.game.startedAt, mups, delay)
-    this.message.react("🔄")
+    this.message.react("⌛")
     gifMaker.makeGif(async (gif) => {
       if (!gif) return this.replyDeletable("Could not make gif.")
       await this.sendImageMessage(gif)      
