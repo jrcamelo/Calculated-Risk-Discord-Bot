@@ -17,9 +17,9 @@ module.exports = class GameTransferCommand extends BaseCommand {
   canMention = true
 
   async execute() {
-    const oldMasterId = this.game.master.id
+    const oldMasterId = this.game.masterId
     this.game.transferMaster(this.mentionedUser)
     if (this.saveOrReturnWarning()) return
-    this.sendReply(`<@!${oldMasterId}}> is no more! All hail <@!${this.mentionedUser.id}>, the new Master!`)
+    this.sendReply(`<@!${oldMasterId}> is no more! All hail <@!${this.mentionedUser.id}>, the new Master!`)
   }
 }

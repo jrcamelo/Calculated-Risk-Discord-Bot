@@ -62,6 +62,8 @@ module.exports = class BaseCommand {
     if (this.getsGame) this.game = this.database.getGame()
     if (this.game != null) this.turn = this.game._turn
     if (this.turn != null) this.player = this.turn.getPlayer(this.user)
+    if (this.player != null) this.player.update(this.user)
+    if (this.game && this.isMaster()) this.game.updateMaster(this.user)
   }
 
   prepareArgs() {
@@ -225,7 +227,7 @@ module.exports = class BaseCommand {
 
   async deleteReply(collected, command) {
     if (command.limitDelete) 
-      if (!collected.users.cache.has(command.game.master.id))
+      if (!collected.users.cache.has(command.game.masterId))
         return await command.waitReplyReaction();
     command.reactions = []
     command.valid = false

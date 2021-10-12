@@ -1,5 +1,6 @@
 const { GifFrame, GifUtil, GifCodec } = require('gifwrap');
 const Jimp = require('jimp');
+const sharp = require('sharp');
 const fse = require('fs-extra');
 const ImageDownloader = require('image-downloader');
 
@@ -20,6 +21,12 @@ module.exports = class GifMaker {
 
   getDownloadFolderPath() {
     const path = `./storage/gifs/${this.serverId}/${this.gameId}/downloads/`
+    fse.ensureDirSync(path)
+    return path
+  }
+
+  getResizedFolderPath() {
+    const path = `./storage/gifs/${this.serverId}/${this.gameId}/downloads_resized/`
     fse.ensureDirSync(path)
     return path
   }
@@ -58,10 +65,11 @@ module.exports = class GifMaker {
   }
 
   async treatImage(i) {
-    const image = await Jimp.read(`${this.getDownloadFolderPath()}${i}.jpg`)
-    const width = Math.min(image.bitmap.width, 800)
-    await image.resize(width, Jimp.AUTO)
-    await image.quality(60)
+    const downloadPath = `${this.getDownloadFolderPath()}${i}.jpg`
+    const resizedPath = `${this.getResizedFolderPath()}${i}.jpg`
+    await sharp(downloadPath).resize({ width: 800 }).toFile(resizedPath)
+    const image = await Jimp.read(resizedPath)
+    await image.quality(50)
     await GifUtil.quantizeSorokin(image, 255)
     return image
   }

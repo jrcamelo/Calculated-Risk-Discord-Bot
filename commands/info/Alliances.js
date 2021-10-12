@@ -2,7 +2,7 @@ const PaginatedCommand = require("../paginated_command")
 const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class AlliancesCommand extends PaginatedCommand {
-  static aliases = ["Alliances"]
+  static aliases = ["Alliances", "Allies", "Alliance", "A"]
   static description = "Shows every alliance."
   static argsDescription = ""
   static category = "Game"
