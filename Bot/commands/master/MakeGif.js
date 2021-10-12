@@ -16,6 +16,8 @@ module.exports = class MakeGifCommand extends BaseCommand {
   needsGame = true
 
   async execute() {
+    if (!this.arg) this.arg = 2000
+
     if (isNaN(this.arg)) {
       return this.replyDeletable("Delay must be a number.")
     }
