@@ -78,6 +78,9 @@ module.exports = class LeaderboardPresenter {
     value += `\n**Level: ${PlayerStats.xpToLevel(player.totalXp)}**`
     value += `\nXP: ${player.totalXp}`
     value += `\n${player.wins}w / ${player.games - player.wins}d`
+    if (player.hostCount > 0) {
+      value += ` / ${player.hostCount}h`
+    }
     value += `\nRolls: ${player.totalRolls}`
     value += `\nLuck: ${player.luck.toFixed(0) || "?"}`
     return { name, value, inline: true }
