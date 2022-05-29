@@ -123,8 +123,8 @@ module.exports = class PlayerCardPresenter {
   }
 
   makeLuckText() {
-    const luck = this.stats.luck
-    return `${luck||0} Luck`
+    const luck = this.stats.luck || 0
+    return `${luck.toFixed(0)} Luck`
   }
 
   makeScoreText() {

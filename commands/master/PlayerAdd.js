@@ -8,6 +8,7 @@ module.exports = class PlayerAddCommand extends BaseCommand {
 
   canDelete = false
   masterOnly = true
+  acceptAdmins = true
 
   needsGame = true
   needsMention = true

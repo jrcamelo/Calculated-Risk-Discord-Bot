@@ -55,7 +55,7 @@ function findStraightSize(str) {
   return 0;
 }
 
-FUNNY_NUMBERS = ["69420", "42069", "1488", "1337", "80085", "8008135", "80084", "69", "420", "1984", "666", "333"]
+FUNNY_NUMBERS = ["69420", "42069", "1488", "1337", "80085", "8008135", "80084", "69", "420", "1984"]
 function findFunnyNumberSize(str) {
   for (let funny of FUNNY_NUMBERS) {
     if (str.endsWith(funny)) {
