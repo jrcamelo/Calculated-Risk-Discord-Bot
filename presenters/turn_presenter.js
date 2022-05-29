@@ -169,6 +169,42 @@ module.exports = class TurnPresenter {
     return fields
   }
 
+  makeNAPsEmbed() {
+    let embed = new Discord.MessageEmbed()
+        .addFields(this.makeNAPFields())
+        .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
+    return embed
+  }
+
+  makeNAPFields() {
+    const pacts = this.turn.pacts
+    if (!pacts || (!pacts.alliances && !pacts.onesided && false)) {
+      const players = this.turn.playerHashToList()
+      return [
+        {name: "Enemies", value:  players.map(p => p.pingWithFaction()).join("\n")},
+      ]
+    }
+
+    const fields = []
+    if (pacts.alliances.length) {
+      let text = ""
+      for (let alliance of pacts.alliances) {
+        text += alliance.map(p => this.getPlayerPingWithFaction(p)).join("\n") + "\n\n"
+      }
+      fields.push({name: "Pacts", value: text})
+    }
+
+    if (pacts.onesided.length) {
+      let text = ""
+      for (let unrequited of pacts.onesided) {
+        text += this.getPlayerPingWithFaction(unrequited[0]) + " → " + this.getPlayerPingWithFaction(unrequited[1]) + "\n"
+      }
+      fields.push({name: "Pending Pacts", value: text})
+    }
+
+    return fields
+  }
+
   getPlayerPingWithFaction(id) {
     const player = this.turn.getPlayerFromId(id)
     if (player) {

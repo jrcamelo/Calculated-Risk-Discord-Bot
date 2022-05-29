@@ -1,13 +1,14 @@
 const PlayerStats = require("./player_stats");
 
 module.exports = class Player {
-  constructor(discordUser, factionName, id, username, avatar, name, alive, allies, bonus, note, rolled = false, rollTime = null, removed = false) {
+  constructor(discordUser, factionName, id, username, avatar, name, alive, allies, naps, bonus, note, rolled = false, rollTime = null, removed = false) {
     this.id = discordUser ? discordUser.id : id;
     this.username = discordUser ? discordUser.username : username;
     this.avatar = discordUser ? Player.makeDiscordAvatarUrl(discordUser) : avatar;
     this.name = factionName || name || "";
     this.alive = alive != null ? alive : true;
     this.allies = allies || {};
+    this.naps = naps || {};
     this.rolled = rolled != null ? rolled : false;
     this.rollTime = rollTime != null ? rollTime : null;
     this.bonus = bonus != null ? bonus : 0
@@ -25,6 +26,7 @@ module.exports = class Player {
       hash.name,
       hash.alive,
       hash.allies,
+      hash.naps,
       hash.bonus,
     )
   }
@@ -46,10 +48,6 @@ module.exports = class Player {
     this.note = note || "";
   }
 
-  getAllies() {
-    return Object.keys(this.allies);
-  }
-
   allyWith(player) {
     this.allies[player.id] = true;
   }
@@ -67,6 +65,25 @@ module.exports = class Player {
 
   getAllies() {
     return Object.keys(this.allies)
+  }
+
+  napWith(player) {
+    this.naps[player.id] = true;
+  }
+
+  isNAP(player) {
+    const id = player.id || player;  
+    return this.naps[id] || false;
+  }
+
+  break(player) {
+    if (this.isNAP(player)) {
+      delete this.naps[player.id];
+    }
+  }
+
+  getNAPs() {
+    return Object.keys(this.naps);
   }
 
   // Descriptions
