@@ -35,8 +35,8 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
       return this.betrayingYourself()
     } 
 
-    if (!this.player.isAlly(mentionedPlayer)) {
-      if (mentionedPlayer.isAlly(this.player)) {
+    if (!this.player.isNAP(mentionedPlayer)) {
+      if (mentionedPlayer.isNAP(this.player)) {
         this.changes = true
         mentionedPlayer.break(this.player)
         return this.betrayNonAlly(mentionedPlayer)
