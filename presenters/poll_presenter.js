@@ -26,11 +26,13 @@ module.exports = class PlayerPresenter {
     const aliveNotVoted = []
     const voteGroup = {}
     for (let player of this.turn.playerHashToList()) {
-      const vote = this.turn.votes[player.id];
+      let vote = this.turn.votes[player.id];
       if (!vote && player.alive) {
         aliveNotVoted.push(makePing(player));
         continue;
-      } 
+      }
+      if (!vote) continue
+      vote = vote.toLowerCase()
       if (!voteGroup[vote]) voteGroup[vote] = [makePing(player)];
       else voteGroup[vote].push(makePing(player));
     }

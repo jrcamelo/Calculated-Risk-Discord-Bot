@@ -8,6 +8,7 @@ module.exports = class SlotAddCommand extends BaseCommand {
 
   canDelete = false
   masterOnly = true
+  acceptAdmins = true
   needsGame = true
   neededArgsAmount = 1
   

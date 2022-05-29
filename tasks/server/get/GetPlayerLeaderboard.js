@@ -5,6 +5,7 @@ module.exports = class GetPlayerLeaderboardTask extends ServerTask {
     super(serverId, options);
     this.index = index;
     this.limit = limit;
+    this.sorting = sorting;
     this.name = 'GetPlayerLeaderboard';
   }
   

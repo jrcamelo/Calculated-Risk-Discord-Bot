@@ -8,14 +8,15 @@ module.exports = class PollCommand extends PaginatedCommand  {
   static category = "Master"
 
   canDelete = true
-  masterOnly = true
   needsGame = true
-  acceptModerators = true
-  acceptAdmins = true
   
   async execute() {
     this.index = this.game.turnNumber
     this.ceiling = this.game.turnNumber
+
+    if (!this.isMaster()) {
+      return this.sendReply(this.getReply())
+    }
 
     this.question = this.arg
     if (this.question) {
@@ -23,12 +24,11 @@ module.exports = class PollCommand extends PaginatedCommand  {
     }
 
     if (this.saveOrReturnWarning()) return
-
-    this.pollPresenter = new PollPresenter(this.game)
     await this.sendReply(this.getReply())
   }
 
   getReply() {
+    this.pollPresenter = new PollPresenter(this.game)
     return this.pollPresenter.makeEmbed(this.index)
   }
 }

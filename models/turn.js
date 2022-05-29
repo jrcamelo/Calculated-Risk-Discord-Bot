@@ -97,7 +97,9 @@ module.exports = class Turn {
   addRoll(roll) {
     this._rolls.push(roll)
     this._players[roll.playerId].rolled = true
-    this._players[roll.playerId].rollTime = roll.time;
+    if (!this._players[roll.playerId].rollTime) {
+      this._players[roll.playerId].rollTime = roll.time;
+    }
   }
   
   playerHashToList() {
@@ -118,7 +120,7 @@ module.exports = class Turn {
   }
 
   everyoneHasRolled() {
-    return this.playerHashToList().every(player => player.rolled)
+    return this.playerHashToList().every(player => player.rolled || !player.alive)
   }
 
   setPlayerVote(player, vote) {

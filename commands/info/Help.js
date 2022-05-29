@@ -4,7 +4,7 @@ const Parser = require("../../handler/parser");
 
 
 module.exports = class HelpCommand extends BaseCommand  {
-  static aliases = ["Help", "H"]
+  static aliases = ["Help", "H", "Rules"]
   static description = "The command used to read this."
   static argsDescription = ""
 

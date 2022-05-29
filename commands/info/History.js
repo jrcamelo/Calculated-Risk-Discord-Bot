@@ -16,10 +16,11 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   step = 10
 
   async execute() {
-    this.ceiling = this.turn._rolls.length
-
+    this.ceiling = this.game.turnNumber
     this.getPageArg()
-    this.turnIndex = this.index === 0 ? this.game.turnNumber : this.index
+    this.turnIndex = this.index || this.game.turnNumber
+
+    this.ceiling = this.turn._rolls.length
     this.index = 0
 
     this.gamePresenter = new GamePresenter(this.game)
