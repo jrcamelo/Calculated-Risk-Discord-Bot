@@ -34,6 +34,11 @@ module.exports = class GamePresenter {
     return (new TurnPresenter(this.game, turn)).makeAlliancesEmbed()
   }
 
+  makeNAPsEmbed(turnIndex=this.game.turnNumber) {
+    const turn = this.getTurn(turnIndex)
+    return (new TurnPresenter(this.game, turn)).makeNAPsEmbed()
+  }
+
   makeLinkListEmbed(turnIndex=this.game.turnNumber, index = 0) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeLinkListEmbed(index)

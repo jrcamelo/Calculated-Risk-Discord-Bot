@@ -1,6 +1,6 @@
 const BaseCommand = require("../base_command")
 module.exports = class PlayerAllyCommand extends BaseCommand {
-  static aliases = ["Betray", "Break"]
+  static aliases = ["Betray"]
   static description = "Breaks an alliance with another player."
   static argsDescription = "<@User> <@User> <@User>..."
   static category = "Player"

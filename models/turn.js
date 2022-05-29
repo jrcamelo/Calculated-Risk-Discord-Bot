@@ -2,7 +2,7 @@ const Player = require("./player");
 const bronKerbosch = require("../utils/bronkerbosch")
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy=null, rolls = null, poll = "", votes = null) {
+  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy=null, pacts=null, rolls = null, poll = "", votes = null) {
     this._database = _database
     this.description = description
     this.mup = mup
@@ -11,11 +11,12 @@ module.exports = class Turn {
     this.votes = votes || {}
     this.factionSlots = factionSlots || []
     this.diplomacy = diplomacy
+    this.pacts = pacts
     this._players = players || {}
     this._rolls = rolls || []
   }
 
-  static fromPreviousTurn(_database, previous, mup, description, factionSlots, diplomacy) {
+  static fromPreviousTurn(_database, previous, mup, description, factionSlots, diplomacy, pacts) {
     return new Turn(
       _database,
       mup,
@@ -24,6 +25,7 @@ module.exports = class Turn {
       this.playersToNewTurn(previous._players),
       factionSlots,
       diplomacy,
+      pacts,
     )
   }
   
@@ -195,6 +197,30 @@ module.exports = class Turn {
 
     const alliances = bronKerbosch(allies)
     this.diplomacy = { alliances, onesided, loners }
+  }
+
+  calculatePacts() {
+    const players = this.playerHashToList()
+    const pacts = {}
+    const onesided = []
+    const alreadyCounted = {}
+    for (let player of players) {
+      if (!player.alive) continue
+      for (let pacteeId of player.getNAPs()) {
+        const pactee = this.getPlayerFromId(pacteeId)
+        if (!pactee || !pactee.alive) continue
+        if (alreadyCounted[[player.id, pacteeId]]) continue
+        alreadyCounted[[pacteeId, player.id]] = true
+        if (pactee.isNAP(player.id)) {
+          pacts[[player.id, pactee.id]] = [player, pactee]
+        } else {
+          onesided.push([player.id, pactee.id])
+        }
+      }
+    }
+
+    const alliances = bronKerbosch(pacts)
+    this.pacts = { alliances, onesided }
   }
 
   listNotPlayed() {
