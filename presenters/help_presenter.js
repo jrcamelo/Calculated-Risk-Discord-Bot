@@ -140,6 +140,7 @@ module.exports = class HelpPresenter {
       Parser.commands["ragequit"],
       Parser.commands["status"],
       Parser.commands["ally"],
+      Parser.commands["nap"],
     ]
   }
 
