@@ -2,7 +2,7 @@ const Player = require("./player");
 const bronKerbosch = require("../utils/bronkerbosch")
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy=null, pacts=null, rolls = null, poll = "", votes = null) {
+  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy=null, pacts=null, rolls = null, poll = "", votes = null, cedes = null) {
     this._database = _database
     this.description = description
     this.mup = mup
@@ -14,6 +14,7 @@ module.exports = class Turn {
     this.pacts = pacts
     this._players = players || {}
     this._rolls = rolls || []
+    this.cedes = cedes || []
   }
 
   static fromPreviousTurn(_database, previous, mup, description, factionSlots, diplomacy, pacts) {
@@ -131,6 +132,10 @@ module.exports = class Turn {
 
   setPoll(poll) {
     this.poll = poll
+  }
+
+  addCede(cede) {
+    this.cedes.push(cede)
   }
 
   addFaction(faction) {

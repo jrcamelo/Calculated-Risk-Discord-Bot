@@ -48,6 +48,11 @@ module.exports = class GamePresenter {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeRollHistory(index, intentions)
   }
+  
+  makeCedeHistory(turnIndex=this.game.turnNumber, index=0) {
+    const turn = this.getTurn(turnIndex)
+    return (new TurnPresenter(this.game, turn)).makeCedeHistory(index)
+  }
 
   makeListOfAllMupsEmbed(index) {
     return new Discord.MessageEmbed()
