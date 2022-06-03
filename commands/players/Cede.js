@@ -31,7 +31,11 @@ module.exports = class PlayerCedeCommand extends BaseCommand {
     }
     if (this.saveOrReturnWarning()) return
     await this.sendReply(text || "Error")
-    if (success) this.turn.addCedeMessage(makeMessageLink(this.reply))
+    if (success) { 
+      const cedeMessage = `${this.player.ping()} ➜ ${mentionedPlayer.ping()}: ${makeMessageLink(this.message)}`
+      this.turn.addCedeMessage(cedeMessage)
+      if (this.saveOrReturnWarning()) return
+    }
   }
 
   cedeToPlayer(mentionedPlayer) {
