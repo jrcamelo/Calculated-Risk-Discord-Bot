@@ -10,6 +10,7 @@ module.exports = class CedesCommand extends PaginatedCommand {
   canDelete = true
   needsGame = true
   shouldLoop = false
+  hasExtras = true
   index = 0
   step = 10
 
@@ -26,7 +27,7 @@ module.exports = class CedesCommand extends PaginatedCommand {
   }
 
   getReply() {
-    let text = this.gamePresenter.makeCedeHistory(this.turnIndex, this.index)
+    let text = this.gamePresenter.makeCedeHistory(this.turnIndex, this.index, this.isShowingExtras)
     return text
   }
 }
