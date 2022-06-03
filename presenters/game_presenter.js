@@ -49,9 +49,11 @@ module.exports = class GamePresenter {
     return (new TurnPresenter(this.game, turn)).makeRollHistory(index, intentions)
   }
   
-  makeCedeHistory(turnIndex=this.game.turnNumber, index=0) {
+  makeCedeHistory(turnIndex=this.game.turnNumber, index=0, showMessageLinks) {
     const turn = this.getTurn(turnIndex)
-    return (new TurnPresenter(this.game, turn)).makeCedeHistory(index)
+    const turnPresenter = new TurnPresenter(this.game, turn)
+    if (!showMessageLinks) return turnPresenter.makeCedeHistory(index)
+    else return turnPresenter.makeCedeHistoryLinks(index)
   }
 
   makeListOfAllMupsEmbed(index) {

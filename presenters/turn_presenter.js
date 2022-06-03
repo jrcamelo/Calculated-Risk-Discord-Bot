@@ -122,6 +122,20 @@ module.exports = class TurnPresenter {
     return description || "Nothing was ceded."
   }
 
+  makeCedeHistoryLinks(index) {
+    index = index % (Math.ceil(this.turn.cedeMessages.length / 10) * 10)
+
+    let description = "";
+    for (let i = index; i < index + 10; i++) {
+      if (i < this.turn.cedeMessages.length) {
+        const cede = this.turn.cedeMessages[i]
+        description += cede + "\n\n";
+      }
+    }
+    if (description) description = `**${index+1}~${index+10}/${this.turn.cedeMessages.length} - Turn ${this.turn.number}/${this.game.turnNumber}**\n${description}`
+    return description || "Nothing was ceded."
+  }
+
   makeNotesEmbed() {        
     let embed = new Discord.MessageEmbed()
         .setTitle(`Notes`)

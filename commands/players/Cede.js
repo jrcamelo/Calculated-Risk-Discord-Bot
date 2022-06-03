@@ -1,4 +1,5 @@
 const BaseCommand = require("../base_command")
+const { makeMessageLink } = require("../../utils/discord");
 module.exports = class PlayerCedeCommand extends BaseCommand {
   static aliases = ["Cede", "Send"]
   static description = "Cede lands to another player."
@@ -14,6 +15,7 @@ module.exports = class PlayerCedeCommand extends BaseCommand {
 
   async execute() {
     this.changes = false
+    let success = false
     let text = ""
     for (let mentionedUser of this.getMentionedUsers()) {
       if (!mentionedUser) continue
@@ -23,11 +25,13 @@ module.exports = class PlayerCedeCommand extends BaseCommand {
       } else {
         text += this.cedeToPlayer(mentionedPlayer)
         this.turn.addCede(text);
+        success = true
       }
       break
     }
     if (this.saveOrReturnWarning()) return
-    await this.sendReply(text || `Error`)
+    await this.sendReply(text || "Error")
+    if (success) this.turn.addCedeMessage(makeMessageLink(this.reply))
   }
 
   cedeToPlayer(mentionedPlayer) {
