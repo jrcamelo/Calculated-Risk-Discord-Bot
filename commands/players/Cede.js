@@ -17,9 +17,10 @@ module.exports = class PlayerCedeCommand extends BaseCommand {
     this.changes = false
     let success = false
     let text = ""
+    let mentionedPlayer = null
     for (let mentionedUser of this.getMentionedUsers()) {
       if (!mentionedUser) continue
-      const mentionedPlayer = this.turn.getPlayer(mentionedUser)
+      mentionedPlayer = this.turn.getPlayer(mentionedUser)
       if (!mentionedPlayer) {
         text += this.userNotInGame(mentionedUser)
       } else {
