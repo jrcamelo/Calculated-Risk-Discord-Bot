@@ -38,6 +38,7 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
     } 
     this.changes = true
     this.player.allyWith(mentionedPlayer)
+    this.turn.saveAllyHistory(this.player, mentionedPlayer)
     return this.allyingWithPlayer(mentionedPlayer)
   }
   

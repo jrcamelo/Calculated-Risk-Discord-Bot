@@ -25,7 +25,7 @@ module.exports = class PlayerCedeCommand extends BaseCommand {
         text += this.userNotInGame(mentionedUser)
       } else {
         text += this.cedeToPlayer(mentionedPlayer)
-        this.turn.addCede(text);
+        this.turn.addCede(text, this.player.id);
         success = true
       }
       break

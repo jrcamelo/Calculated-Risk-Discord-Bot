@@ -38,6 +38,7 @@ module.exports = class PlayerNAPCommand extends BaseCommand {
     } 
     this.changes = true
     this.player.napWith(mentionedPlayer)
+    this.turn.saveNapHistory(this.player, mentionedPlayer)
     return this.allyingWithPlayer(mentionedPlayer)
   }
   
