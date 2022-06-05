@@ -44,6 +44,11 @@ module.exports = class GamePresenter {
     return (new TurnPresenter(this.game, turn)).makeLinkListEmbed(index)
   }
 
+  makeHistoryEmbed(turnIndex=this.game.turnNumber, index=0, extended) {
+    const turn = this.getTurn(turnIndex)
+    return (new TurnPresenter(this.game, turn)).makeHistoryEmbed(index, extended)
+  }
+  
   makeRollHistory(turnIndex=this.game.turnNumber, index=0, intentions) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeRollHistory(index, intentions)
