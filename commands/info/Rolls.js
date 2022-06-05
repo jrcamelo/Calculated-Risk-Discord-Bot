@@ -2,25 +2,25 @@ const PaginatedCommand = require("../paginated_command")
 const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class HistoryCommand extends PaginatedCommand {
-  static aliases = ["History", "Hs", "Events"]
-  static description = "Shows events chronologically. Check other turns by adding it as an argument."
+  static aliases = ["Rolls", "Rs"]
+  static description = "Shows all rolls chronologically. Try `Links` for a clickable list."
   static argsDescription = "[Turn]"
   static category = "Game"
 
   canDelete = true
   needsGame = true
   hasExtras = true
+  shouldLoop = false
   isShowingExtras = true
-  shouldLoop = true
   index = 0
-  step = 25
+  step = 10
 
   async execute() {
     this.ceiling = this.game.turnNumber
     this.getPageArg()
     this.turnIndex = this.index || this.game.turnNumber
 
-    this.ceiling = this.turn.history.length
+    this.ceiling = this.turn._rolls.length
     this.index = 0
 
     this.gamePresenter = new GamePresenter(this.game)
@@ -28,10 +28,10 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   }
 
   getReply() {
-    let text = this.gamePresenter.makeHistoryEmbed(this.turnIndex, this.index, this.isShowingExtras)
-    if (this.isShowingExtras && text.length > 6000) {
+    let text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, this.isShowingExtras)
+    if (this.isShowingExtras && text.length > 2000) {
       this.isShowingExtras = false
-      text = this.gamePresenter.makeHistoryEmbed(this.turnIndex, this.index, this.isShowingExtras)
+      text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, this.isShowingExtras)
     }
     return text
   }
