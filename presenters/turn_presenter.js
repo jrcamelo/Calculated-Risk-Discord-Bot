@@ -56,9 +56,10 @@ module.exports = class TurnPresenter {
   }
 
   makeStatusFooter() {
-    const alive = this.turn.playerHashToList().filter(player => player.isAlive).length
-    const total = this.turn.playerHashToList().length    
-    return `Turn ${this.turn.number}/${this.game.turnNumber} —— ${alive}/${total} players alive —— Master: ${this.game.masterUsername}`
+    const total = this.turn.playerHashToList().length
+    const alive = this.turn.playerHashToList().filter(player => player.alive).length
+    const rolled = this.turn.playerHashToList().filter(player => player.rolled && player.alive).length
+    return `Turn ${this.turn.number}/${this.game.turnNumber} — ${rolled}/${alive}/${total} Rolled/Alive/Players — Master: ${this.game.masterUsername}`
   }
 
   makeFieldsWithIntentions() {
