@@ -39,8 +39,8 @@ module.exports = class HistoryEntry {
     this.time = time || HistoryEntry.now()
   }
 
-  static limitMessageLength(message) {
-    return message.length > 100 ? message.substring(0, 100) + '...' : message
+  static limitMessageLength(message, length = 300) {
+    return message.length > length ? message.substring(0, length) + '...' : message
   }
 
   static now() {
@@ -91,16 +91,16 @@ module.exports = class HistoryEntry {
   static say(playerId, message) {
     return new HistoryEntry(
       TYPE.SAY, 
-      `<@!${playerId}> said: ${message}`,
-      `<@!${playerId}> said: ${HistoryEntry.limitMessageLength(message)}`, 
+      `<@!${playerId}> said: ${HistoryEntry.limitMessageLength(message)}`,
+      `<@!${playerId}> said: ${HistoryEntry.limitMessageLength(message, 100)}`, 
       playerId)
   }
 
   static vote(playerId, message) {
     return new HistoryEntry(
       TYPE.VOTE,
-      `<@!${playerId}> voted: ${message}`,
       `<@!${playerId}> voted: ${HistoryEntry.limitMessageLength(message)}`,
+      `<@!${playerId}> voted: ${HistoryEntry.limitMessageLength(message, 100)}`,
       playerId)
   }
 
@@ -116,7 +116,7 @@ module.exports = class HistoryEntry {
     return new HistoryEntry(
       TYPE.ROLL,
       `<@!${playerId}> rolled ${roll}: ${HistoryEntry.limitMessageLength(intention)}`,
-      `<@!${playerId}> rolled ${roll}`,
+      `<@!${playerId}> rolled ${roll}: ${HistoryEntry.limitMessageLength(intention, 100)}`,
       playerId)
   }
 
