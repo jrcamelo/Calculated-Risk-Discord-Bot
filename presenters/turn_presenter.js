@@ -13,7 +13,7 @@ module.exports = class TurnPresenter {
         .setTitle(`${this.game.name}`)
         .setDescription(this.makeDescription(false))
         .addFields(this.makeFactionFields())
-        .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
+        .setFooter(this.makeStatusFooter())
         .setImage(this.turn.mup)
     return embed
   }
@@ -22,7 +22,7 @@ module.exports = class TurnPresenter {
     let embed = new Discord.MessageEmbed()
       .setDescription(this.makeDescription(false))
       .addFields(this.makeFactionFields())
-      .setFooter(`Turn ${this.turn.number}/${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
+      .setFooter(this.makeStatusFooter())
       .setThumbnail(this.turn.mup)
     return embed
   }
@@ -50,9 +50,15 @@ module.exports = class TurnPresenter {
         .setTitle(`${this.game.name}`)
         .addFields(this.makeFieldsWithIntentions())
         .addFields(this.makeFactionFields())
-        .setFooter(`Turn ${this.turn.number} of ${this.game.turnNumber} - Master: ${this.game.masterUsername}`)
+        .setFooter(makeStatusFooter())
     isExpanded ? embed.setImage(this.turn.mup) : embed.setThumbnail(this.turn.mup)
     return embed
+  }
+
+  makeStatusFooter() {
+    const alive = this.turn.playerHashToList().filter(player => player.isAlive).length
+    const total = this.turn.playerHashToList().length    
+    return `Turn ${this.turn.number}/${this.game.turnNumber} —— ${alive}/${total} players alive —— Master: ${this.game.masterUsername}`
   }
 
   makeFieldsWithIntentions() {
@@ -103,14 +109,14 @@ module.exports = class TurnPresenter {
     const fields = []
     for (let i = index; i < index + 25; i++) {
       if (i < this.turn.history.length) {
-        let message = expanded ? this.turn.history[i].message : this.turn.history[i].summary
+        let message = expanded ? this.turn.history[i].history : this.turn.history[i].summary
         fields.push({name: `\u200B`, value: message, inline: false})
       }
     }
     if (fields.length > 0) {
       return fields
     }
-    return [ {name: "No events", value: "No events"} ]
+    return [ {name: "\u200B", value: "No events"} ]
   }
 
   makeRollHistory(index, intentions) {

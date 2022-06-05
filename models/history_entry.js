@@ -32,7 +32,7 @@ module.exports = class HistoryEntry {
 
   constructor(type, history, summary, playerId, time = null, category = null) {
     this.type = type
-    this.category = category || CATEGORY[type] || type
+    this.category = category || HistoryEntry.CATEGORY[type] || type
     this.history = history
     this.summary = summary
     this.playerId = playerId
@@ -50,7 +50,7 @@ module.exports = class HistoryEntry {
 
   static join(playerId, faction) {
     return new HistoryEntry(
-      TYPE.JOIN, 
+      HistoryEntry.TYPE.JOIN, 
       `<@!${playerId}> joined as ${faction || "themselves"}`, 
       `<@!${playerId}> joined as ${faction || "themselves"}`, 
       playerId)
@@ -58,7 +58,7 @@ module.exports = class HistoryEntry {
 
   static rename(playerId, faction) {
     return new HistoryEntry(
-      TYPE.JOIN, 
+      HistoryEntry.TYPE.JOIN, 
       `<@!${playerId}> renamed to ${faction || "themselves"}`, 
       `<@!${playerId}> renamed to ${faction || "themselves"}`,
       playerId)
@@ -66,7 +66,7 @@ module.exports = class HistoryEntry {
 
   static leave(playerId) {
     return new HistoryEntry(
-      TYPE.LEAVE, 
+      HistoryEntry.TYPE.LEAVE, 
       `<@!${playerId}> left the game`, 
       `<@!${playerId}> left the game`, 
       playerId)
@@ -74,7 +74,7 @@ module.exports = class HistoryEntry {
 
   static die(playerId) {
     return new HistoryEntry(
-      TYPE.DIE, 
+      HistoryEntry.TYPE.DIE, 
       `<@!${playerId}> died`, 
       `<@!${playerId}> died`, 
       playerId)
@@ -82,7 +82,7 @@ module.exports = class HistoryEntry {
 
   static revive(playerId) {
     return new HistoryEntry(
-      TYPE.REVIVE, 
+      HistoryEntry.TYPE.REVIVE, 
       `<@!${playerId}> was revived`, 
       `<@!${playerId}> was revived`, 
       playerId)
@@ -90,15 +90,15 @@ module.exports = class HistoryEntry {
 
   static say(playerId, message) {
     return new HistoryEntry(
-      TYPE.SAY, 
-      `<@!${playerId}> said: ${HistoryEntry.limitMessageLength(message)}`,
-      `<@!${playerId}> said: ${HistoryEntry.limitMessageLength(message, 100)}`, 
+      HistoryEntry.TYPE.SAY, 
+      `${HistoryEntry.limitMessageLength(message)}`,
+      `${HistoryEntry.limitMessageLength(message, 100)}`, 
       playerId)
   }
 
   static vote(playerId, message) {
     return new HistoryEntry(
-      TYPE.VOTE,
+      HistoryEntry.TYPE.VOTE,
       `<@!${playerId}> voted: ${HistoryEntry.limitMessageLength(message)}`,
       `<@!${playerId}> voted: ${HistoryEntry.limitMessageLength(message, 100)}`,
       playerId)
@@ -106,7 +106,7 @@ module.exports = class HistoryEntry {
 
   static cede(playerId, message, summary) {
     return new HistoryEntry(
-      TYPE.CEDE,
+      HistoryEntry.TYPE.CEDE,
       message,
       summary,
       playerId)
@@ -114,15 +114,15 @@ module.exports = class HistoryEntry {
 
   static roll(playerId, roll, intention) {
     return new HistoryEntry(
-      TYPE.ROLL,
-      `<@!${playerId}> rolled ${roll}: ${HistoryEntry.limitMessageLength(intention)}`,
-      `<@!${playerId}> rolled ${roll}: ${HistoryEntry.limitMessageLength(intention, 100)}`,
+      HistoryEntry.TYPE.ROLL,
+      `<@!${playerId}> rolled ${roll}${intention ? ": " : ""}${HistoryEntry.limitMessageLength(intention)}`,
+      `<@!${playerId}> rolled ${roll}${intention ? ": " : ""}${HistoryEntry.limitMessageLength(intention, 100)}`,
       playerId)
   }
 
   static ally(playerId, allyId) {
     return new HistoryEntry(
-      TYPE.ALLY,
+      HistoryEntry.TYPE.ALLY,
       `<@!${playerId}> allied <@!${allyId}>`,
       `<@!${playerId}> allied <@!${allyId}>`,
       playerId)
@@ -130,7 +130,7 @@ module.exports = class HistoryEntry {
 
   static betray(playerId, allyId) {
     return new HistoryEntry(
-      TYPE.BETRAY,
+      HistoryEntry.TYPE.BETRAY,
       `<@!${playerId}> betrayed <@!${allyId}>`,
       `<@!${playerId}> betrayed <@!${allyId}>`,
       playerId)
@@ -138,7 +138,7 @@ module.exports = class HistoryEntry {
 
   static nap(playerId, allyId) {
     return new HistoryEntry(
-      TYPE.NAP,
+      HistoryEntry.TYPE.NAP,
       `<@!${playerId}> made a NAP with <@!${allyId}>`,
       `<@!${playerId}> made a NAP with <@!${allyId}>`,
       playerId)
@@ -146,7 +146,7 @@ module.exports = class HistoryEntry {
 
   static break(playerId, allyId) {
     return new HistoryEntry(
-      TYPE.BREAK,
+      HistoryEntry.TYPE.BREAK,
       `<@!${playerId}> broke NAP with <@!${allyId}>`,
       `<@!${playerId}> broke NAP with <@!${allyId}>`,
       playerId)
