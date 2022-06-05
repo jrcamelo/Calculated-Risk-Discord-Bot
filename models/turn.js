@@ -298,6 +298,10 @@ module.exports = class Turn {
     return text
   }
 
+  saveAddendum(player, addendum) {
+    this.addHistory(HistoryEntry.say(player.id, addendum))
+  }
+
   saveAllyHistory(player, ally) {
     this.addHistory(HistoryEntry.ally(player.id, ally.id))
   }
