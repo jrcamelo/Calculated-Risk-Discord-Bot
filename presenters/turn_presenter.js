@@ -91,6 +91,27 @@ module.exports = class TurnPresenter {
       .setFooter(`${index+1}~${index+10}/${this.turn._rolls.length} - Turn ${this.turn.number}/${this.game.turnNumber}`)
     return embed;
   }
+  
+  makeHistoryEmbed(index, expanded) {
+    let embed = new Discord.MessageEmbed()
+        .addFields(this.makeHistoryFields(index, expanded))
+        .setFooter(`${Math.min((index+1)*25, this.turn.history.length)}/${this.turn.history.length} events - Turn ${this.turn.number}/${this.game.turnNumber}`)
+    return embed
+  }
+
+  makeHistoryFields(index, expanded) {
+    const fields = []
+    for (let i = index; i < index + 25; i++) {
+      if (i < this.turn.history.length) {
+        let message = expanded ? this.turn.history[i].message : this.turn.history[i].summary
+        fields.push({name: `\u200B`, value: message, inline: false})
+      }
+    }
+    if (fields.length > 0) {
+      return fields
+    }
+    return [ {name: "No events", value: "No events"} ]
+  }
 
   makeRollHistory(index, intentions) {
     index = index % (Math.ceil(this.turn._rolls.length / 10) * 10)
