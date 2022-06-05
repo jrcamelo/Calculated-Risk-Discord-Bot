@@ -50,6 +50,7 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
     if (mentionedPlayer.isNAP(this.player)) {
       mentionedPlayer.break(this.player)
     }
+    this.turn.saveBreakHistory(this.player, mentionedPlayer)
     return text
   }
   

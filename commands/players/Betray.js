@@ -50,6 +50,7 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
     if (mentionedPlayer.isAlly(this.player)) {
       mentionedPlayer.betray(this.player)
     }
+    this.turn.saveBetrayHistory(this.player, mentionedPlayer)
     return text
   }
   

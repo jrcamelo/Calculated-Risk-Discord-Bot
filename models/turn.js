@@ -1,12 +1,14 @@
 const Player = require("./player");
-const bronKerbosch = require("../utils/bronkerbosch")
+const bronKerbosch = require("../utils/bronkerbosch");
+const HistoryEntry = require("./history_entry");
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy=null, pacts=null, rolls = null, poll = "", votes = null, cedes = null, cedeMessages = null) {
+  constructor(_database, mup = "", description = "", number = 0, players = null, history = null, factionSlots = null, diplomacy=null, pacts=null, rolls = null, poll = "", votes = null, cedes = null, cedeMessages = null) {
     this._database = _database
     this.description = description
     this.mup = mup
     this.number = number
+    this.history = history || []
     this.poll = poll
     this.votes = votes || {}
     this.factionSlots = factionSlots || []
@@ -50,6 +52,10 @@ module.exports = class Turn {
     return this._database.saveTurn(this, this.number)
   }
 
+  addHistory(entry) {
+    this.history.push(entry)
+  }
+
   getPlayer(discordUser) {
     if (!discordUser) return null
     return this._players[discordUser.id];
@@ -62,11 +68,13 @@ module.exports = class Turn {
   addPlayer(discordUser, factionName) {
     const faction = factionName ? this.getAndRemoveFactionIfExists(factionName) : ""
     this._players[discordUser.id] = new Player(discordUser, faction)
+    this.addHistory(HistoryEntry.join(discordUser.id, factionName))
     return this._players[discordUser.id]
   }
 
   renamePlayer(player, factionName) {
     player.name = factionName ? this.getAndRemoveFactionIfExists(factionName) : ""
+    this.addHistory(HistoryEntry.rename(player.id, factionName))
     return player
   }
 
@@ -83,19 +91,23 @@ module.exports = class Turn {
   kickPlayer(player) {
     player.alive = false;
     player.removed = true;
+    this.addHistory(HistoryEntry.leave(player.id))
   }
   banPlayer(player) {
     delete this._players[player.id]
+    this.addHistory(HistoryEntry.leave(player.id))
   }
 
   killPlayer(player) {
     player.alive = false
     this.calculateDiplomacy()
+    this.addHistory(HistoryEntry.kill(player.id))
   }
   revivePlayer(player) {
     player.alive = true
     player.removed = false;
     this.calculateDiplomacy()
+    this.addHistory(HistoryEntry.revive(player.id))
   }
 
   addRoll(roll) {
@@ -104,6 +116,7 @@ module.exports = class Turn {
     if (!this._players[roll.playerId].rollTime) {
       this._players[roll.playerId].rollTime = roll.time;
     }
+    this.addHistory(HistoryEntry.roll(roll.playerId, roll.formattedValue, roll.intention))
   }
   
   playerHashToList() {
@@ -129,14 +142,21 @@ module.exports = class Turn {
 
   setPlayerVote(player, vote) {
     this.votes[player.id] = vote
+    this.addHistory(HistoryEntry.vote(player.id, vote))
   }
 
   setPoll(poll) {
     this.poll = poll
   }
 
-  addCede(cede) {
+  addCede(cede, playerId) {
     this.cedes.push(cede)
+    let cleanCede = cede.replace(/\n/g, " ")
+    let summary = cede.split("\n")[0]
+    if (summary.endsWith(":")) {
+      summary = summary.substring(0, summary.length - 1)
+    }
+    this.addHistory(HistoryEntry.cede(playerId, cleanCede, summary))
   }
 
   addCedeMessage(message) {
@@ -278,5 +298,19 @@ module.exports = class Turn {
     return text
   }
 
+  saveAllyHistory(player, ally) {
+    this.addHistory(HistoryEntry.ally(player.id, ally.id))
+  }
   
+  saveBetrayHistory(player, ally) {
+    this.addHistory(HistoryEntry.betray(player.id, ally.id))
+  }
+
+  saveNapHistory(player, nap) {
+    this.addHistory(HistoryEntry.nap(player.id, nap.id))
+  }
+
+  saveBreakHistory(player, nap) {
+    this.addHistory(HistoryEntry.break(player.id, nap.id))
+  }
 }
