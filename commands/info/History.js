@@ -11,14 +11,13 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   needsGame = true
   hasExtras = true
   isShowingExtras = true
-  shouldLoop = true
-  index = 0
-  step = 25
+  hasExpand = true
 
-  async execute() {
+  async execute() {    
+    this.index = this.game.turnNumber
     this.ceiling = this.game.turnNumber
     this.getPageArg()
-    this.turnIndex = this.index || this.game.turnNumber
+    this.expandIndex = 0
 
     this.ceiling = this.turn.history.length
     this.index = 0
@@ -28,11 +27,17 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   }
 
   getReply() {
-    let text = this.gamePresenter.makeHistoryEmbed(this.turnIndex, this.index, this.isShowingExtras)
+    let text = this.gamePresenter.makeHistoryEmbed(this.index, this.expandIndex, this.isShowingExtras)
     if (this.isShowingExtras && text.length > 6000) {
       this.isShowingExtras = false
-      text = this.gamePresenter.makeHistoryEmbed(this.turnIndex, this.index, this.isShowingExtras)
+      text = this.gamePresenter.makeHistoryEmbed(this.index, this.expandIndex, this.isShowingExtras)
     }
     return text
+  }
+
+  
+  async doExpand(_collected, command) {
+    command.expandIndex = command.expandIndex + 1;
+    await command.editReply();
   }
 }

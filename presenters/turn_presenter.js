@@ -99,18 +99,19 @@ module.exports = class TurnPresenter {
     return embed;
   }
   
-  makeHistoryEmbed(index, expanded) {
+  makeHistoryEmbed(index, extra) {
+    let actualIndex = (index % this.turn.history.length / 10) * 100
     let embed = new Discord.MessageEmbed()
-        .addFields(this.makeHistoryFields(index, expanded))
-        .setFooter(`${Math.min((index+1)*25, this.turn.history.length)}/${this.turn.history.length} events - Turn ${this.turn.number}/${this.game.turnNumber}`)
+        .addFields(this.makeHistoryFields(actualIndex, extra))
+        .setFooter(`${Math.min((actualIndex+1)*10, this.turn.history.length)}/${this.turn.history.length} events - Turn ${this.turn.number}/${this.game.turnNumber}`)
     return embed
   }
 
-  makeHistoryFields(index, expanded) {
+  makeHistoryFields(index, extra) {
     const fields = []
-    for (let i = index; i < index + 25; i++) {
+    for (let i = index; i < index + 10; i++) {
       if (i < this.turn.history.length) {
-        let message = expanded ? this.turn.history[i].history : this.turn.history[i].summary
+        let message = extra ? this.turn.history[i].history : this.turn.history[i].summary
         fields.push({name: `\u200B`, value: message, inline: false})
       }
     }
