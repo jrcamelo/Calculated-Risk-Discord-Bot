@@ -100,10 +100,11 @@ module.exports = class TurnPresenter {
   }
   
   makeHistoryEmbed(index, extra) {
-    let actualIndex = (index % this.turn.history.length / 10) * 100
+    let actualIndex = (index % Math.ceil(this.turn.history.length/10)) * 10
+    actualIndex = isNaN(actualIndex) ? 0 : actualIndex
     let embed = new Discord.MessageEmbed()
         .addFields(this.makeHistoryFields(actualIndex, extra))
-        .setFooter(`${Math.min((actualIndex+1)*10, this.turn.history.length)}/${this.turn.history.length} events - Turn ${this.turn.number}/${this.game.turnNumber}`)
+        .setFooter(`${Math.min(actualIndex+10, this.turn.history.length)}/${this.turn.history.length} events - Turn ${this.turn.number}/${this.game.turnNumber}`)
     return embed
   }
 

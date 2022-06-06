@@ -3,7 +3,7 @@ const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class HistoryCommand extends PaginatedCommand {
   static aliases = ["History", "Events", "E"]
-  static description = "Shows events chronologically. Check other turns by adding it as an argument."
+  static description = "Shows most events chronologically."
   static argsDescription = "[Turn]"
   static category = "Game"
 
@@ -18,9 +18,6 @@ module.exports = class HistoryCommand extends PaginatedCommand {
     this.ceiling = this.game.turnNumber
     this.getPageArg()
     this.expandIndex = 0
-
-    this.ceiling = this.turn.history.length
-    this.index = 0
 
     this.gamePresenter = new GamePresenter(this.game)
     await this.sendReply(this.getReply())
