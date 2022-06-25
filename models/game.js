@@ -5,7 +5,7 @@ const SaveGameOnMasterStats = require("../tasks/server/set/SaveGameOnMasterStats
 const PlayerStats = require("./player_stats")
 
 module.exports = class Game {
-  constructor(_database, name, masterId, masterUsername, channel, turnNumber = 0, startedAt = Date.now(), endedAt = null) {
+  constructor(_database, name, masterId, masterUsername, channel, turnNumber = 0, startedAt = Date.now(), banList = null, quitList = null, endedAt = null) {
     this._database = _database
     this.channel = channel
     this.name = name
@@ -15,6 +15,8 @@ module.exports = class Game {
     this.startedAt = startedAt
     this.endedAt = endedAt
     this.uniqueId = `${channel}-${startedAt}`
+    this.banList = banList || [];
+    this.quitList = quitList || [];
     this._turn = _database ? _database.getTurn(this.turnNumber) || new Turn(_database) : null
   }
 
@@ -37,6 +39,7 @@ module.exports = class Game {
   nextTurn(mup, description) {
     this.turnNumber += 1
     this._turn = Turn.fromPreviousTurn(this._database, this._turn, mup, description, this._turn.slots, this._turn.diplomacy, this._turn.pacts)
+    this._turn.startedAt = Date.now()
     this._database.saveNewTurn(this._turn)
   }
 
@@ -126,6 +129,22 @@ module.exports = class Game {
   transferMaster(newMaster) {
     this.masterId = newMaster.id
     this.masterUsername = newMaster.username
+  }
+
+  addToBanList(playerId) {
+    this.banList.push(playerId)
+  }
+
+  isPlayerBanned(playerId) {    
+    return this.banList.includes(playerId)
+  }
+
+  addToQuitList(playerId) {
+    this.quitList.push(playerId)
+  }
+
+  isPlayerPermaQuit(playerId) {
+    return this.quitList.includes(playerId)
   }
 
   pingMaster() {
