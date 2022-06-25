@@ -1,5 +1,5 @@
 const BaseCommand = require("../base_command")
-module.exports = class PlayerAllyCommand extends BaseCommand {
+module.exports = class PlayerBetrayAllyCommand extends BaseCommand {
   static aliases = ["Betray"]
   static description = "Breaks an alliance with another player."
   static argsDescription = "<@User> <@User> <@User>..."
@@ -67,7 +67,7 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
   }
 
   betrayingYourself() {
-    return `You are not allied with yourself. Evidently.\n`
+    return `You are already your own worst enemy.\n`
   }
 
   betrayingPlayer(player) {

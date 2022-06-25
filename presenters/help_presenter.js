@@ -118,12 +118,14 @@ module.exports = class HelpPresenter {
       Parser.commands["kill"],
       Parser.commands["turn"],
       Parser.commands["turnedit"],
-      Parser.commands["faction"],
+      Parser.commands["slot"],
       Parser.commands["setbonus"],
       Parser.commands["setnote"],
       Parser.commands["ping"],
       Parser.commands["kick"],
       Parser.commands["purge"],
+      Parser.commands["forceally"],
+      Parser.commands["forcebetray"],
       Parser.commands["renamegame"],
     ]
   }

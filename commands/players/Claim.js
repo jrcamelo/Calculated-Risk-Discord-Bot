@@ -27,6 +27,8 @@ module.exports = class ClaimCommand extends BaseCommand {
       } else {
         return this.sendReply(`Your faction has been renamed to ${renamedPlayer.name}`)
       }
+    } else if (this.game.isPlayerBanned(this.user.id)) {
+      this.replyDeletable(`You have been banned from this game.`)
     } else {
       this.turn.addPlayer(this.user, this.arg)
       const newPlayer = this.turn.getPlayer(this.user)
