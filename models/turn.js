@@ -3,12 +3,11 @@ const bronKerbosch = require("../utils/bronkerbosch");
 const HistoryEntry = require("./history_entry");
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, players = null, history = null, factionSlots = null, diplomacy=null, pacts=null, rolls = null, poll = "", votes = null, cedes = null, cedeMessages = null) {
+  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy=null, pacts=null, rolls = null, poll = "", votes = null, cedes = null, cedeMessages = null, history = null, startedAt = null) {
     this._database = _database
     this.description = description
     this.mup = mup
     this.number = number
-    this.history = history || []
     this.poll = poll
     this.votes = votes || {}
     this.factionSlots = factionSlots || []
@@ -16,11 +15,16 @@ module.exports = class Turn {
     this.pacts = pacts
     this.cedes = cedes || []
     this.cedeMessages = cedeMessages || []
+    this.history = history || []
+    this.startedAt = startedAt
     this._players = players || {}
     this._rolls = rolls || []
   }
 
-  static fromPreviousTurn(_database, previous, mup, description, factionSlots, diplomacy, pacts) {
+  static fromPreviousTurn(_database, previous, mup, description, factionSlots1, diplomacy, pacts) {
+    // Temporary fix for faction slots
+    let factionSlots = Array.isArray(factionSlots1) ? factionSlots1 : []
+
     return new Turn(
       _database,
       mup,
@@ -173,7 +177,10 @@ module.exports = class Turn {
         return this.factionSlots[faction - 1]
       }
     }
-    return this.factionSlots.find(slot => slot.toLowerCase().match(faction.toLowerCase()))
+    // TODO: Temporary fix, disabling factionSlots til it calms down
+    if (!Array.isArray(this.factionSlots)) { this.factionSlots = []; }
+    // return this.factionSlots.find(slot => slot.toLowerCase().match(faction.toLowerCase()))
+    return null
   }
 
   factionExists(faction) {

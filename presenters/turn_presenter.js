@@ -59,7 +59,7 @@ module.exports = class TurnPresenter {
     const total = this.turn.playerHashToList().length
     const alive = this.turn.playerHashToList().filter(player => player.alive).length
     const rolled = this.turn.playerHashToList().filter(player => player.rolled && player.alive).length
-    return `Turn ${this.turn.number}/${this.game.turnNumber} — ${rolled}/${alive}/${total} Rolled/Alive/Players — Master: ${this.game.masterUsername}`
+    return `Turn ${this.turn.number}/${this.game.turnNumber} — ${rolled}R/${alive}A/${total} players — Master: ${this.game.masterUsername}`
   }
 
   makeFieldsWithIntentions() {
@@ -103,12 +103,12 @@ module.exports = class TurnPresenter {
     let actualIndex = (index % Math.ceil(this.turn.history.length/10)) * 10
     actualIndex = isNaN(actualIndex) ? 0 : actualIndex
     let embed = new Discord.MessageEmbed()
-        .addFields(this.makeHistoryFields(actualIndex, extra))
+        .setDescription(this.makeHistoryDescription(actualIndex, extra))
         .setFooter(`${Math.min(actualIndex+10, this.turn.history.length)}/${this.turn.history.length} events - Turn ${this.turn.number}/${this.game.turnNumber}`)
     return embed
   }
 
-  makeHistoryFields(index, extra) {
+  makeHistoryDescription(index, extra) {
     const fields = []
     for (let i = index; i < index + 10; i++) {
       if (i < this.turn.history.length) {
@@ -116,10 +116,17 @@ module.exports = class TurnPresenter {
         fields.push({name: `\u200B`, value: message, inline: false})
       }
     }
+    // Just in case I need to change back to fields
     if (fields.length > 0) {
-      return fields
+      let description = ""
+      for (let field of fields) {
+        let value = field.value.replace("\n", "  ")
+        if (description) description += "\n-\n"
+        description += value
+      }
+      return description
     }
-    return [ {name: "\u200B", value: "No events"} ]
+    return "No events"
   }
 
   makeRollHistory(index, intentions) {
