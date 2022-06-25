@@ -8,6 +8,7 @@ module.exports = class PlayerCedeCommand extends BaseCommand {
 
   canDelete = false
   needsGame = true
+  playerOnly = true
   aliveOnly = true
   needsMention = true
   canMention = false
@@ -41,7 +42,7 @@ module.exports = class PlayerCedeCommand extends BaseCommand {
 
   cedeToPlayer(mentionedPlayer) {
     if (!this.args && this.attachment != null) return `${this.player.pingWithFaction()} cedes nothing to ${mentionedPlayer.pingWithFaction()}.`
-    return `${this.player.pingWithFaction()} cedes the following to ${mentionedPlayer.pingWithFaction()}:\n` + this.arg + " " + (this.attachment || "")
+    return `${this.player.pingWithFaction()} cedes to ${mentionedPlayer.pingWithFaction()}:\n` + this.arg + " " + (this.attachment || "")
   }
   
   userNotInGame(user) {
