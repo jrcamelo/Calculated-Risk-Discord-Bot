@@ -39,7 +39,8 @@ module.exports = class HistoryEntry {
     this.time = time || HistoryEntry.now()
   }
 
-  static limitMessageLength(message, length = 300) {
+  static limitMessageLength(originalMessage, length = 300) {
+    let message = originalMessage.replace(/\n/g, " ... ");
     return message.length > length ? message.substring(0, length) + '...' : message
   }
 
@@ -72,7 +73,7 @@ module.exports = class HistoryEntry {
       playerId)
   }
 
-  static die(playerId) {
+  static kill(playerId) {
     return new HistoryEntry(
       HistoryEntry.TYPE.DIE, 
       `<@!${playerId}> died`, 

@@ -1,16 +1,17 @@
 const BaseCommand = require("../base_command")
-const { makeMessageLink } = require("../../utils/discord");
-module.exports = class PlayerCedeCommand extends BaseCommand {
-  static aliases = ["Add", "Say"]
-  static description = "Add something to the history."
+module.exports = class PlayerSayCommand extends BaseCommand {
+  static aliases = ["Say"]
+  static description = "Add something to the history. Masters can use it as `Announce`"
   static argsDescription = "<Message>"
   static category = "Player"
 
   canDelete = false
   needsGame = true
+  playerOnly = true
   aliveOnly = true
   canMention = false
   neededArgsAmount = 1
+  shouldCleanArgsLineBreaks = false
 
   async execute() {
     let text = `${this.player.ping()} adds: ${this.arg}`
