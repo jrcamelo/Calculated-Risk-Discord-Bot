@@ -22,7 +22,11 @@ module.exports = class PlayerAddCommand extends BaseCommand {
       if (player) {
         resultMessage += this.renamePlayer(mention, arg, player)
       } else {
-        resultMessage += this.addPlayer(mention, arg, id, mentionedUsersHash)
+        if (this.game.isPlayerPermaQuit(id)) {
+          resultMessage += `<@!${id}> has quit this game. They have to join the game again.`
+        } else {
+          resultMessage += this.addPlayer(mention, arg, id, mentionedUsersHash)
+        }
       }
     }
 
