@@ -18,7 +18,7 @@ module.exports = class PlayerKillCommand extends BaseCommand {
 
   async execute() {
     if (!this.mentionedPlayer.alive)
-      return this.sendReply(`Stop! Stop! They're already dead!.`)
+      return this.sendReply(`Stop! Stop! They're already dead!`)
 
     this.turn.killPlayer(this.mentionedPlayer)
     if (this.saveOrReturnWarning()) return
