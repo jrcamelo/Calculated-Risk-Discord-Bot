@@ -21,10 +21,7 @@ module.exports = class Turn {
     this._rolls = rolls || []
   }
 
-  static fromPreviousTurn(_database, previous, mup, description, factionSlots1, diplomacy, pacts) {
-    // Temporary fix for faction slots
-    let factionSlots = Array.isArray(factionSlots1) ? factionSlots1 : []
-
+  static fromPreviousTurn(_database, previous, mup, description, factionSlots, diplomacy, pacts) {
     return new Turn(
       _database,
       mup,
@@ -179,8 +176,7 @@ module.exports = class Turn {
     }
     // TODO: Temporary fix, disabling factionSlots til it calms down
     if (!Array.isArray(this.factionSlots)) { this.factionSlots = []; }
-    // return this.factionSlots.find(slot => slot.toLowerCase().match(faction.toLowerCase()))
-    return null
+    return this.factionSlots.find(slot => slot.toLowerCase().match(faction.toLowerCase()))
   }
 
   factionExists(faction) {

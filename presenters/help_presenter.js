@@ -43,7 +43,8 @@ module.exports = class HelpPresenter {
     description += "\n\nThere are a lot of other commands that help you keep track of what's happening and has happened in the game, "
     description += "as well as some Admin related features to customize the bot, so please check out `r.HelpUtil` (r.hu) for more info. "
 
-    description += "\n\nKeeping this bot up and running is only possible [thanks to the awesome supporters.](https://www.patreon.com/jrlol3)"
+    description += "\n\nKeeping this bot up and running is only possible thanks to the awesome supporters at [Patreon](https://www.patreon.com/jrlol3). Special thanks to Silenius for much needed initial help."
+    description += "\n\nJoin my Bot server for announcements and information: https://discord.gg/arK9crj8w8"
 
     return this.makeBaseHelpEmbed()
       .setThumbnail("https://i.imgur.com/pIr8hmb.jpg")
