@@ -255,6 +255,75 @@ module.exports = class Turn {
     const alliances = bronKerbosch(pacts)
     this.pacts = { alliances, onesided }
   }
+  
+  listNotPlayedAtRandomOrder() {
+    console.log(this.diplomacy.alliances)
+    console.log(this.playerHashToList())
+    let text = ''
+    let count = 1
+    for (let player of this.shuffle(this.playerHashToList())) {
+      if (player.alive && !player.rolled) {
+        text += `${count}. ${player.usernameWithFaction()}\n`
+        count += 1
+      }
+    }
+    return text || 'Everyone has already rolled.'
+  }
+
+  listAlliancesInSemiRandomOrder() {
+    const players = this.playerHashToList()
+      .filter(player => player.alive)
+      .map(player => player.id);
+    
+    const alliances = this.diplomacy.alliances.map(alliance => alliance.filter(id => players.includes(id)));
+    const lonePlayers = players.filter(p => !alliances.flat().includes(p));
+    const sortedAlliances = alliances.map(alliance => this.shufflesort(alliance));
+    const result = [];
+    
+    const maxLength = Math.max(lonePlayers.length, ...sortedAlliances.map(a => a.length));
+    
+    for (let i = 0; i < maxLength; i++) {
+      const round = [];
+      for (const alliance of sortedAlliances) {
+        if (alliance[i] !== undefined) {
+          round.push(alliance[i]);
+        }
+      }
+      if (lonePlayers[i] !== undefined) {
+        round.push(lonePlayers[i]);
+      }
+      result.push(...this.shufflesort(round));
+    }
+    
+    console.log(lonePlayers);
+    console.log(sortedAlliances);
+    console.log(result);
+
+    let text = ''
+    let count = 1
+    for (let playerId of result) {
+        const player = this.getPlayerFromId(`${playerId}`)
+        if (!player) continue
+        text += `${count}. ${this.getPlayerFromId(`${playerId}`).usernameWithFaction()}\n`
+        count += 1
+      }
+    return text || 'Everyone has already rolled.'
+  }
+
+  shufflesort(arr) {
+    return arr.sort(() => Math.random() - 0.5);
+  }
+
+  shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+    while (currentIndex > 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  }
 
   listNotPlayed() {
     const text = this.pingPlayers(function(player) {
@@ -263,6 +332,16 @@ module.exports = class Turn {
       }
     })    
     return text || "Everyone has already rolled. Mup when?";
+  }
+
+  listBonuses() {
+    let text = "";
+    for (let player of this.playerHashToList()) {
+      if (player.bonus) {
+        text += player.usernameWithFaction() + " -- Bonus: " + player.bonus + "\n";
+      }
+    }
+    return text || "No bonuses";
   }
 
   pingNotPlayed() {

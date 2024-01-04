@@ -38,6 +38,7 @@ module.exports = class GifMaker {
   async makeGif(callback) {
     console.log(`Making gif for ${this.serverId} ${this.gameId}...`)
     await this.downloadMups()
+    console.log(this.links)
     await this.makeGifFrames()
     if (this.gifFrames.length === 0) return callback()
     await this.writeGif()
@@ -46,21 +47,33 @@ module.exports = class GifMaker {
   }
 
   async downloadMups() {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
     for (let i = 0; i < this.links.length; i++) {
-      const link = this.links[i];
-      const options = {
-        url: link,
-        dest: `${this.getDownloadFolderPath()}${i}.jpg`
-      }
+      const link = this.links[i];      
+      const path = new URL(link).pathname.split('?')[0];
+      const extension = path.split('.').pop();
+
+      if (imageExtensions.includes(extension)) {
+        const options = {
+          url: link,
+          dest: `${this.getDownloadFolderPath()}${i}.jpg`
+        }
         await ImageDownloader.image(options)
+      } else {
+        console.log("Skipping gif frame: " + link)
+      }
     }
   }
 
   async makeGifFrames() {
     for (let i = 0; i < this.links.length; i++) {
-      const image = await this.treatImage(i)
-      const frame = new GifFrame(image.bitmap, { delayCentisecs: this.delay / 10 })
-      this.gifFrames.push(frame)
+      try {
+        const image = await this.treatImage(i)
+        const frame = new GifFrame(image.bitmap, { delayCentisecs: this.delay / 10 })
+        this.gifFrames.push(frame)
+      } catch(error) {
+        console.log(`An error occurred while making gif frames: ${error.message}`);
+      }
     }
   }
 
