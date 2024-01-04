@@ -9,6 +9,7 @@ module.exports = {
   okReactionEmoji: "👌",
   stopEphemeralReactionEmoji: "🔒",
   levelUp: "884286417621123122",
+  troll: "1063579260582899772",
 
   rolls: {
     69: "871200203909246997", // Smug Pepe
