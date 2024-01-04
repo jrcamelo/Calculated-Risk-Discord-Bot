@@ -27,7 +27,7 @@ module.exports = class PlayerForceNapCommand extends BaseCommand {
         }
     }
 
-    if (this.changes) this.turn.calculateDiplomacy()
+    if (this.changes) this.turn.calculatePacts()
     if (this.saveOrReturnWarning()) return
     await this.sendReply(text || "Could not force a NAP.")
   }
