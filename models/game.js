@@ -84,11 +84,13 @@ module.exports = class Game {
   }
 
   finishGame() {
+    if (!this.endedAt) {
+      this.saveOnPlayerStats()
+      this.saveOnMasterStats()
+    }
     this.endedAt = Date.now()
     this.save()
     this.saveOnServer()
-    this.saveOnPlayerStats()
-    this.saveOnMasterStats()
     return this._database.outdateCurrentGame(this)
   }
 

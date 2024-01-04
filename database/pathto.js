@@ -20,6 +20,11 @@ class PathTo {
     }
   }
 
+  server() {
+    if (this.serverId == null) return null
+    return path.join(this.base, SERVER_FOLDER, this.serverId)
+  }
+
   channel() {
     if (this.serverId == null || this.channelId == null) return null
     return path.join(this.base, SERVER_FOLDER, this.serverId, this.channelId)
