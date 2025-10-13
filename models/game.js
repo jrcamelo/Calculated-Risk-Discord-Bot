@@ -5,7 +5,7 @@ const SaveGameOnMasterStats = require("../tasks/server/set/SaveGameOnMasterStats
 const PlayerStats = require("./player_stats")
 
 module.exports = class Game {
-  constructor(_database, name, masterId, masterUsername, channel, turnNumber = 0, startedAt = Date.now(), banList = null, quitList = null, endedAt = null) {
+  constructor(_database, name, masterId, masterUsername, channel, turnNumber = 0, startedAt = Date.now(), banList = null, quitList = null, endedAt = null, closed = null, keepSlotsOnMup = null) {
     this._database = _database
     this.channel = channel
     this.name = name
@@ -17,6 +17,8 @@ module.exports = class Game {
     this.uniqueId = `${channel}-${startedAt}`
     this.banList = banList || [];
     this.quitList = quitList || [];
+    this.closed = closed || false;
+    this.keepSlotsOnMup = keepSlotsOnMup || false;
     this._turn = _database ? _database.getTurn(this.turnNumber) || new Turn(_database) : null
   }
 
@@ -37,9 +39,14 @@ module.exports = class Game {
   }
 
   nextTurn(mup, description) {
+    let oldFactionSlots = this._turn.factionSlots;
     this.turnNumber += 1
-    this._turn = Turn.fromPreviousTurn(this._database, this._turn, mup, description, this._turn.slots, this._turn.diplomacy, this._turn.pacts)
+    this._turn = Turn.fromPreviousTurn(this._database, this._turn, mup, description, this._turn.slots, this._turn.diplomacy, this._turn.pacts, this._turn.lurkers)
     this._turn.startedAt = Date.now()
+
+    if (this.keepSlotsOnMup == true) {
+      this._turn.factionSlots = oldFactionSlots
+    }
     this._database.saveNewTurn(this._turn)
   }
 
@@ -70,7 +77,7 @@ module.exports = class Game {
     return turns
   }
 
-  getMups() {      
+  getMups() {
     return this.getAllTurns().map(t => t.mup)
   }
 
@@ -92,6 +99,14 @@ module.exports = class Game {
     this.save()
     this.saveOnServer()
     return this._database.outdateCurrentGame(this)
+  }
+
+  toggleClosedClaims() {
+    if (this.closed == null) {
+      this.closed = true
+    } else {
+      this.closed = !this.closed
+    }
   }
 
   saveOnServer() {
@@ -137,7 +152,7 @@ module.exports = class Game {
     this.banList.push(playerId)
   }
 
-  isPlayerBanned(playerId) {    
+  isPlayerBanned(playerId) {
     return this.banList.includes(playerId)
   }
 

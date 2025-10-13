@@ -9,25 +9,33 @@ module.exports = class CedesCommand extends PaginatedCommand {
 
   canDelete = true
   needsGame = true
-  shouldLoop = false
+  shouldLoop = true
   hasExtras = true
-  index = 0
-  step = 10
+  hasExpand = true
 
   async execute() {
+    this.index = this.game.turnNumber
     this.ceiling = this.game.turnNumber
     this.getPageArg()
-    this.turnIndex = this.index || this.game.turnNumber
 
-    this.ceiling = this.turn.cedes.length
-    this.index = 0
+    this.expandIndex = 0
 
     this.gamePresenter = new GamePresenter(this.game)
     await this.sendReply(this.getReply())
   }
 
   getReply() {
-    let text = this.gamePresenter.makeCedeHistory(this.turnIndex, this.index, this.isShowingExtras)
+    let text = this.gamePresenter.makeCedeHistory(this.index, this.expandIndex, this.isShowingExtras)
+    if (text.length > 1000) text = this.gamePresenter.makeCedeHistory(this.index, this.expandIndex, this.isShowingExtras, true)
     return text
+  }
+
+  async doExpand(_collected, command) {
+    if (command.expandIndex > command.turn.cedes.length) {
+      command.expandIndex = 0
+    } else {
+      command.expandIndex = command.expandIndex + 10;
+    }
+    await command.editReply();
   }
 }

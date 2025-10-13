@@ -8,56 +8,57 @@ module.exports = class GamePresenter {
     this.game = game
   }
 
-  makeStatusEmbed(turnIndex=this.game.turnNumber, isExpanded) {
+  makeStatusEmbed(turnIndex = this.game.turnNumber, isExpanded) {
     if (!isExpanded) return this.makeStatusEmbedCollapsed(turnIndex);
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeStatusEmbed()
   }
 
-  makeStatusEmbedCollapsed(turnIndex=this.game.turnNumber) {    
+  makeStatusEmbedCollapsed(turnIndex = this.game.turnNumber) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeStatusEmbedCollapsed()
-  }  
-  
-  makeStatusEmbedExtras(turnIndex=this.game.turnNumber, isExpanded) {
+  }
+
+  makeStatusEmbedExtras(turnIndex = this.game.turnNumber, isExpanded) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeStatusEmbedExtras(isExpanded)
   }
 
-  makeNotesEmbed(turnIndex=this.game.turnNumber) {
+  makeNotesEmbed(turnIndex = this.game.turnNumber) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeNotesEmbed()
   }
 
-  makeAlliancesEmbed(turnIndex=this.game.turnNumber) {
+  makeAlliancesEmbed(turnIndex = this.game.turnNumber) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeAlliancesEmbed()
   }
 
-  makeNAPsEmbed(turnIndex=this.game.turnNumber) {
+  makeNAPsEmbed(turnIndex = this.game.turnNumber) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeNAPsEmbed()
   }
 
-  makeLinkListEmbed(turnIndex=this.game.turnNumber, index = 0) {
+  makeLinkListEmbed(turnIndex = this.game.turnNumber, index = 0) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeLinkListEmbed(index)
   }
 
-  makeHistoryEmbed(turnIndex=this.game.turnNumber, index=0, extended) {
+  makeHistoryEmbed(turnIndex = this.game.turnNumber, index = 0, extended, filters) {
     const turn = this.getTurn(turnIndex)
-    return (new TurnPresenter(this.game, turn)).makeHistoryEmbed(index, extended)
-  }
-  
-  makeRollHistory(turnIndex=this.game.turnNumber, index=0, intentions) {
+    return (new TurnPresenter(this.game, turn)).makeHistoryEmbed(index, extended, filters)
+  }  
+
+  makeRollHistory(turnIndex = this.game.turnNumber, index = 0, intentions) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeRollHistory(index, intentions)
   }
-  
-  makeCedeHistory(turnIndex=this.game.turnNumber, index=0, showMessageLinks) {
+
+  makeCedeHistory(turnIndex = this.game.turnNumber, index = 0, showMessageLinks, shorter) {
     const turn = this.getTurn(turnIndex)
+    if (turn == null) console.log("ERROR: Turn " + turnIndex)
     const turnPresenter = new TurnPresenter(this.game, turn)
-    if (!showMessageLinks) return turnPresenter.makeCedeHistory(index)
+    if (!showMessageLinks) return turnPresenter.makeCedeHistory(index, shorter)
     else return turnPresenter.makeCedeHistoryLinks(index)
   }
 
@@ -67,7 +68,7 @@ module.exports = class GamePresenter {
       .setFooter(`${index}/${this.game.turnNumber}`)
   }
 
-  makeMupFields(mups, index=0) {
+  makeMupFields(mups, index = 0) {
     let fields = []
     for (let i = index; i < Math.min(mups.length, index + 25); i++) {
       if (!mups[i]) continue
@@ -83,7 +84,7 @@ module.exports = class GamePresenter {
   getTurn(turnIndex) {
     return this.game.getTurn(turnIndex)
   }
-  
+
   makeGGMessage() {
     let text = ""
     for (let player of this.getTurn().playerHashToList()) {

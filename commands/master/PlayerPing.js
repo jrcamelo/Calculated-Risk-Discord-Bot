@@ -8,7 +8,7 @@ module.exports = class PlayerPingCommand extends BaseCommand {
 
   canDelete = false
   masterOnly = true
-  needsGame = true  
+  needsGame = true
   canMention = true
 
   async execute() {

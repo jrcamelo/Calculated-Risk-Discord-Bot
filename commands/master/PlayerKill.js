@@ -12,8 +12,9 @@ module.exports = class PlayerKillCommand extends BaseCommand {
 
   needsGame = true
   needsMention = true
+  acceptsPlayerNotInServer = true
   needsMentionedPlayer = true
-  
+
   canMention = true
 
   async execute() {

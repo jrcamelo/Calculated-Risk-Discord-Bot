@@ -12,10 +12,12 @@ module.exports = class PlayerReviveCommand extends BaseCommand {
   needsGame = true
   needsMention = true
   needsMentionedPlayer = true
-  
+
   canMention = true
 
   async execute() {
+    console.log(this.mentionedUser)
+    console.log(this.mentionedPlayer)
     this.turn.revivePlayer(this.mentionedPlayer)
     if (this.saveOrReturnWarning()) return
     this.sendReply(`${this.mentionedPlayer.ping()}'s peace has been disturbed. They have come back to life to wage war and suffer once more.`)

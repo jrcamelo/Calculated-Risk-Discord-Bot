@@ -13,8 +13,8 @@ module.exports = class GameStartCommand extends BaseCommand {
   canDelete = false
 
   async validate() {
-    if (!this.isOwner())
-      return "This command is not available."
+    // if (!this.isOwner())
+    //   return "This command is not available."
     if (this.game != null) {
       return "There is already a game in this channel."
     }

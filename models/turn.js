@@ -1,9 +1,10 @@
 const Player = require("./player");
 const bronKerbosch = require("../utils/bronkerbosch");
+const discordUtils = require("../utils/discord");
 const HistoryEntry = require("./history_entry");
 
 module.exports = class Turn {
-  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy=null, pacts=null, rolls = null, poll = "", votes = null, cedes = null, cedeMessages = null, history = null, startedAt = null) {
+  constructor(_database, mup = "", description = "", number = 0, players = null, factionSlots = null, diplomacy = null, pacts = null, lurkers = null, rolls = null, poll = "", votes = null, cedes = null, cedeMessages = null, history = null, startedAt = null) {
     this._database = _database
     this.description = description
     this.mup = mup
@@ -13,6 +14,7 @@ module.exports = class Turn {
     this.factionSlots = factionSlots || []
     this.diplomacy = diplomacy
     this.pacts = pacts
+    this.lurkers = lurkers || []
     this.cedes = cedes || []
     this.cedeMessages = cedeMessages || []
     this.history = history || []
@@ -21,7 +23,7 @@ module.exports = class Turn {
     this._rolls = rolls || []
   }
 
-  static fromPreviousTurn(_database, previous, mup, description, factionSlots, diplomacy, pacts) {
+  static fromPreviousTurn(_database, previous, mup, description, factionSlots, diplomacy, pacts, lurkers) {
     return new Turn(
       _database,
       mup,
@@ -31,9 +33,10 @@ module.exports = class Turn {
       factionSlots,
       diplomacy,
       pacts,
+      lurkers
     )
   }
-  
+
   static playersToNewTurn(oldPlayers) {
     const newPlayers = {};
     for (let player of Object.values(oldPlayers)) {
@@ -66,11 +69,31 @@ module.exports = class Turn {
     return this._players[id];
   }
 
+  getAllPlayerIds() {
+    return Object.values(this._players).map(player => { return player.id });
+  }
+
+  isLurker(userId) {
+    return this.lurkers.findIndex(([id]) => id === userId) !== -1
+  }
+
   addPlayer(discordUser, factionName) {
     const faction = factionName ? this.getAndRemoveFactionIfExists(factionName) : ""
     this._players[discordUser.id] = new Player(discordUser, faction)
     this.addHistory(HistoryEntry.join(discordUser.id, factionName))
+    this.removeLurker(discordUser)
     return this._players[discordUser.id]
+  }
+
+  addLurker(discordUser, factionName) {
+    if (!discordUser || !discordUser.id) return
+    if (!this.lurkers) this.lurkers = []
+    const idx = this.lurkers.findIndex(([id]) => id === discordUser.id)
+    if (idx !== -1) {
+      this.lurkers[idx][1] = factionName
+    } else {
+      this.lurkers.push([discordUser.id, factionName])
+    }
   }
 
   renamePlayer(player, factionName) {
@@ -111,6 +134,18 @@ module.exports = class Turn {
     this.addHistory(HistoryEntry.revive(player.id))
   }
 
+  removeLurker(discordUser) {
+    if (!discordUser || !discordUser.id) return false
+    if (this.lurkers) {
+      const index = this.lurkers.findIndex(([id]) => id === discordUser.id)
+      if (index !== -1) {
+        this.lurkers.splice(index, 1)
+        return true
+      }
+    }
+    return false
+  }
+
   addRoll(roll) {
     this._rolls.push(roll)
     this._players[roll.playerId].rolled = true
@@ -119,7 +154,7 @@ module.exports = class Turn {
     }
     this.addHistory(HistoryEntry.roll(roll.playerId, roll.formattedValue, roll.intention))
   }
-  
+
   playerHashToList() {
     const list = Object.values(this._players)
     list.sort((a, b) => a.compareToOtherPlayer(b))
@@ -255,7 +290,7 @@ module.exports = class Turn {
     const alliances = bronKerbosch(pacts)
     this.pacts = { alliances, onesided }
   }
-  
+
   listNotPlayedAtRandomOrder() {
     console.log(this.diplomacy.alliances)
     console.log(this.playerHashToList())
@@ -274,14 +309,14 @@ module.exports = class Turn {
     const players = this.playerHashToList()
       .filter(player => player.alive)
       .map(player => player.id);
-    
+
     const alliances = this.diplomacy.alliances.map(alliance => alliance.filter(id => players.includes(id)));
     const lonePlayers = players.filter(p => !alliances.flat().includes(p));
     const sortedAlliances = alliances.map(alliance => this.shufflesort(alliance));
     const result = [];
-    
+
     const maxLength = Math.max(lonePlayers.length, ...sortedAlliances.map(a => a.length));
-    
+
     for (let i = 0; i < maxLength; i++) {
       const round = [];
       for (const alliance of sortedAlliances) {
@@ -294,7 +329,7 @@ module.exports = class Turn {
       }
       result.push(...this.shufflesort(round));
     }
-    
+
     console.log(lonePlayers);
     console.log(sortedAlliances);
     console.log(result);
@@ -302,11 +337,11 @@ module.exports = class Turn {
     let text = ''
     let count = 1
     for (let playerId of result) {
-        const player = this.getPlayerFromId(`${playerId}`)
-        if (!player) continue
-        text += `${count}. ${this.getPlayerFromId(`${playerId}`).usernameWithFaction()}\n`
-        count += 1
-      }
+      const player = this.getPlayerFromId(`${playerId}`)
+      if (!player) continue
+      text += `${count}. ${this.getPlayerFromId(`${playerId}`).usernameWithFaction()}\n`
+      count += 1
+    }
     return text || 'Everyone has already rolled.'
   }
 
@@ -315,7 +350,7 @@ module.exports = class Turn {
   }
 
   shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
+    let currentIndex = array.length, randomIndex;
     while (currentIndex > 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
@@ -326,11 +361,11 @@ module.exports = class Turn {
   }
 
   listNotPlayed() {
-    const text = this.pingPlayers(function(player) {
+    const text = this.pingPlayers(function (player) {
       if (player.alive && !player.rolled) {
         return `${player.usernameWithFaction()}\n`
       }
-    })    
+    })
     return text || "Everyone has already rolled. Mup when?";
   }
 
@@ -345,28 +380,29 @@ module.exports = class Turn {
   }
 
   pingNotPlayed() {
-    const text = this.pingPlayers(function(player) {
+    const text = this.pingPlayers(function (player) {
       if (player.alive && !player.rolled) {
         return `${player.ping()} `
       }
-    })    
+    })
     return text || "Everyone has already rolled. Mup when?";
   }
 
   pingAlive() {
-    const text = this.pingPlayers(function(player) {
+    const text = this.pingPlayers(player => {
       if (player.alive) {
-        return `${player.ping()} `
+        return player.ping() + " "
       }
-    })    
-    return text || "War leads nowhere. Everyone is dead.";
+    })
+    if (text && text.trim()) {
+      return text + this.pingLurkers()
+    }
+    return "War leads nowhere. Everyone is dead."
   }
 
   pingEveryone() {
-    const text = this.pingPlayers(function(player) {
-      return `${player.ping()} `
-    })    
-    return text;
+    const text = this.pingPlayers(player => player.ping() + " ")
+    return text + this.pingLurkers()
   }
 
   pingPlayers(callback) {
@@ -380,6 +416,11 @@ module.exports = class Turn {
     return text
   }
 
+  pingLurkers() {
+    if (!this.lurkers || !this.lurkers.length) return ""
+    return this.lurkers.map(lurker => `<@!${lurker[0]}> `).join("")
+  }
+
   saveAddendum(player, addendum) {
     this.addHistory(HistoryEntry.say(player.id, addendum))
   }
@@ -387,7 +428,7 @@ module.exports = class Turn {
   saveAllyHistory(player, ally) {
     this.addHistory(HistoryEntry.ally(player.id, ally.id))
   }
-  
+
   saveBetrayHistory(player, ally) {
     this.addHistory(HistoryEntry.betray(player.id, ally.id))
   }

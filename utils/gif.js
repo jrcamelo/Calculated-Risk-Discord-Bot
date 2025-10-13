@@ -58,7 +58,11 @@ module.exports = class GifMaker {
           url: link,
           dest: `${this.getDownloadFolderPath()}${i}.jpg`
         }
-        await ImageDownloader.image(options)
+        try {
+          await ImageDownloader.image(options)
+        }  catch(error) {
+          console.log(`An error occurred while downloading ${link}: ${error.message}`);
+        }
       } else {
         console.log("Skipping gif frame: " + link)
       }

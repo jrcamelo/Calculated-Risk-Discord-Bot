@@ -8,10 +8,14 @@ module.exports = class ClaimCommand extends BaseCommand {
 
   canDelete = false
 
-  needsGame = true  
+  needsGame = true
   canMention = false
 
   async execute() {
+    if (this.arg && this.arg.length > 50) {
+      this.arg = this.arg.slice(0, 50) + "..."
+    }
+
     if (this.player) {
       const blank = "[Blank]"
       const existingPlayerName = this.player.name || blank
@@ -29,6 +33,8 @@ module.exports = class ClaimCommand extends BaseCommand {
       }
     } else if (this.game.isPlayerBanned(this.user.id)) {
       this.replyDeletable(`You have been banned from this game.`)
+    } else if (this.game.closed) {
+      this.replyDeletable(`Game is closed. Ask the Master to add you.`)
     } else {
       this.turn.addPlayer(this.user, this.arg)
       const newPlayer = this.turn.getPlayer(this.user)

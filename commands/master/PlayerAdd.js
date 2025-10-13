@@ -12,20 +12,28 @@ module.exports = class PlayerAddCommand extends BaseCommand {
 
   needsGame = true
   needsMention = true
-  
+
+  cropName(name) {
+    if (name && name.length > 50) {
+      return name.slice(0, 50) + "..."
+    }
+    return name
+  }
+
   async execute() {
     let resultMessage = ""
     const mentionedUsersHash = this.getMentionedUsersAsHash()
     for (const command of this.getMultipleMentionsAndArgs()) {
       const { id, mention, arg } = command
+      const name = this.cropName(arg);
       const player = this.turn.getPlayer({ id })
       if (player) {
-        resultMessage += this.renamePlayer(mention, arg, player)
+        resultMessage += this.renamePlayer(mention, name, player)
       } else {
         if (this.game.isPlayerPermaQuit(id)) {
           resultMessage += `<@!${id}> has quit this game. They have to join the game again.`
         } else {
-          resultMessage += this.addPlayer(mention, arg, id, mentionedUsersHash)
+          resultMessage += this.addPlayer(mention, name, id, mentionedUsersHash)
         }
       }
     }
