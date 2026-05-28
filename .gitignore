@@ -1,7 +1,8 @@
 .env
 /node_modules
 /node_modules/*
-storage/*/
+/storage/
+/storage-backup/
 */commands-/
 /testing/*
 /temporary/*

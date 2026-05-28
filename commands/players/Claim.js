@@ -16,6 +16,10 @@ module.exports = class ClaimCommand extends BaseCommand {
       this.arg = this.arg.slice(0, 50) + "..."
     }
 
+    if (this.game.isPlayerPermaQuit(this.user.id)) {
+      this.game.unquitPlayer(this.user.id)
+    }
+    
     if (this.player) {
       const blank = "[Blank]"
       const existingPlayerName = this.player.name || blank

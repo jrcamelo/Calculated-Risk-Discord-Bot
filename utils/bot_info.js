@@ -9,7 +9,7 @@ module.exports = class BotInfo {
     BotInfo.botUser = client.user.username
     BotInfo.botAvatar = await client.user.avatarURL()
     const owner = await client.users.fetch(process.env.OWNER)
-    BotInfo.botOwner = owner.tag
+    BotInfo.botOwner = owner.username
     BotInfo.botOwnerAvatar = owner.avatarURL()
   }
 }

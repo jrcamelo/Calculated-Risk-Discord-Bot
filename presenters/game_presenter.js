@@ -24,6 +24,11 @@ module.exports = class GamePresenter {
     return (new TurnPresenter(this.game, turn)).makeStatusEmbedExtras(isExpanded)
   }
 
+  makeMiniStatusEmbed(turnIndex = this.game.turnNumber) {
+    const turn = this.getTurn(turnIndex)
+    return (new TurnPresenter(this.game, turn)).makeMiniStatusEmbed()
+  }
+
   makeNotesEmbed(turnIndex = this.game.turnNumber) {
     const turn = this.getTurn(turnIndex)
     return (new TurnPresenter(this.game, turn)).makeNotesEmbed()
@@ -62,23 +67,38 @@ module.exports = class GamePresenter {
     else return turnPresenter.makeCedeHistoryLinks(index)
   }
 
-  makeListOfAllMupsEmbed(index) {
+  makeListOfAllMupsEmbed(index, step) {
     return new Discord.MessageEmbed()
-      .addFields(this.makeMupFields(this.game.getMups(), index))
-      .setFooter(`${index}/${this.game.turnNumber}`)
+      .addFields(this.makeMupFields(this.game.getMups(), index, step))
+      .setFooter(`${index+step-1}/${this.game.turnNumber}`)
   }
 
+<<<<<<< HEAD
   makeMupFields(mups, index = 0) {
+=======
+  makeMupFields(mups, index = 0, step) {
+>>>>>>> fae394d (Several changes)
     let fields = []
-    for (let i = index; i < Math.min(mups.length, index + 25); i++) {
+    for (let i = index; i < Math.min(mups.length, index + step); i++) {
       if (!mups[i]) continue
       fields.push({
-        name: `Turn ${index + i}`,
+        name: `Turn ${i}`,
         value: `[Link](${mups[i]})`,
         inline: true
       })
     }
     return fields
+  }
+
+  makeListOfAllMupLinks(index, step) {
+    let links = []
+    let mups = this.game.getMups()
+    for (let i = index; i < Math.min(mups.length, index + step); i++) {
+      if (!mups[i]) continue
+      links.push(`${mups[i]}`)
+    }
+    let result = links.join("\n")
+    return result || `No mups at ${index+step}/${this.game.turnNumber}`
   }
 
   getTurn(turnIndex) {

@@ -27,6 +27,10 @@ module.exports = class PlayerAddCommand extends BaseCommand {
       const { id, mention, arg } = command
       const name = this.cropName(arg);
       const player = this.turn.getPlayer({ id })
+      if (this.game.isPlayerBanned(id)) {
+        this.game.unbanPlayer(id);
+      }
+
       if (player) {
         resultMessage += this.renamePlayer(mention, name, player)
       } else {

@@ -3,9 +3,9 @@ const StatusCommand = require("../info/Status")
 const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class GameEndCommand extends BaseCommand {
-  static aliases = ["EndGame", "FinishGame", "Peace"]
+  static aliases = ["EndGame", "FinishGame", "Peace", "EndMup"]
   static description = "Finishes the current game and saves it."
-  static argsDescription = ""
+  static argsDescription = "<optional final image>"
   static category = "Master"
 
   canDelete = false
@@ -16,11 +16,20 @@ module.exports = class GameEndCommand extends BaseCommand {
   canMention = true
 
   async execute() {
+    if (this.attachment || this.arg) {
+      const mup = this.attachment || this.turn.mup
+      this.game.nextTurn(mup, this.arg)
+      if (this.saveOrReturnWarning()) return
+    }
+  
     const status = new StatusCommand(this.message, this.args)
     await status.prepare()
     await status.tryExecute()
+  
     const presenter = new GamePresenter(this.game)
+  
     await this.game.finishGame()
+  
     this.sendReply(presenter.makeGGMessage())
   }
 }

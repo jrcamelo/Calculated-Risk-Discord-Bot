@@ -2,7 +2,7 @@ const PaginatedCommand = require("../paginated_command")
 const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class MupsCommand extends PaginatedCommand {
-  static aliases = ["AllMups", "Mups"]
+  static aliases = ["AllMup", "Mups"]
   static description = "Shows links for the mups of every turn."
   static argsDescription = ""
   static category = "Game"

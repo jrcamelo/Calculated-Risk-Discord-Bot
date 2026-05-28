@@ -57,6 +57,10 @@ module.exports = class Player {
     return this.allies[id] || false;
   }
 
+  countAllies(player) {
+    return (Object.keys(this.allies)).length
+  }
+
   betray(player) {
     if (this.isAlly(player)) {
       delete this.allies[player.id];
@@ -65,6 +69,10 @@ module.exports = class Player {
 
   getAllies() {
     return Object.keys(this.allies)
+  }
+
+  clearAllAlliances() {
+    this.allies = {}
   }
 
   napWith(player) {
@@ -84,6 +92,10 @@ module.exports = class Player {
 
   getNAPs() {
     return Object.keys(this.naps);
+  }
+
+  clearAllNAPs() {
+    this.naps = {}
   }
 
   // Descriptions

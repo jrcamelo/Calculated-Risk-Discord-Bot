@@ -22,7 +22,7 @@ module.exports = class HelpPresenter {
     return new Discord.MessageEmbed()
       .setAuthor("Calculated Risk — Host Risk games on Discord", BotInfo.botAvatar)
       .setColor("#5865f2")
-      .setFooter(`Made by Megu — ${BotInfo.botOwner}`, BotInfo.botOwnerAvatar)
+      .setFooter(`Made by Megu — @${BotInfo.botOwner}`, BotInfo.botOwnerAvatar)
   }
 
   makeBotHelpEmbed() {

@@ -1,8 +1,8 @@
 const PaginatedCommand = require("../paginated_command")
 const GamePresenter = require("../../presenters/game_presenter")
 
-module.exports = class MupsCommand extends PaginatedCommand {
-  static aliases = ["AllMups", "Mups"]
+module.exports = class MupLinksCommand extends PaginatedCommand {
+  static aliases = ["AllMupLinks", "MupLinks"]
   static description = "Shows links for the mups of every turn."
   static argsDescription = ""
   static category = "Game"
@@ -11,7 +11,7 @@ module.exports = class MupsCommand extends PaginatedCommand {
   needsGame = true
   shouldLoop = true
   index = 0
-  step = 20
+  step = 5
 
   async execute() {
     this.ceiling = this.turn.number
@@ -21,6 +21,6 @@ module.exports = class MupsCommand extends PaginatedCommand {
   }
 
   getReply() {
-    return this.gamePresenter.makeListOfAllMupsEmbed(this.index, this.step)
+    return this.gamePresenter.makeListOfAllMupLinks(this.index, this.step)
   }
 }

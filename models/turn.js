@@ -115,10 +115,14 @@ module.exports = class Turn {
   kickPlayer(player) {
     player.alive = false;
     player.removed = true;
+    this.breakAlliancesAndNAPFromPlayer(player)
+    this.calculateDiplomacy()
     this.addHistory(HistoryEntry.leave(player.id))
   }
   banPlayer(player) {
+    this.breakAlliancesAndNAPFromPlayer(player)
     delete this._players[player.id]
+    this.calculateDiplomacy()
     this.addHistory(HistoryEntry.leave(player.id))
   }
 
@@ -144,6 +148,15 @@ module.exports = class Turn {
       }
     }
     return false
+  }
+
+  breakAlliancesAndNAPFromPlayer(breakingPlayer) {
+    this._players[breakingPlayer.id].clearAllAlliances();
+    this._players[breakingPlayer.id].clearAllNAPs();
+    for (let id of this.getAllPlayerIds()) {
+      this._players[id].break(breakingPlayer)
+      this._players[id].betray(breakingPlayer)
+    }
   }
 
   addRoll(roll) {
@@ -233,10 +246,9 @@ module.exports = class Turn {
     const onesided = []
     const alreadyCounted = {}
     for (let player of players) {
-      if (!player.alive) continue
       for (let allyId of player.getAllies()) {
         const ally = this.getPlayerFromId(allyId)
-        if (!ally || !ally.alive) continue
+        if (!ally) continue
         if (alreadyCounted[[player.id, allyId]]) continue
         alreadyCounted[[allyId, player.id]] = true
         if (ally.isAlly(player.id)) {
@@ -273,10 +285,9 @@ module.exports = class Turn {
     const onesided = []
     const alreadyCounted = {}
     for (let player of players) {
-      if (!player.alive) continue
       for (let pacteeId of player.getNAPs()) {
         const pactee = this.getPlayerFromId(pacteeId)
-        if (!pactee || !pactee.alive) continue
+        if (!pactee) continue
         if (alreadyCounted[[player.id, pacteeId]]) continue
         alreadyCounted[[pacteeId, player.id]] = true
         if (pactee.isNAP(player.id)) {
@@ -343,6 +354,20 @@ module.exports = class Turn {
       count += 1
     }
     return text || 'Everyone has already rolled.'
+  }
+
+  breakAllAlliances() {
+    for (const player of this.playerHashToList()) {
+      player.clearAllAlliances()
+    }
+    this.calculateDiplomacy()
+  }
+  
+  breakAllPacts() {
+    for (const player of this.playerHashToList()) {
+      player.clearAllNAPs()
+    }
+    this.calculatePacts()
   }
 
   shufflesort(arr) {
