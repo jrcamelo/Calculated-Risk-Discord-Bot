@@ -5,11 +5,7 @@ const SaveGameOnMasterStats = require("../tasks/server/set/SaveGameOnMasterStats
 const PlayerStats = require("./player_stats")
 
 module.exports = class Game {
-<<<<<<< HEAD
-  constructor(_database, name, masterId, masterUsername, channel, turnNumber = 0, startedAt = Date.now(), banList = null, quitList = null, endedAt = null, closed = null, keepSlotsOnMup = null) {
-=======
   constructor(_database, name, masterId, masterUsername, channel, turnNumber = 0, startedAt = Date.now(), banList = null, quitList = null, endedAt = null, closed = null, keepSlotsOnMup = null, maxAllies = -1, maxNAPs = -1) {
->>>>>>> fae394d (Several changes)
     this._database = _database
     this.channel = channel
     this.name = name

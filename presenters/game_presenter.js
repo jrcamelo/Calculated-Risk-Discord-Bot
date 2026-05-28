@@ -73,11 +73,7 @@ module.exports = class GamePresenter {
       .setFooter(`${index+step-1}/${this.game.turnNumber}`)
   }
 
-<<<<<<< HEAD
-  makeMupFields(mups, index = 0) {
-=======
   makeMupFields(mups, index = 0, step) {
->>>>>>> fae394d (Several changes)
     let fields = []
     for (let i = index; i < Math.min(mups.length, index + step); i++) {
       if (!mups[i]) continue
