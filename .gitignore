@@ -8,3 +8,4 @@ storage/*/
 /assets/temporary/*
 /migration/*.json
 /migration/storage/
+/storage-backup/*/
