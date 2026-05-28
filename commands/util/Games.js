@@ -10,7 +10,7 @@ const { timestampToLocale } = require("../../utils/text")
 module.exports = class GamesCommand extends PaginatedCommand {
   static aliases = ["Games", "BrowseGames"]
   static description = "Browse all current and previous games in this server."
-  static argsDescription = ""
+  static argsDescription = "[<Channel ID or Game Name>]"
 
   canDelete = true
   shouldLoop = true
@@ -20,6 +20,12 @@ module.exports = class GamesCommand extends PaginatedCommand {
   async execute() {
     this.index = 0
     this.step = 1
+    this.channelFilterIds = this.getChannelFilterIds()
+
+    if (this.arg && this.channelFilterIds.length === 0) {
+      return this.replyDeletable("No channel found with that id or name.")
+    }
+
     this.games = await this.getAllGames()
 
     this.ceiling = this.games.length - 1
@@ -62,6 +68,8 @@ module.exports = class GamesCommand extends PaginatedCommand {
   getCurrentGames() {
     const entries = []
     for (const channel of this.server.channels.cache.values()) {
+      if (this.channelFilterIds && !this.channelFilterIds.includes(channel.id)) continue
+
       const database = new Database(channel)
       const game = database.getGame()
       if (!game) continue
@@ -84,7 +92,8 @@ module.exports = class GamesCommand extends PaginatedCommand {
   }
 
   async getPreviousGames() {
-    const task = new GetServerGames(this.serverId, 0, 0, {}, { startedAt: -1 })
+    const filter = this.makePreviousGamesFilter()
+    const task = new GetServerGames(this.serverId, 0, 0, filter, { startedAt: -1 })
     const previousGames = await task.tryExecute() || []
 
     return previousGames.map(game => ({
@@ -131,13 +140,35 @@ module.exports = class GamesCommand extends PaginatedCommand {
     }
 
     if (game.isPrevious) {
-      lines.push(`**GameId**: ${game.gameId}`)
-      lines.push(`**Open**: \`${process.env.PREFIX}opengame ${game.channelId} ${game.gameId}\``)
+      lines.push(`**Game Id**: ${game.gameId}`)
+      lines.push(`**Open**: \`${process.env.PREFIX}GameID ${game.channelId} ${game.gameId}\` or click ⏩`)
     } else {
-      lines.push(`**Open**: \`${process.env.PREFIX}opengame ${game.channelId}\``)
+      lines.push(`**Open**: \`${process.env.PREFIX}GameID ${game.channelId}\` or click ⏩`)
     }
-
-    lines.push(`**Expand**: Open this game immediately`)
     return lines.join("\n")
+  }
+
+  getChannelFilterIds() {
+    if (!this.arg) return null
+
+    const filter = this.arg.trim().toLowerCase()
+    const mentionMatch = filter.match(/^<#(\d{17,20})>$/)
+    const rawId = mentionMatch ? mentionMatch[1] : filter
+
+    return Array.from(this.server.channels.cache.values())
+      .filter(channel => this.matchesChannelFilter(channel, rawId, filter))
+      .map(channel => channel.id)
+  }
+
+  matchesChannelFilter(channel, rawId, filter) {
+    if (!channel || !channel.guild) return false
+    if (channel.id === rawId) return true
+    if (!channel.name) return false
+    return channel.name.toLowerCase().includes(filter)
+  }
+
+  makePreviousGamesFilter() {
+    if (!this.channelFilterIds) return {}
+    return { channel: { $in: this.channelFilterIds } }
   }
 }
