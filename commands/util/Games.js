@@ -10,7 +10,7 @@ const { timestampToLocale } = require("../../utils/text")
 module.exports = class GamesCommand extends PaginatedCommand {
   static aliases = ["Games", "BrowseGames"]
   static description = "Browse all current and previous games in this server."
-  static argsDescription = "[<Channel ID or Game Name>]"
+  static argsDescription = "[<Channel Id Or Name>]"
 
   canDelete = true
   shouldLoop = true
@@ -20,11 +20,7 @@ module.exports = class GamesCommand extends PaginatedCommand {
   async execute() {
     this.index = 0
     this.step = 1
-    this.channelFilterIds = this.getChannelFilterIds()
-
-    if (this.arg && this.channelFilterIds.length === 0) {
-      return this.replyDeletable("No channel found with that id or name.")
-    }
+    this.channelFilter = this.getChannelFilter()
 
     this.games = await this.getAllGames()
 
@@ -68,11 +64,11 @@ module.exports = class GamesCommand extends PaginatedCommand {
   getCurrentGames() {
     const entries = []
     for (const channel of this.server.channels.cache.values()) {
-      if (this.channelFilterIds && !this.channelFilterIds.includes(channel.id)) continue
-
       const database = new Database(channel)
       const game = database.getGame()
       if (!game) continue
+
+      if (!this.matchesChannelFilter(channel.id, channel.name)) continue
 
       entries.push({
         id: `current:${channel.id}`,
@@ -101,7 +97,7 @@ module.exports = class GamesCommand extends PaginatedCommand {
       type: "Previous",
       isPrevious: true,
       channelId: game.channel,
-      channelName: this.server.channels.cache.get(game.channel)?.name,
+      channelName: game.channelName || this.server.channels.cache.get(game.channel)?.name,
       gameId: game.id.split("-")[1],
       name: game.name,
       masterId: game.masterId,
@@ -148,27 +144,33 @@ module.exports = class GamesCommand extends PaginatedCommand {
     return lines.join("\n")
   }
 
-  getChannelFilterIds() {
+  getChannelFilter() {
     if (!this.arg) return null
 
-    const filter = this.arg.trim().toLowerCase()
-    const mentionMatch = filter.match(/^<#(\d{17,20})>$/)
-    const rawId = mentionMatch ? mentionMatch[1] : filter
+    const value = this.arg.trim()
+    const mentionMatch = value.match(/^<#(\d{17,20})>$/)
+    const normalized = mentionMatch ? mentionMatch[1] : value
 
-    return Array.from(this.server.channels.cache.values())
-      .filter(channel => this.matchesChannelFilter(channel, rawId, filter))
-      .map(channel => channel.id)
+    return {
+      raw: value,
+      normalized,
+      lowered: normalized.toLowerCase(),
+      isId: /^\d{17,20}$/.test(normalized),
+    }
   }
 
-  matchesChannelFilter(channel, rawId, filter) {
-    if (!channel || !channel.guild) return false
-    if (channel.id === rawId) return true
-    if (!channel.name) return false
-    return channel.name.toLowerCase().includes(filter)
+  matchesChannelFilter(channelId, channelName) {
+    if (!this.channelFilter) return true
+    if (this.channelFilter.isId) return channelId === this.channelFilter.normalized
+    if (!channelName) return false
+    return channelName.toLowerCase().includes(this.channelFilter.lowered)
   }
 
   makePreviousGamesFilter() {
-    if (!this.channelFilterIds) return {}
-    return { channel: { $in: this.channelFilterIds } }
+    if (!this.channelFilter) return {}
+    if (this.channelFilter.isId) {
+      return { channel: this.channelFilter.normalized }
+    }
+    return { channelName: { $regex: new RegExp(this.channelFilter.raw, "i") } }
   }
 }
