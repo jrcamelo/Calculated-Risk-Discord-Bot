@@ -10,7 +10,7 @@ const { timestampToLocale } = require("../../utils/text")
 module.exports = class GamesCommand extends PaginatedCommand {
   static aliases = ["Games", "BrowseGames"]
   static description = "Browse all current and previous games in this server."
-  static argsDescription = "[<Channel Id Or Name>]"
+  static argsDescription = "[<Channel ID, Channel Name or Game Name>]"
 
   canDelete = true
   shouldLoop = true
