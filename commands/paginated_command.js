@@ -35,7 +35,7 @@ module.exports = class PaginatedCommand extends BaseCommand {
     await this.afterEdit()
   }
 
-  async afterReply() {
+  async afterReply(options = {}) {
     this.prepareToListenForReactions()
     if (this.canDelete || options.overrideDeletable) {
       await this.addDeleteReaction()
