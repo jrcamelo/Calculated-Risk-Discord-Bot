@@ -93,7 +93,7 @@ module.exports = class GamesCommand extends PaginatedCommand {
     const previousGames = await task.tryExecute() || []
 
     return previousGames.map(game => ({
-      id: `previous:${game.channel}:${game.id}`,
+      id: game.id,
       type: "Previous",
       isPrevious: true,
       channelId: game.channel,
