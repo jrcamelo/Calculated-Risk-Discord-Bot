@@ -6,7 +6,7 @@ const OldStatusCommand = require("./OldStatus");
 const GamePresenter = require("../../presenters/game_presenter");
 
 module.exports = class ExportGameCommand extends BaseCommand {
-  static aliases = ["ExportGame", "GameExport"];
+  static aliases = ["ExportGame", "GameExport", "Export"];
   static description = "Export a game to a text file.";
   static argsDescription = "[ChannelId] [GameId]";
   static category = "Game";
@@ -22,7 +22,7 @@ module.exports = class ExportGameCommand extends BaseCommand {
 
     const exportText = this.makeExportText(loaded.game);
     const filename = this.makeFilename(loaded.game, loaded.isPrevious);
-    return await this.sendFileMessage(filename, exportText, "Game export:");
+    return await this.sendFileMessage(filename, exportText, "");
   }
 
   async sendFileMessage(filename, content, message = "") {
@@ -105,30 +105,31 @@ module.exports = class ExportGameCommand extends BaseCommand {
       lines.push(`TURN ${turnIndex}`);
       lines.push("=".repeat(80));
 
+      const turn = game.getTurn(turnIndex);
       const statusEmbed = presenter.makeStatusEmbed(turnIndex, false);
-      lines.push(...this.renderStatusEmbed(statusEmbed));
+      lines.push(...this.renderStatusEmbed(statusEmbed, turn));
       lines.push("");
       lines.push("History:");
-      lines.push(...this.renderTurnHistory(game.getTurn(turnIndex)));
+      lines.push(...this.renderTurnHistory(turn));
     }
 
     return lines.join("\n").trim() + "\n";
   }
 
-  renderStatusEmbed(embed) {
+  renderStatusEmbed(embed, turn) {
     const lines = [];
 
-    if (embed.title) lines.push(`Title: ${embed.title}`);
+    if (embed.title) lines.push(`Title: ${this.replaceMentions(embed.title, turn)}`);
     if (embed.description) {
       lines.push("Summary:");
-      lines.push(embed.description);
+      lines.push(this.replaceMentions(embed.description, turn));
     }
 
     if (embed.fields && embed.fields.length) {
       for (const field of embed.fields) {
         lines.push("");
-        lines.push(`${field.name}:`);
-        lines.push(field.value);
+        lines.push(`${this.replaceMentions(field.name, turn)}:`);
+        lines.push(this.replaceMentions(field.value, turn));
       }
     }
 
@@ -140,7 +141,7 @@ module.exports = class ExportGameCommand extends BaseCommand {
 
     if (embed.footer?.text) {
       lines.push("");
-      lines.push(`Footer: ${embed.footer.text}`);
+      lines.push(`Footer: ${this.replaceMentions(embed.footer.text, turn)}`);
     }
 
     return lines;
@@ -155,7 +156,7 @@ module.exports = class ExportGameCommand extends BaseCommand {
     for (let i = 0; i < turn.history.length; i++) {
       const entry = turn.history[i];
       lines.push(`[${i + 1}] ${this.formatHistoryHeader(entry)}`);
-      lines.push(entry.history || entry.summary || "");
+      lines.push(this.replaceMentions(entry.history || entry.summary || "", turn));
       lines.push("");
     }
     lines.pop();
@@ -188,6 +189,21 @@ module.exports = class ExportGameCommand extends BaseCommand {
         .replace(/^_+|_+$/g, "")
         .slice(0, 80) || "game"
     );
+  }
+
+  replaceMentions(text, turn) {
+    if (!text) return text;
+
+    return String(text).replace(/<@!?(\d+)>/g, (_match, userId) => {
+      const player = turn?.getPlayerFromId?.(userId);
+      if (player) return this.getReadablePlayerName(player);
+      return `@${userId}`;
+    });
+  }
+
+  getReadablePlayerName(player) {
+    const faction = player.name ? ` (${player.name})` : "";
+    return `${player.username}${faction}`;
   }
 
   isSnowflake(value) {
