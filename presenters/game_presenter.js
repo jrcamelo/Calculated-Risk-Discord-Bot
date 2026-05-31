@@ -103,15 +103,21 @@ module.exports = class GamePresenter {
     return fields;
   }
 
-  makeListOfAllMupLinks(index, step) {
-    let links = [];
-    let mups = this.game.getMups();
-    for (let i = index; i < Math.min(mups.length, index + step); i++) {
+  makeListOfAllMupLinks(index = 0, step = 10) {
+    const mups = this.game.getMups();
+    const end = Math.min(mups.length, index + step);
+
+    const links = [];
+
+    for (let i = index; i < end; i++) {
       if (!mups[i]) continue;
       links.push(`${mups[i]}`);
     }
-    let result = links.join("\n");
-    return result || `No mups at ${index + step}/${this.game.turnNumber}`;
+
+    return (
+      links.join("\n") ||
+      `No mups at ${index + step - 1}/${this.game.turnNumber}`
+    );
   }
 
   getTurn(turnIndex) {
