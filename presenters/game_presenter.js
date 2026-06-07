@@ -53,13 +53,15 @@ module.exports = class GamePresenter {
     turnIndex = this.game.turnNumber,
     index = 0,
     extended,
-    filters
+    filters,
+    showBonuses = false
   ) {
     const turn = this.getTurn(turnIndex);
     return new TurnPresenter(this.game, turn).makeHistoryEmbed(
       index,
       extended,
-      filters
+      filters,
+      showBonuses
     );
   }
 

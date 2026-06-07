@@ -13,6 +13,7 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   hasExtras = true
   isShowingExtras = true
   hasExpand = true
+  showBonuses = false
 
   async execute() {
     const validTypes = new Set(Object.values(HistoryEntry.TYPE).map(s => String(s).toLowerCase()))
@@ -46,12 +47,27 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   }
 
   getReply() {
-    let embed = this.gamePresenter.makeHistoryEmbed(this.index, this.expandIndex, this.isShowingExtras, this.filters)
-    if (this.isShowingExtras && String(embed).length > 6000) {
+    let embed = this.gamePresenter.makeHistoryEmbed(this.index, this.expandIndex, this.isShowingExtras, this.filters, this.showBonuses)
+    if (this.isShowingExtras && this.isEmbedTooLong(embed)) {
       this.isShowingExtras = false
-      embed = this.gamePresenter.makeHistoryEmbed(this.index, this.expandIndex, this.isShowingExtras, this.filters)
+      embed = this.gamePresenter.makeHistoryEmbed(this.index, this.expandIndex, this.isShowingExtras, this.filters, this.showBonuses)
     }
     return embed
+  }
+
+  isEmbedTooLong(embed) {
+    if (!embed) return false
+    const titleLength = embed.title ? embed.title.length : 0
+    const descriptionLength = embed.description ? embed.description.length : 0
+    const footerLength = embed.footer && embed.footer.text ? embed.footer.text.length : 0
+    const fieldLength = Array.isArray(embed.fields)
+      ? embed.fields.reduce((sum, field) => {
+          const nameLength = field && field.name ? field.name.length : 0
+          const valueLength = field && field.value ? field.value.length : 0
+          return sum + nameLength + valueLength
+        }, 0)
+      : 0
+    return titleLength + descriptionLength + footerLength + fieldLength > 6000
   }
 
   async doExpand(_collected, command) {

@@ -107,7 +107,7 @@ module.exports = class TurnPresenter {
     return embed;
   }
 
-  makeHistoryEmbed(index, extra, filters) {
+  makeHistoryEmbed(index, extra, filters, showBonuses = false) {
     const history = this.getFilteredHistory(filters)
     const total = history.length
     const pages = Math.max(1, Math.ceil(total / 10))
@@ -115,7 +115,7 @@ module.exports = class TurnPresenter {
     actualIndex = isNaN(actualIndex) ? 0 : actualIndex
 
     let embed = new Discord.MessageEmbed()
-      .setDescription(this.makeHistoryDescription(history, actualIndex, extra))
+      .setDescription(this.makeHistoryDescription(history, actualIndex, extra, showBonuses))
       .setFooter(`${Math.min(actualIndex + 10, total)}/${total} events - Turn ${this.turn.number}/${this.game.turnNumber}`)
     return embed
   }
@@ -132,24 +132,46 @@ module.exports = class TurnPresenter {
     )
   }
 
-  makeHistoryDescription(history, index, extra) {
+  makeHistoryDescription(history, index, extra, showBonuses = false) {
     const fields = []
     for (let i = index; i < index + 10; i++) {
       if (i < history.length) {
         let message = extra ? history[i].history : history[i].summary
+        if (showBonuses) {
+          message = this.addBonusesToHistoryMentions(message)
+        }
         fields.push({ name: `\u200B`, value: message, inline: false })
       }
     }
     if (fields.length > 0) {
       let description = ""
       for (let field of fields) {
-        let value = field.value.replace("\n", "  ")
+        let value = field.value.replace(/\r\n|\n|\r/g, "  ")
         if (description) description += "\n-\n"
         description += value
       }
       return description
     }
     return "No events"
+  }
+
+  addBonusesToHistoryMentions(message) {
+    if (!message) return message
+    return message.replace(/<@!?(\d+)>/g, (_match, id) => this.getPlayerPingWithBonus(id))
+  }
+
+  getPlayerPingWithBonus(id) {
+    const player = this.turn.getPlayerFromId(id)
+    if (!player) return `<@!${id}>`
+    const bonus = this.describePlayerBonus(player.bonus)
+    return `<@!${id}>${bonus}`
+  }
+
+  describePlayerBonus(bonus) {
+    if (!bonus) return ""
+    if (!isNaN(bonus) && bonus > 0) return ` +${bonus}`
+    if (!isNaN(bonus) && bonus < 0) return ` ${bonus}`
+    return ` <${bonus}>`
   }
 
   makeRollHistory(index, intentions) {
