@@ -12,7 +12,6 @@ module.exports = class PlayerHardquitCommand extends BaseCommand {
 
   needsGame = true
   playerOnly = true
-  aliveOnly = true
   
   canMention = true
 

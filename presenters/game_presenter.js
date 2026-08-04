@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+const Discord = require("../utils/discord_compat");
 const PlayerPresenter = require("./player_presenter");
 const TurnPresenter = require("./turn_presenter");
 const { makePing } = require("../utils/discord");

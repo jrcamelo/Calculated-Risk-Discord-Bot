@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('../utils/discord_compat');
 const { makePing } = require('../utils/discord')
 
 module.exports = class PlayerPresenter {

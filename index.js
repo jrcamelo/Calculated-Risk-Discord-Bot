@@ -1,24 +1,29 @@
 require('dotenv').config()
-const Discord = require("discord.js");
+const Discord = require("./utils/discord_compat");
 const Conductor = require("./handler/conductor")
+const InteractionConductor = require("./handler/interaction_conductor")
 const Parser = require("./handler/parser")
 const BotInfo = require("./utils/bot_info")
 
-const client = new Discord.Client({ 
-  intents: [
-    'GUILDS',
-    'GUILD_MESSAGES',
-    'GUILD_MESSAGE_REACTIONS',
-  ] 
-})
+const intents = [
+  Discord.GatewayIntentBits.Guilds,
+  Discord.GatewayIntentBits.GuildMessageReactions,
+]
+
+if (process.env.ENABLE_PREFIX_COMMANDS === "true") {
+  intents.push(Discord.GatewayIntentBits.GuildMessages)
+  intents.push(Discord.GatewayIntentBits.MessageContent)
+}
+
+const client = new Discord.Client({ intents })
 
 console.log("Connecting to Discord")
 client.login(process.env.BOT_TOKEN).catch(console.error)
 
 
-client.once("ready", async function() {
+client.once(Discord.Events.ClientReady, async function() {
   console.log("Connected!")
-  await client.user.setActivity(`r.help`, { type: "PLAYING"});
+  await client.user.setActivity(`/help`, { type: Discord.ActivityType.Playing});
   Parser.readCommands()
   Conductor.enable()
   BotInfo.set(client)
@@ -26,7 +31,8 @@ client.once("ready", async function() {
   // migrate(client)
 })
 
-client.on("message", Conductor.onNewMessage)
+client.on("messageCreate", Conductor.onNewMessage)
+client.on(Discord.Events.InteractionCreate, InteractionConductor.onInteraction.bind(InteractionConductor))
 
 
 

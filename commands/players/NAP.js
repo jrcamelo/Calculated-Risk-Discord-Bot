@@ -8,6 +8,7 @@ module.exports = class PlayerNAPCommand extends BaseCommand {
 
   canDelete = false
   needsGame = true
+  playerOnly = true
   aliveOnly = true
   needsMention = true
   canMention = false

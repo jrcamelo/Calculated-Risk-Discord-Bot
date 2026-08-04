@@ -11,11 +11,45 @@ module.exports = class HelpCommand extends BaseCommand  {
   canDelete = true
   ephemeral = true
   getsGame = false
-  canStopEphemeral = true
+  canStopEphemeral = false
 
   async execute() {
     this.helpPresenter = new HelpPresenter()
     return this.replyDeletable(this.getHelpEmbed())
+  }
+
+  async beforeSlashControls() {
+    await this.addHelpButtons()
+  }
+
+  async addHelpButtons() {
+    if (!this.valid || !this.reply || !this.message._isSlashCommand) return
+    if (!this.reactions) this.reactions = {}
+    this.reactions.help_main = this.showMainHelp
+    this.reactions.help_player = this.showPlayerHelp
+    this.reactions.help_master = this.showMasterHelp
+    this.reactions.help_level = this.showLevelHelp
+    this.reactions.help_util = this.showUtilHelp
+  }
+
+  async showMainHelp(_collected, command) {
+    await command.reply.edit(command.helpPresenter.makeBotHelpEmbed())
+  }
+
+  async showPlayerHelp(_collected, command) {
+    await command.reply.edit(command.helpPresenter.makePlayerHelpEmbed())
+  }
+
+  async showMasterHelp(_collected, command) {
+    await command.reply.edit(command.helpPresenter.makeMasterHelpEmbed())
+  }
+
+  async showLevelHelp(_collected, command) {
+    await command.reply.edit(command.helpPresenter.makeLevelHelpEmbed())
+  }
+
+  async showUtilHelp(_collected, command) {
+    await command.reply.edit(command.helpPresenter.makeUtilHelpEmbed())
   }
 
   getHelpEmbed() {

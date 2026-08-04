@@ -63,7 +63,7 @@ module.exports = class Conductor {
         await command.tryExecute()
       }
     } catch(e) {
-      console.error(`\n${message.content} caused an error at ${new Date()}`, e);
+      console.error(`\n${message.content || "[empty message]"} caused an error at ${new Date()}`, e);
     }
   }
 

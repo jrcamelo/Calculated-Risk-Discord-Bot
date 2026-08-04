@@ -27,7 +27,7 @@ module.exports = class PlayerForceBreakCommand extends BaseCommand {
         }
     }
 
-    if (this.changes) this.turn.calculateDiplomacy()
+    if (this.changes) this.turn.calculatePacts()
     if (this.saveOrReturnWarning()) return
     await this.sendReply(text || "Could not force break of NAP.")
   }
@@ -37,13 +37,15 @@ module.exports = class PlayerForceBreakCommand extends BaseCommand {
       return `You have no powers over <@!${first.id}> mental health.`
     } 
 
-    if (!first.isNAP(second)) {
+    if (!first.isNAP(second) && !second.isNAP(first)) {
       return `<@!${first.id}> and <@!${second.id}> already hate each other.`
     }
 
     this.changes = true
-    first.break(second)
     const text = `<@!${first.id}> and <@!${second.id}> are enemies once again.`
+    if (first.isNAP(second)) {
+      first.break(second)
+    }
     if (second.isNAP(first)) {
       second.break(first)
     }

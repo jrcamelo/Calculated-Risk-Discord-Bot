@@ -15,7 +15,11 @@ module.exports = class ClaimCommand extends BaseCommand {
   
   getLatestTurn(filepath) {
     const subfolders = getSubFolders(filepath);
-    return subfolders.sort().reverse()[0];
+    return subfolders.sort((a, b) => {
+      const aTurn = parseInt(a.replace("turn-", ""), 10)
+      const bTurn = parseInt(b.replace("turn-", ""), 10)
+      return bTurn - aTurn
+    })[0];
   }
   
   readPlayersFile(filepath) {

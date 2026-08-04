@@ -49,8 +49,8 @@ function makeMessageLink(message) {
   return `https://discord.com/channels/${message.channel.guild.id}/${message.channel.id}/${message.id}`
 }
 
-function makeMessageLinkFromIDs(channelId, messageId) {
-  return `https://discord.com/channels/${channelId}/${messageId}`
+function makeMessageLinkFromIDs(guildId, channelId, messageId) {
+  return `https://discord.com/channels/${guildId}/${channelId}/${messageId}`
 }
 
 function discordPingToUserID(text) {

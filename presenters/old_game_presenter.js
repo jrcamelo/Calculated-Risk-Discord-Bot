@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('../utils/discord_compat');
 const GetServerGames = require('../tasks/server/get/GetServerGames')
 const GetServerChannelGames = require('../tasks/server/get/GetServerChannelGames')
 const GetServerPlayerGames = require('../tasks/server/get/GetServerPlayerGames')
@@ -41,8 +41,8 @@ module.exports = class OldGamePresenter {
     const embed = new Discord.MessageEmbed()
       .setTitle(`${game.name}`)
       .setDescription(this.makeEmbedDescription(game))
-      .setThumbnail(game.mup)
       .setFooter(`Game ${index + 1} / ${this.result.length}`)
+    if (game.mup) embed.setThumbnail(game.mup)
     if (this.getPlayerCount(game)) {
       embed.addFields(this.makePlayerFields(game))
     }

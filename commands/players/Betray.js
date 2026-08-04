@@ -7,6 +7,7 @@ module.exports = class PlayerBetrayAllyCommand extends BaseCommand {
 
   canDelete = false
   needsGame = true
+  playerOnly = true
   aliveOnly = true
   needsMention = true
   needsMentionedPlayer = true

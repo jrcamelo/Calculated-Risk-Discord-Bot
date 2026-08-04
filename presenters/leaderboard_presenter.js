@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('../utils/discord_compat');
 const GetRollLeaderboardTask = require('../tasks/server/get/GetRollLeaderboard');
 const GetPlayerLeaderboardTask = require('../tasks/server/get/GetPlayerLeaderboard');
 const PlayerStats = require('../models/player_stats');

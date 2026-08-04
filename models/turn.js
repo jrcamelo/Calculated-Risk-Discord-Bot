@@ -224,7 +224,8 @@ module.exports = class Turn {
     }
     // TODO: Temporary fix, disabling factionSlots til it calms down
     if (!Array.isArray(this.factionSlots)) { this.factionSlots = []; }
-    return this.factionSlots.find(slot => slot.toLowerCase().match(faction.toLowerCase()))
+    const normalizedFaction = faction.toLowerCase()
+    return this.factionSlots.find(slot => slot.toLowerCase().includes(normalizedFaction))
   }
 
   factionExists(faction) {

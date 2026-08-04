@@ -13,7 +13,7 @@ module.exports = class GameStartCommand extends BaseCommand {
   async validate() {
     if (this.game != null) {
       return "There is already a game in this channel."
-    } else if (!this.args) {
+    } else if (!this.arg || !this.arg.trim()) {
       return "Try again with a name for the game."
     }
   }

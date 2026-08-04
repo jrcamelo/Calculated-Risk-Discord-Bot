@@ -14,10 +14,12 @@ module.exports = class LinksCommand extends PaginatedCommand {
   step = 10
 
   async execute() {
-    this.ceiling = this.turn._rolls.length
+    this.ceiling = this.game.turnNumber
 
     this.getPageArg()
     this.turnIndex = this.index === 0 ? this.game.turnNumber : this.index
+    const turn = this.game.getTurn(this.turnIndex)
+    this.ceiling = turn && turn._rolls ? Math.max(0, turn._rolls.length - 1) : 0
     this.index = 0
 
     this.gamePresenter = new GamePresenter(this.game)

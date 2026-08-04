@@ -26,9 +26,8 @@ module.exports = class GamesPastCommand extends PaginatedCommand  {
     this.presenter = new OldGamePresenter(this.serverId, this.step)
     await this.getOldGames(this.arg, masterId)
     this.ceiling = this.presenter.result ? this.presenter.result.length - 1 : 0
-    if (this.ceiling <= 0) {
-      this.message.channel.send("No games found in this server.")
-      return
+    if (!this.presenter.result || this.presenter.result.length === 0) {
+      return this.replyDeletable("No games found in this server.")
     }
     await this.sendReply(await this.getReply())
   }
@@ -44,6 +43,11 @@ module.exports = class GamesPastCommand extends PaginatedCommand  {
   async doExpand(_collected, command) {
     await command.sendGameDetails()
     await command.deleteReply(_collected, command)
+  }
+
+  getSlashButtonLabel(actionId) {
+    if (actionId === "expand") return "Open"
+    return super.getSlashButtonLabel(actionId)
   }
 
   async sendGameDetails() {

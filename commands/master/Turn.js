@@ -14,7 +14,9 @@ module.exports = class TurnCommand extends BaseCommand {
 
   async execute() {
     const now = Date.now()
-    if (this.turn.startedAt && now - this.turn.startedAt < 60000) return
+    if (this.turn.startedAt && now - this.turn.startedAt < 60000) {
+      return this.replyDeletable("Wait at least 60 seconds before starting another turn.")
+    }
     this.game.nextTurn(this.attachment, this.arg);
     if (this.saveOrReturnWarning()) return
     const status = new StatusCommand(this.message, this.args)

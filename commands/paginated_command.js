@@ -31,24 +31,33 @@ module.exports = class PaginatedCommand extends BaseCommand {
   }
 
   async editReply() {
-    await this.reply.edit(await this.getReply());
+    await this.reply.edit(this.makeReplyPayload(await this.getReply()));
     await this.afterEdit()
+  }
+
+  makeReplyPayload(reply) {
+    if (!Array.isArray(reply)) return reply
+    return { embeds: reply.slice(0, 10) }
   }
 
   async afterReply(options = {}) {
     this.prepareToListenForReactions()
+    await this.beforeSlashControls()
     if (this.canDelete || options.overrideDeletable) {
       await this.addDeleteReaction()
     }
     await this.addPageReactions()
     if (this.reactions && Object.keys(this.reactions).length) {
+      if (this.message._isSlashCommand) return this.updateSlashControls()
       await this.waitReplyReaction()
     }
   }
 
   async afterEdit() {
+    await this.beforeSlashControls()
     this.addDeleteReaction()
     this.addPageReactions()
+    if (this.message._isSlashCommand) return this.updateSlashControls()
     await this.waitReplyReaction()
   }
 
@@ -120,6 +129,11 @@ module.exports = class PaginatedCommand extends BaseCommand {
   async doShowExtras(_collected, command) {
     command.isShowingExtras = !command.isShowingExtras;
     await command.editReply();
+  }
+
+  getSlashButtonLabel(actionId) {
+    if (actionId === "prev") return "◀"
+    if (actionId === "next") return "▶"
   }
 
   // Reactions

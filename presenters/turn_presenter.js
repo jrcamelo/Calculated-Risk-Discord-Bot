@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('../utils/discord_compat');
 const PlayerPresenter = require('./player_presenter');
 const RollPresenter = require('./roll_presenter');
 
@@ -14,7 +14,7 @@ module.exports = class TurnPresenter {
       .setDescription(this.makeDescription(false))
       .addFields(this.makeFactionFields())
       .setFooter(this.makeStatusFooter())
-      .setImage(this.turn.mup)
+    this.setMupImage(embed)
     return embed
   }
 
@@ -23,7 +23,7 @@ module.exports = class TurnPresenter {
       .setDescription(this.makeDescription(false))
       .addFields(this.makeFactionFields())
       .setFooter(this.makeStatusFooter())
-      .setThumbnail(this.turn.mup)
+    this.setMupThumbnail(embed)
     return embed
   }
 
@@ -58,9 +58,21 @@ module.exports = class TurnPresenter {
       .setTitle(this.game.name.substring(0, 250))
       .addFields(this.makeFieldsWithIntentions())
       .addFields(this.makeFactionFields())
-      .setFooter(makeStatusFooter())
-    isExpanded ? embed.setImage(this.turn.mup) : embed.setThumbnail(this.turn.mup)
+      .setFooter(this.makeStatusFooter())
+    isExpanded ? this.setMupImage(embed) : this.setMupThumbnail(embed)
     return embed
+  }
+
+  setMupImage(embed) {
+    if (this.hasMup()) embed.setImage(this.turn.mup)
+  }
+
+  setMupThumbnail(embed) {
+    if (this.hasMup()) embed.setThumbnail(this.turn.mup)
+  }
+
+  hasMup() {
+    return typeof this.turn.mup === "string" && this.turn.mup.trim().length > 0
   }
 
   makeStatusFooter() {

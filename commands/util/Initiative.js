@@ -7,6 +7,7 @@ module.exports = class WhoRightCommand extends BaseCommand  {
 
   canDelete = false
   masterOnly = true
+  needsGame = true
 
   async execute() {
     return this.sendReply(this.turn.listAlliancesInSemiRandomOrder())

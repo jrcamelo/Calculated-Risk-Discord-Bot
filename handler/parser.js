@@ -18,6 +18,7 @@ module.exports = class Parser {
   static isValid(message) {
     if (!message || !message.channel || !message.channel.guild) return false;
     if (message.author.bot) return false;
+    if (!message.content) return false;
     return message.content.toLowerCase().startsWith(PREFIX);
   }
 

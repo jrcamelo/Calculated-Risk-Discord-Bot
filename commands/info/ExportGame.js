@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+const Discord = require("../../utils/discord_compat");
 const BaseCommand = require("../base_command");
 const Database = require("../../database");
 const ChannelStatusCommand = require("./ChannelStatus");

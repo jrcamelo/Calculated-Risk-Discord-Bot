@@ -58,10 +58,11 @@ module.exports = class RollDnDCommand extends RollCommand {
     this.roll.value = finalValue
     this.roll.formattedValue = resultString
 
-    if (this.saveRollOrReturnWarning()) return
-    await this.sendRollResult()
+    const displayValue = resultString
     this.roll.formattedValue = `**${this.roll.value}**`
     if (this.saveRollOrReturnWarning()) return
+    this.roll.formattedValue = displayValue
+    await this.sendRollResult()
   }
 
   splitPrompts(arg) {

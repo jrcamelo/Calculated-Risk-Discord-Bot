@@ -31,11 +31,19 @@ module.exports = class CedesCommand extends PaginatedCommand {
   }
 
   async doExpand(_collected, command) {
-    if (command.expandIndex > command.turn.cedes.length) {
+    const turn = command.game.getTurn(command.index)
+    const cedeCount = turn && turn.cedes ? turn.cedes.length : 0
+    if (command.expandIndex + 10 >= cedeCount) {
       command.expandIndex = 0
     } else {
       command.expandIndex = command.expandIndex + 10;
     }
     await command.editReply();
+  }
+
+  getSlashButtonLabel(actionId) {
+    if (actionId === "expand") return "More"
+    if (actionId === "extras") return this.isShowingExtras ? "Short Text" : "Full Text"
+    return super.getSlashButtonLabel(actionId)
   }
 }

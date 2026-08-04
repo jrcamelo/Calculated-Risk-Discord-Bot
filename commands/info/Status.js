@@ -1,15 +1,16 @@
 const PaginatedCommand = require("../paginated_command")
 const GamePresenter = require("../../presenters/game_presenter")
-const Discord = require('discord.js');
+const Discord = require('../../utils/discord_compat');
 
 module.exports = class StatusCommand extends PaginatedCommand {
   static aliases = ["Status", "Game"]
-  static description = "Shows the status of the current game. Try `S` or `G` for a shorter version."
+  static description = "Shows the status of the current game. Try `G` for a shorter version."
   static argsDescription = "[Turn]"
   static category = "Game"
 
   canDelete = true
   needsGame = true
+  hasExpand = true
   isExpanded = true
   hasExtras = true
 
@@ -21,17 +22,12 @@ module.exports = class StatusCommand extends PaginatedCommand {
 
     this.gamePresenter = new GamePresenter(this.game)
 
-    const reply = this.getReply()
-    if (Array.isArray(reply)) {
-      const last = reply.length - 1
-      for (let i = 0; i < reply.length; i++) {
-        const embed = reply[i]
-        if (i === last) await this.sendReply(embed)
-        else await this.doSendReply(embed)
-      }
-    } else {
-      await this.sendReply(reply)
-    }
+    await this.sendReply(this.makeReplyPayload(this.getReply()))
+  }
+
+  async editReply() {
+    await this.reply.edit(this.makeReplyPayload(this.getReply()))
+    await this.afterEdit()
   }
 
   getReply() {
@@ -80,5 +76,11 @@ module.exports = class StatusCommand extends PaginatedCommand {
     }
   
     return embeds
+  }
+
+  getSlashButtonLabel(actionId) {
+    if (actionId === "expand") return this.isExpanded ? "Compact" : "Full Status"
+    if (actionId === "extras") return this.isShowingExtras ? "Less Info" : "More Info"
+    return super.getSlashButtonLabel(actionId)
   }
 }

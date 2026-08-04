@@ -1,6 +1,8 @@
 const Parser = require("../handler/parser");
-const Discord = require("discord.js");
+const Discord = require("../utils/discord_compat");
 const BotInfo = require("../utils/bot_info");
+const { DESCRIPTIONS } = require("../handler/slash_descriptions");
+const { SCHEMAS } = require("../handler/slash_option_mappings");
 
 module.exports = class HelpPresenter {
   constructor() {
@@ -33,15 +35,15 @@ module.exports = class HelpPresenter {
     description += "\n\n**GAME MASTERS**"
     description += "\nGames are hosted in channels, only one per channel, "
     description += "with the user who started it being the Game Master and getting both the powers and responsibilities that come with the role. "
-    description += "\nFor more info on how to host games, check out the `r.HelpMaster` (r.hm) command. "
+    description += "\nFor more info on how to host games, use `/helpmaster`. "
 
     description += "\n\n**PLAYERS**"
     description += "\nPlayers have a way simpler role, where they can join ongoing games, claim a Faction, ally or betray others, "
     description += "and roll to conquer the world, universe or whatever is at stake, or simply meet their demise. "
-    description += "\nFor more info on how to play, check out the `r.HelpPlayer (r.hp)` and `r.HelpLevel (r.hl)` commands. "
+    description += "\nFor more info on how to play, use `/helpplayer` and `/helplevel`. "
 
     description += "\n\nThere are a lot of other commands that help you keep track of what's happening and has happened in the game, "
-    description += "as well as some Admin related features to customize the bot, so please check out `r.HelpUtil` (r.hu) for more info. "
+    description += "as well as some Admin related features to customize the bot, so use `/helputil` for more info. "
 
     description += "\n\nKeeping this bot up and running is only possible thanks to the awesome supporters at [Patreon](https://www.patreon.com/jrlol3). Special thanks to Silenius for much needed initial help."
     description += "\n\nJoin my Bot server for announcements and information: https://discord.gg/arK9crj8w8"
@@ -69,7 +71,7 @@ module.exports = class HelpPresenter {
     let description = "\n\nPlayers claim a Faction in a game, then roll to kill each other, as the Master commands."
     description += "\nIt is a social strategy game, where you can make allies, betray them, apply big brain tactics and roll high to decimate your enemies."
     
-    description += "\n\nCheck `HelpLevel` for leaderboard and meta related commands."
+    description += "\n\nUse `/helplevel` for leaderboard and meta related commands."
 
     description += "\n-"
 
@@ -182,13 +184,28 @@ module.exports = class HelpPresenter {
   }
 
   makeCommandNameAndUsage(command) {
-    return `${command.aliases[0]}`;
+    return `/${this.makeSlashCommandName(command)}`;
   }
 
   makeCommandDescriptionAndAliases(command) {
-    const args = `${command.argsDescription ? `\nArgs: **${"`" + command.argsDescription + "`"}**`: ""}`
-    const aliases = `${command.aliases.length > 1 ? `Aliases: ${"`" + command.aliases.slice(1).join(", ") + "`"}` : ""}`
-    return `${command.description}${args}${args && aliases ? " — " : "\n" }${aliases}`
+    const commandName = this.makeSlashCommandName(command)
+    const description = DESCRIPTIONS[commandName] || command.description
+    const options = this.makeOptionsText(commandName)
+    return `${description}${options}`
+  }
+
+  makeSlashCommandName(command) {
+    return command.aliases[0].toLowerCase().replace(/[^a-z0-9_-]/g, "-").slice(0, 32)
+  }
+
+  makeOptionsText(commandName) {
+    const schema = SCHEMAS[commandName]
+    if (!schema || !schema.options || !schema.options.length) return ""
+    const options = schema.options
+      .filter(option => option.required)
+      .map(option => option.name)
+    if (!options.length) return ""
+    return `\nRequired: **${"`" + options.join(", ") + "`"}**`
   }
 
   getPatreonList() {

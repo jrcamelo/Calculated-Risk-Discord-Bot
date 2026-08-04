@@ -19,8 +19,8 @@ module.exports = class Game {
     this.quitList = quitList || [];
     this.closed = closed || false;
     this.keepSlotsOnMup = keepSlotsOnMup || false;
-    this.maxAllies = -1;
-    this.maxNAPs = -1;
+    this.maxAllies = maxAllies;
+    this.maxNAPs = maxNAPs;
     this._turn = _database ? _database.getTurn(this.turnNumber) || new Turn(_database) : null
   }
 

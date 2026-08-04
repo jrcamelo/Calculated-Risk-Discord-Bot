@@ -74,4 +74,10 @@ module.exports = class HistoryCommand extends PaginatedCommand {
     command.expandIndex = command.expandIndex + 1
     await command.editReply()
   }
+
+  getSlashButtonLabel(actionId) {
+    if (actionId === "expand") return "More"
+    if (actionId === "extras") return this.isShowingExtras ? "Summaries" : "Full Events"
+    return super.getSlashButtonLabel(actionId)
+  }
 }

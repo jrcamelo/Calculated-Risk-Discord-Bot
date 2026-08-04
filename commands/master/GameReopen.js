@@ -11,10 +11,13 @@ module.exports = class GameStartCommand extends BaseCommand {
   static category = "Master"
 
   canDelete = false
+  masterOnly = true
+  acceptAdmins = true
+  acceptModerators = true
 
   async validate() {
-    // if (!this.isOwner())
-    //   return "This command is not available."
+    const validationError = await super.validate()
+    if (validationError) return validationError
     if (this.game != null) {
       return "There is already a game in this channel."
     }

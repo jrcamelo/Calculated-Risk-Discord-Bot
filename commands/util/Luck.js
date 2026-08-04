@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js")
+const { MessageEmbed } = require("../../utils/discord_compat")
 const BaseCommand = require("../base_command")
 
 module.exports = class LuckCommand extends BaseCommand {

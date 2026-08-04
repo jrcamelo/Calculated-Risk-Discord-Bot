@@ -9,6 +9,7 @@ module.exports = class SlotKeepCommand extends BaseCommand {
   canDelete = false
   masterOnly = true
   needsGame = true
+  ephemeral = true
 
   async execute() {
     this.game.keepSlotsOnMup = !this.game.keepSlotsOnMup

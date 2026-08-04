@@ -1,4 +1,4 @@
-const Discord = require("discord.js")
+const Discord = require("../../utils/discord_compat")
 const PaginatedCommand = require("../paginated_command")
 const Database = require("../../database")
 const GetServerGames = require("../../tasks/server/get/GetServerGames")
@@ -51,6 +51,11 @@ module.exports = class GamesCommand extends PaginatedCommand {
     }
 
     await command.deleteReply(_collected, command)
+  }
+
+  getSlashButtonLabel(actionId) {
+    if (actionId === "expand") return "Open"
+    return super.getSlashButtonLabel(actionId)
   }
 
   async getAllGames() {

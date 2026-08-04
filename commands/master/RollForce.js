@@ -22,6 +22,11 @@ module.exports = class ForceRollCommand extends BaseCommand {
   playerOnly = false
 
   async execute() {
+    this.gameTime = this.game.startedAt
+    this.turnNumber = this.game.turnNumber
+    this.limit = null
+    this.isTest = false
+    this.isRanked = false
     this.roll = new Roll(this.message, this.arg, this.gameTime, this.turnNumber, this.limit, this.isTest, this.isRanked)
     this.roll.playerId = this.mentionedPlayer.id
     this.roll.doRollWithLimit()

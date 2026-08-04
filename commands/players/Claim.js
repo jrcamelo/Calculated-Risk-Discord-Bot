@@ -1,49 +1,53 @@
-const BaseCommand = require("../base_command")
+const BaseCommand = require("../base_command");
 
 module.exports = class ClaimCommand extends BaseCommand {
-  static aliases = ["Claim", "Join", "Rename", "Faction"]
-  static description = "Joins the current game as a player or rename your faction. Get unclaimed factions with a number or its name."
-  static argsDescription = "[Faction]"
-  static category = "Player"
+  static aliases = ["Claim", "Join", "Rename", "Faction"];
+  static description =
+    "Joins the current game as a player or rename your faction. Get unclaimed factions with a number or its name.";
+  static argsDescription = "[Faction]";
+  static category = "Player";
 
-  canDelete = false
+  canDelete = false;
 
-  needsGame = true
-  canMention = false
+  needsGame = true;
+  canMention = false;
 
   async execute() {
     if (this.arg && this.arg.length > 50) {
-      this.arg = this.arg.slice(0, 50) + "..."
+      this.arg = this.arg.slice(0, 50) + "...";
     }
 
     if (this.game.isPlayerPermaQuit(this.user.id)) {
-      this.game.unquitPlayer(this.user.id)
+      this.game.unquitPlayer(this.user.id);
+      if (this.saveOrReturnWarning()) return;
     }
-    
+
     if (this.player) {
-      const blank = "[Blank]"
-      const existingPlayerName = this.player.name || blank
-      const renamedPlayer = this.turn.renamePlayer(this.player, this.arg)
-      if (this.saveOrReturnWarning()) return
-      const newName = this.arg || blank
+      const blank = "[Blank]";
+      const existingPlayerName = this.player.name || blank;
+      const renamedPlayer = this.turn.renamePlayer(this.player, this.arg);
+      if (this.saveOrReturnWarning()) return;
+      const newName = this.arg || blank;
       if (existingPlayerName == blank && newName == blank) {
-        return this.sendReply(`You are already playing this game`)
+        return this.sendReply(`You are already playing this game`);
       } else if (existingPlayerName == renamedPlayer.name) {
-        return this.sendReply(`Your faction is already ${renamedPlayer.name}`)
+        return this.sendReply(`Your faction is already ${renamedPlayer.name}`);
       } else if (newName == blank) {
-        return this.sendReply(`Your faction name has been removed`)
+        return this.sendReply(`Your faction name has been removed`);
       } else {
-        return this.sendReply(`Your faction has been renamed to ${renamedPlayer.name}`)
+        return this.sendReply(
+          `Your faction has been renamed to ${renamedPlayer.name}`
+        );
       }
     } else if (this.game.isPlayerBanned(this.user.id)) {
-      this.replyDeletable(`You have been banned from this game.`)
+      this.replyDeletable(`You have been banned from this game.`);
     } else if (this.game.closed) {
-      this.replyDeletable(`Game is closed. Ask the Master to add you.`)
+      this.replyDeletable(`Game is closed. Ask the Master to add you.`);
     } else {
-      this.turn.addPlayer(this.user, this.arg)
-      const newPlayer = this.turn.getPlayer(this.user)
-      if (this.saveOrReturnWarning()) return
-      this.sendReply(`${newPlayer.pingWithFaction()} has joined!`)
+      this.turn.addPlayer(this.user, this.arg);
+      const newPlayer = this.turn.getPlayer(this.user);
+      if (this.saveOrReturnWarning()) return;
+      this.sendReply(`${newPlayer.pingWithFaction()} has joined!`);
     }
   }
-}
+};

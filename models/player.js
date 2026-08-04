@@ -61,6 +61,10 @@ module.exports = class Player {
     return (Object.keys(this.allies)).length
   }
 
+  countNAPs() {
+    return (Object.keys(this.naps)).length
+  }
+
   betray(player) {
     if (this.isAlly(player)) {
       delete this.allies[player.id];
@@ -149,7 +153,9 @@ module.exports = class Player {
 
   
   static makeDiscordAvatarUrl(discordUser) {
+    if (discordUser.displayAvatarURL) return discordUser.displayAvatarURL()
+    if (!discordUser.avatar) return null
     const url = "https://cdn.discordapp.com/avatars/"
-    return url + discordUser + "/" + discordUser.avatar + ".png";
+    return url + discordUser.id + "/" + discordUser.avatar + ".png";
   }
 }

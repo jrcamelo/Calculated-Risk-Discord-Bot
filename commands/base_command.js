@@ -1,7 +1,8 @@
 const emotes = require("../utils/emotes")
 const discordUtils = require("../utils/discord")
 const Database = require("../database")
-const { MessageEmbed } = require("discord.js")
+const { EmbedBuilder, PermissionFlagsBits } = require("../utils/discord_compat")
+const SlashComponents = require("../handler/slash_components")
 
 module.exports = class BaseCommand {
   // Command Settings
@@ -136,6 +137,7 @@ module.exports = class BaseCommand {
   async sendReply(content, overrideDeletable = false) {
     const options = {}
     if (!this.canMention) options.allowedMentions = { parse: [] }
+    if (this.message._isSlashCommand && this.ephemeral) options.ephemeral = true
     this.reply = await this.doSendReply(content, options)
     await this.afterReply({ overrideDeletable })
     return this.reply
@@ -152,22 +154,28 @@ module.exports = class BaseCommand {
   }
 
   async doSendReply(content, options) {
-    if (content instanceof MessageEmbed) {
-      return this.message.channel.send(content)
-    } else {
-      return this.message.channel.send(content, options)
-    }
+    return this.message.channel.send(this.makeSendPayload(content, options))
+  }
+
+  makeSendPayload(content, options = {}) {
+    if (content instanceof EmbedBuilder) return { embeds: [content], ...options }
+    if (content && typeof content === "object" && !Buffer.isBuffer(content)) return { ...content, ...options }
+    return { content: content == null ? "" : String(content), ...options }
   }
 
   async afterReply(options) {
     this.prepareToListenForReactions()
+    await this.beforeSlashControls()
     if (this.canDelete || (options && options.overrideDeletable)) {
       await this.addDeleteReaction()
     }
     if (this.reactions && Object.keys(this.reactions).length) {
+      if (this.message._isSlashCommand) return this.updateSlashControls()
       this.waitReplyReaction()
     }
   }
+
+  async beforeSlashControls() {}
 
   async sendImageMessage(image) {
     const options = {
@@ -191,6 +199,7 @@ module.exports = class BaseCommand {
   }
 
   async waitReplyReaction() {
+    if (this.message._isSlashCommand) return this.updateSlashControls()
     const time = this.ephemeral ? 20000 : 60000
     const options = { max: 1, time, errors: ['time'] };
     this.reply.awaitReactions(this.reactionFilter, options)
@@ -211,6 +220,10 @@ module.exports = class BaseCommand {
   async addReact(emote, callback) {
     if (!this.valid) return
     if (this.reply == null) return
+    if (this.message._isSlashCommand) {
+      this.reactions[emote] = callback
+      return
+    }
     try {
       await this.reply.react(emote)
     } catch(e) { } // Message deleted at the same time as adding reaction 
@@ -231,12 +244,20 @@ module.exports = class BaseCommand {
         return await command.waitReplyReaction();
     command.reactions = []
     command.valid = false
+    if (command._slashComponentId) SlashComponents.remove(command._slashComponentId)
     return await collected.message.delete();
   }
 
   async stopEphemeral(collected, command) {
     command.ephemeral = false
     command.waitReplyReaction()
+  }
+
+  async updateSlashControls() {
+    if (!this.message._isSlashCommand || !this.reply || !this.reply.edit) return
+    try {
+      await this.reply.edit({ components: SlashComponents.makeRows(this) })
+    } catch (_e) { }
   }
   
 /* -------------------------------------------------------------------------- */
@@ -261,8 +282,12 @@ module.exports = class BaseCommand {
   }
 
   hasPermissions(permission) {
-    const member = this.message.channel.guild.members.cache.get(this.user.id);
-    return member.permissions.has(permission) || this.isOwner();
+    const member = this.message.member || this.message.channel.guild.members.cache.get(this.user.id);
+    const permissions = {
+      MANAGE_MESSAGES: PermissionFlagsBits.ManageMessages,
+      ADMINISTRATOR: PermissionFlagsBits.Administrator,
+    }
+    return member?.permissions?.has(permissions[permission] || permission) || this.isOwner();
   }
 
   /* -------------------------------------------------------------------------- */
@@ -360,25 +385,6 @@ module.exports = class BaseCommand {
       multiple.push(mentionAndArg)
     }
     return multiple
-  }
-
-  /* -------------------------------------------------------------------------- */
-  /*                                  Database                                  */
-  /* -------------------------------------------------------------------------- */ 
-  
-  save() {
-    if (this.game != null) {
-      return this.game.save()
-    }
-    return true
-  }
-
-  saveOrReturnWarning() {
-    if (!this.save()) {
-      console.log("ERROR: Could not save at " + this.message.content)
-      return this.replyEphemeral("There was an error while saving this game.")
-    }
-    return false
   }
 
 }

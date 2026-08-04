@@ -8,7 +8,7 @@ module.exports = class PlayerVoteCommand extends BaseCommand {
 
   canDelete = false
   needsGame = true
-  needsPlayer = true
+  playerOnly = true
   canMention = false
   neededArgsAmount = 1
 

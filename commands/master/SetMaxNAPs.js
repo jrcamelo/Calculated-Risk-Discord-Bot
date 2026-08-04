@@ -9,6 +9,7 @@ module.exports = class SetMaxNAPsCommand extends BaseCommand {
   canDelete = false
   masterOnly = true
   needsGame = true
+  ephemeral = true
 
   async execute() {
     if (this.arg == null || this.arg == "") {

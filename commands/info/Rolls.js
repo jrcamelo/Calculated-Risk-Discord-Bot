@@ -20,7 +20,8 @@ module.exports = class HistoryCommand extends PaginatedCommand {
     this.getPageArg()
     this.turnIndex = this.index || this.game.turnNumber
 
-    this.ceiling = this.turn._rolls.length
+    const turn = this.game.getTurn(this.turnIndex)
+    this.ceiling = turn && turn._rolls ? Math.max(0, turn._rolls.length - 1) : 0
     this.index = 0
 
     this.gamePresenter = new GamePresenter(this.game)
@@ -34,5 +35,10 @@ module.exports = class HistoryCommand extends PaginatedCommand {
       text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, this.isShowingExtras)
     }
     return text
+  }
+
+  getSlashButtonLabel(actionId) {
+    if (actionId === "extras") return this.isShowingExtras ? "Hide Intentions" : "Show Intentions"
+    return super.getSlashButtonLabel(actionId)
   }
 }

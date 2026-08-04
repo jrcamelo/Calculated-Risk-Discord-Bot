@@ -62,7 +62,7 @@ module.exports = class DuelCommand extends BaseCommand {
 
         let hp1 = s1.hp, hp2 = s2.hp
 
-        await this.message.channel.send(`## Starting a duel between ${EMOTE[0]} ${m[0]} and ${EMOTE[1]} ${m[1]}`, { allowedMentions: { parse: [] } })
+        await this.message.channel.send({ content: `## Starting a duel between ${EMOTE[0]} ${m[0]} and ${EMOTE[1]} ${m[1]}`, allowedMentions: { parse: [] } })
         await wait(2000)
 
         const show = (val) => (val ? ` ${val > 0 ? "+" : ""}${val}` : "")
@@ -94,7 +94,7 @@ module.exports = class DuelCommand extends BaseCommand {
                 line += `\n${msg}`
             }
             line += "\n** **"
-            await this.message.channel.send(line, { allowedMentions: { parse: [] } })
+            await this.message.channel.send({ content: line, allowedMentions: { parse: [] } })
             await wait(2000 - (Math.max(hp1 + hp2)))
         }
 
