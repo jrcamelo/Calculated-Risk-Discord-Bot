@@ -3,7 +3,7 @@ const LeaderboardPresenter = require("../../presenters/leaderboard_presenter")
 
 module.exports = class LeaderboardPlayersCommand extends PaginatedCommand {
   static aliases = ["Top", "Ranks"]
-  static description = "Shows the leaderboard of players sorted by XP. Sort with args."
+  static description = "Shows the leaderboard of players sorted by XP. Sort with args. (Aliases: Ranks)"
   static argsDescription = "[(L)uck, (W)ins, (R)olls, (H)ost]"
   static category = "Player"
 

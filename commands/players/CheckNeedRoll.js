@@ -6,7 +6,7 @@ const path = require("path")
 
 module.exports = class ClaimCommand extends BaseCommand {
   static aliases = ["CheckNeedRoll", "CheckGames", "NeedRoll", "iforgor"]
-  static description = "Checks all channels for ongoing games that you haven't rolled"
+  static description = "Checks all channels for ongoing games that you haven't rolled (Aliases: CheckGames, iforgor)"
   static argsDescription = ""
   static category = "Player"
   

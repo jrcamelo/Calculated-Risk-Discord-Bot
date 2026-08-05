@@ -9,7 +9,7 @@ const RollPresenter = require("../../presenters/roll_presenter")
 
 module.exports = class ForceRollCommand extends BaseCommand {
   static aliases = ["ForceRoll", "SkipPlayer", "frfr"]
-  static description = "Skips a player by rolling for them"
+  static description = "Skips a player by rolling for them (Aliases: SkipPlayer, frfr)"
 
   canDelete = false
   masterOnly = true

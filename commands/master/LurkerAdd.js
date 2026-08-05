@@ -3,7 +3,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class LurkerAddCommand extends BaseCommand {
     static aliases = ["LurkerAdd", "Lurker", "AddLurker"]
-    static description = "Add one or more lurkers to the game. Accepts multiple with |."
+    static description = "Add one or more lurkers to the game. Accepts multiple with |. (Aliases: AddLurker)"
     static argsDescription = "<@User> [Faction] | <@User> [Faction]"
     static category = "Master"
 

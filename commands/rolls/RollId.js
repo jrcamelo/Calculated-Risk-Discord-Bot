@@ -3,7 +3,7 @@ const Roll = require("../../models/roll")
 
 module.exports = class RollIdCommand extends BaseRollCommand {
   static aliases = ["RollID", "RID", "ID"]
-  static description = "State your intention and put your life on Discord's hands."
+  static description = "State your intention and put your life on Discord's hands. (Aliases: RID, ID)"
   static argsDescription = "[Intention] {Attachment}"
   static category = "Player"
 

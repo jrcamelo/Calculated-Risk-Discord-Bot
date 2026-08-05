@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class GameRename extends BaseCommand {
   static aliases = ["RenameGame", "ChangeTitle", "Title"]
-  static description = "Renames the current game."
+  static description = "Renames the current game. (Aliases: ChangeTitle, Title)"
   static argsDescription = "<New name>"
   static category = "Master"
 

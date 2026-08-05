@@ -4,7 +4,7 @@ const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class GameEndCommand extends BaseCommand {
   static aliases = ["EndGame", "FinishGame", "Peace", "EndMup"]
-  static description = "Finishes the current game and saves it."
+  static description = "Finishes the current game and saves it. (Aliases: FinishGame, Peace, EndMup)"
   static argsDescription = "<optional final image>"
   static category = "Master"
 

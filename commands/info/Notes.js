@@ -3,7 +3,7 @@ const GamePresenter = require("../../presenters/game_presenter")
 
 module.exports = class NotesCommand extends PaginatedCommand {
   static aliases = ["Notes", "N"]
-  static description = "Shows the notes of all players."
+  static description = "Shows the notes of all players. (Aliases: N)"
   static argsDescription = ""
   static category = "Game"
 

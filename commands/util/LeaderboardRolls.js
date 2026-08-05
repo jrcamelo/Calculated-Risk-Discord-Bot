@@ -3,7 +3,7 @@ const LeaderboardPresenter = require("../../presenters/leaderboard_presenter")
 
 module.exports = class LeaderboardRollsCommand extends PaginatedCommand {
   static aliases = ["Hall", "TopR"]
-  static description = "Shows the leaderboard of rolls. You can filter for user."
+  static description = "Shows the leaderboard of rolls. You can filter for user. (Aliases: TopR)"
   static argsDescription = "[@User]"
   static category = "Player"
 

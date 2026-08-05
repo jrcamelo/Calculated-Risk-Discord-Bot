@@ -3,7 +3,7 @@ const BaseCommand = require("../base_command");
 module.exports = class PlayerRagequitCommand extends BaseCommand {
   static aliases = ["Ragequit", "Leave", "Quit", "Resign"];
   static description =
-    "Suicide then leave on the next turn. Try `r.hardquit` to leave for real.";
+    "Suicide then leave on the next turn. Try `r.hardquit` to leave for real. (Aliases: Resign)";
   static argsDescription = "";
   static category = "Player";
 

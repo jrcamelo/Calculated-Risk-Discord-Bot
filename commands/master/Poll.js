@@ -3,7 +3,7 @@ const PollPresenter = require("../../presenters/poll_presenter")
 
 module.exports = class PollCommand extends PaginatedCommand  {
   static aliases = ["Poll", "Election", "Decision"]
-  static description = "Sets a question for players and shows the current votes."
+  static description = "Sets a question for players and shows the current votes. (Aliases: Election, Decision)"
   static argsDescription = "[Question]"
   static category = "Master"
 

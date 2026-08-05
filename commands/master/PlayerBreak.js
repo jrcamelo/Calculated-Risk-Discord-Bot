@@ -1,7 +1,7 @@
 const BaseCommand = require("../base_command")
 module.exports = class PlayerForceBreakCommand extends BaseCommand {
   static aliases = ["ForceBreak", "ForceNAPBreak"]
-  static description = "Breaks a NAP between players."
+  static description = "Breaks a NAP between players. (Aliases: ForceNAPBreak)"
   static argsDescription = "<@User> <@OtherUser>"
   static category = "Master"
 

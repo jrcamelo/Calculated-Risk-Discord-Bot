@@ -1,7 +1,7 @@
 const BaseCommand = require("../base_command")
 module.exports = class PlayerAnnounceCommand extends BaseCommand {
   static aliases = ["Announce", "Proclaim", "An"]
-  static description = "Add something to the history."
+  static description = "Add something to the history. (Aliases: Proclaim, An)"
   static argsDescription = "<Message>"
   static category = "Master"
 

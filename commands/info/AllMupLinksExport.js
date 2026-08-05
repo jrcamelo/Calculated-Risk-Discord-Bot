@@ -6,7 +6,7 @@ const OldStatusCommand = require("./OldStatus")
 
 module.exports = class MupLinksExportCommand extends BaseCommand {
   static aliases = ["MupLinkExport", "MupLinksExport", "MupLinksTXT"]
-  static description = "Exports all MUP links in a game to a TXT file."
+  static description = "Exports all MUP links in a game to a TXT file. (Aliases: MupLinksExport, MupLinksTXT)"
   static argsDescription = "[ChannelId] [GameId]"
   static category = "Game"
 

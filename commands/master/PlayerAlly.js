@@ -1,7 +1,7 @@
 const BaseCommand = require("../base_command")
 module.exports = class PlayerForceAllyCommand extends BaseCommand {
   static aliases = ["ForceAlly", "ForceAlliance"]
-  static description = "Create an alliance between players. `r.ForceNAP` for NAPs"
+  static description = "Create an alliance between players. `r.ForceNAP` for NAPs (Aliases: ForceAlliance)"
   static argsDescription = "<@User> <@OtherUser>"
   static category = "Master"
 

@@ -3,7 +3,7 @@ const PlayerCardPresenter = require("../../presenters/player_card_presenter")
 
 module.exports = class ProfileCommand extends BaseCommand {
   static aliases = ["Profile", "Rank", "Level"]
-  static description = "Shows your profile card with stats."
+  static description = "Shows your profile card with stats. (Aliases: Rank, Level)"
   static argsDescription = "[@User]"
   static category = "Player"
 

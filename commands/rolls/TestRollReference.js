@@ -3,7 +3,7 @@ const Roll = require("../../models/roll")
 
 module.exports = class TestRollCommand extends RollCommand {
   static aliases = ["Reference", "RefTest", "Ref"]
-  static description = "Shows how a roll would look like."
+  static description = "Shows how a roll would look like. (Aliases: RefTest)"
   static argsDescription = "<Roll>"
   needsGame = false
   playerOnly = false

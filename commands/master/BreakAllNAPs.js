@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class BreakPactsCommand extends BaseCommand {
   static aliases = ["BreakAllPacts", "BreakAllNAPs", "BreakAll"]
-  static description = "Breaks all Non Aggression Pacts in the game."
+  static description = "Breaks all Non Aggression Pacts in the game. (Aliases: BreakAllNAPs)"
   static category = "Master"
 
   masterOnly = true

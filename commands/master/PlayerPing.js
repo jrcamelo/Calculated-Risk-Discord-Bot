@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class PlayerPingCommand extends BaseCommand {
   static aliases = ["Ping", "NotPlayed", "Not"]
-  static description = "Pings players that need to roll. \nTry `PingAlive` and `PingEveryone` as well."
+  static description = "Pings players that need to roll. \nTry `PingAlive` and `PingEveryone` as well. (Aliases: NotPlayed, Not)"
   static argsDescription = ""
   static category = "Master"
 

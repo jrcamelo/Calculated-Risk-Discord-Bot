@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class PlayerBanCommand extends BaseCommand {
   static aliases = ["BanInactive", "PurgeInactive"]
-  static description = "Removes all players that are not currently in the server."
+  static description = "Removes all players that are not currently in the server. (Aliases: PurgeInactive)"
   static category = "Master"
 
   canDelete = false

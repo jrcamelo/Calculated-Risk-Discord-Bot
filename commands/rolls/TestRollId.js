@@ -2,6 +2,7 @@ const RollIdCommand = require("./RollId")
 
 module.exports = class TestRollIdCommand extends RollIdCommand {
   static aliases = ["TestRollId", "TestId", "TID"]
+  static description = "State your intention and put your life on Discord's hands. (Aliases: TestId, TID)"
   needsGame = false
   playerOnly = false
   canDelete = true

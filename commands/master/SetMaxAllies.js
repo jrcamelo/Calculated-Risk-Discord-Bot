@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class SetMaxAlliesCommand extends BaseCommand {
   static aliases = ["SetMaxAllies", "MaxAllies", "AllyLimit"]
-  static description = "Sets a limit of how many allies each player can have."
+  static description = "Sets a limit of how many allies each player can have. (Aliases: AllyLimit)"
   static argsDescription = "[number of allies, 0 disables alliances, no number disables the limit]"
   static category = "Master"
 

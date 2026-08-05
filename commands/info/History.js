@@ -4,7 +4,7 @@ const HistoryEntry = require("../../models/history_entry")
 
 module.exports = class HistoryCommand extends PaginatedCommand {
   static aliases = ["History", "Events", "E"]
-  static description = "Shows most events chronologically."
+  static description = "Shows most events chronologically. (Aliases: E)"
   static argsDescription = "[Turn|Type|Category]..."
   static category = "Game"
 

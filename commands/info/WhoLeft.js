@@ -2,7 +2,7 @@ const PlayerPingCommand = require("../master/PlayerPing")
 
 module.exports = class WhoIsLeftCommand extends PlayerPingCommand {
   static aliases = ["Who", "Left", "W"]
-  static description = "Shows the players who have not played yet."
+  static description = "Shows the players who have not played yet. (Aliases: Left, W)"
   static argsDescription = ""
   static category = "Game"
 

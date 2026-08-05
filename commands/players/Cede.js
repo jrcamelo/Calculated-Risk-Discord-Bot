@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 const { makeMessageLink } = require("../../utils/discord");
 module.exports = class PlayerCedeCommand extends BaseCommand {
   static aliases = ["Cede", "Send"]
-  static description = "Cede lands to another player."
+  static description = "Cede lands to another player. (Aliases: Send)"
   static argsDescription = "<@User> <Message>"
   static category = "Player"
 

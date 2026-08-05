@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class SlotKeepCommand extends BaseCommand {
   static aliases = ["SlotKeep", "SKeep", "KeepSlots", "KeepSlot", "SlotsKeep"]
-  static description = "Toggles keeping the slots after mupping. Default is false."
+  static description = "Toggles keeping the slots after mupping. Default is false. (Aliases: SKeep, KeepSlots, KeepSlot, SlotsKeep)"
   static argsDescription = ""
   static category = "Master"
 

@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class PlayerAddCommand extends BaseCommand {
   static aliases = ["Add", "Change"]
-  static description = "Adds a player to the game. Existing players are renamed. \nAccepts many players with |"
+  static description = "Adds a player to the game. Existing players are renamed. \nAccepts many players with | (Aliases: Change)"
   static argsDescription = "<@User> [Faction] | <@User> [Faction]"
   static category = "Master"
 

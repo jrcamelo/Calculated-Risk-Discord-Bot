@@ -4,7 +4,7 @@ const { getMultipleLimitModifierFromDnD } = require("../../utils/rolls")
 
 module.exports = class RollDnDCommand extends RollCommand {
   static aliases = ["RollDnD", "RDnD", "DnD"]
-  static description = `Roll using DnD notation. If multiple rolls, the result is the sum.`
+  static description = `Roll using DnD notation. If multiple rolls, the result is the sum. (Aliases: RDnD)`
   static argsDescription = "<Multiple>D<Limit>"
   static category = "Player"
 

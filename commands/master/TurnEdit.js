@@ -3,7 +3,7 @@ const StatusCommand = require("../info/StatusShorter")
 
 module.exports = class TurnEditCommand extends BaseCommand {
   static aliases = ["TurnEdit", "MupEdit", "EditMup"]
-  static description = "Changes the current Mup image and description. Try `EditOld` as well."
+  static description = "Changes the current Mup image and description. Try `EditOld` as well. (Aliases: MupEdit, EditMup)"
   static argsDescription = "[Description] {Image}"
   static category = "Master"
 

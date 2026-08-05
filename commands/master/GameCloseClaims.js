@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class GameCloseCommand extends BaseCommand {
   static aliases = ["Close", "CloseClaims", "CloseJoins", "Reopen", "ReopenClaims", "ReopenJoins"]
-  static description = "Makes it impossible for new players to join without the Master adding them. Use it again to reopen."
+  static description = "Makes it impossible for new players to join without the Master adding them. Use it again to reopen. (Aliases: CloseClaims, CloseJoins, ReopenClaims, ReopenJoins)"
   static argsDescription = ""
   static category = "Master"
 

@@ -3,7 +3,7 @@ const discordUtils = require("../../utils/discord")
 
 module.exports = class LurkerRemoveCommand extends BaseCommand {
     static aliases = ["Unlurk", "RemoveLurker"]
-    static description = "Removes a lurker from the game. Can be used by the master or self."
+    static description = "Removes a lurker from the game. Can be used by the master or self. (Aliases: RemoveLurker)"
     static argsDescription = "<@User> | (no args = remove self)"
     static category = "Master"
 

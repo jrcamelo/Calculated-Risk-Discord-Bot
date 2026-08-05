@@ -7,7 +7,7 @@ const GamePresenter = require("../../presenters/game_presenter");
 
 module.exports = class ExportGameCommand extends BaseCommand {
   static aliases = ["ExportGame", "GameExport", "Export"];
-  static description = "Export a game to a text file.";
+  static description = "Export a game to a text file. (Aliases: GameExport)";
   static argsDescription = "[ChannelId] [GameId]";
   static category = "Game";
 

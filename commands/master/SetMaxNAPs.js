@@ -2,7 +2,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class SetMaxNAPsCommand extends BaseCommand {
   static aliases = ["SetMaxNAPs", "MaxNAPs", "NAPLimit", "SetMaxNAP", "MaxNAP", "NAPsLimit"]
-  static description = "Sets a limit of how many non-aggression pacts (NAPs) each player can have."
+  static description = "Sets a limit of how many non-aggression pacts (NAPs) each player can have. (Aliases: NAPLimit, NAPsLimit)"
   static argsDescription = "[number of NAPs, 0 disables NAPs, no number disables the limit]"
   static category = "Master"
 

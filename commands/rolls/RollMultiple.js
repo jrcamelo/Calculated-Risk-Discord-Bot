@@ -3,7 +3,7 @@ const Roll = require("../../models/roll")
 
 module.exports = class RollMultipleCommand extends BaseRollCommand {
   static aliases = ["RollX", "RX", "X"]
-  static description = `Do multiple rolls. No more than ${BaseRollCommand.MULTIPLE_ROLL_LIMIT}.`
+  static description = `Do multiple rolls. No more than ${BaseRollCommand.MULTIPLE_ROLL_LIMIT}. (Aliases: RX, X)`
   static argsDescription = "<Multiple> [Intention] {Attachment}"
   static category = "Player"
 

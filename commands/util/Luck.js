@@ -3,7 +3,7 @@ const BaseCommand = require("../base_command")
 
 module.exports = class LuckCommand extends BaseCommand {
   static aliases = ["Luck", "GameLuck"]
-  static description = "Shows how lucky each player has been in this game."
+  static description = "Shows how lucky each player has been in this game. (Aliases: GameLuck)"
   static argsDescription = "[Turn]"
   static category = "Game"
 
