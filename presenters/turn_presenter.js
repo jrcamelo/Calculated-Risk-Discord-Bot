@@ -10,20 +10,20 @@ module.exports = class TurnPresenter {
 
   makeStatusEmbed() {
     let embed = new Discord.MessageEmbed()
-      .setTitle(this.game.name.substring(0, 250))
       .setDescription(this.makeDescription(false))
       .addFields(this.makeFactionFields())
       .setFooter(this.makeStatusFooter())
+    this.setGameTitle(embed)
     this.setMupImage(embed)
     return embed
   }
 
   makeStatusEmbedCollapsed() {
     let embed = new Discord.MessageEmbed()
-      .setTitle(this.game.name.substring(0, 250))
       .setDescription(this.makeDescription(false))
       .addFields(this.makeFactionFields())
       .setFooter(this.makeStatusFooter())
+    this.setGameTitle(embed)
     this.setMupThumbnail(embed)
     return embed
   }
@@ -59,12 +59,17 @@ module.exports = class TurnPresenter {
 
   makeStatusEmbedExtras(isExpanded) {
     let embed = new Discord.MessageEmbed()
-      .setTitle(this.game.name.substring(0, 250))
       .addFields(this.makeFieldsWithIntentions())
       .addFields(this.makeFactionFields())
       .setFooter(this.makeStatusFooter())
+    this.setGameTitle(embed)
     isExpanded ? this.setMupImage(embed) : this.setMupThumbnail(embed)
     return embed
+  }
+
+  setGameTitle(embed) {
+    const title = String(this.game.name || "").trim()
+    if (title) embed.setTitle(title.substring(0, 250))
   }
 
   setMupImage(embed) {

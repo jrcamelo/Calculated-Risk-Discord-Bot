@@ -39,9 +39,10 @@ module.exports = class OldGamePresenter {
     const game = this.result[index]
     if (!game) return `Error?`
     const embed = new Discord.MessageEmbed()
-      .setTitle(`${game.name}`)
       .setDescription(this.makeEmbedDescription(game))
       .setFooter(`Game ${index + 1} / ${this.result.length}`)
+    const title = String(game.name || "").trim()
+    if (title) embed.setTitle(title.substring(0, 250))
     if (game.mup) embed.setThumbnail(game.mup)
     if (this.getPlayerCount(game)) {
       embed.addFields(this.makePlayerFields(game))
