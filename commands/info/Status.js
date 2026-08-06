@@ -34,11 +34,47 @@ module.exports = class StatusCommand extends PaginatedCommand {
     if (this.isShowingExtras)
       return this.chunkEmbeds(this.gamePresenter.makeStatusEmbedExtras(this.index, this.isExpanded))
   
-    let embed = this.gamePresenter.makeStatusEmbed(this.index, this.isExpanded)
-    if (embed.length > 4096)
-      embed = this.gamePresenter.makeStatusEmbed(this.index, false)
-  
-    return this.chunkEmbeds(embed)
+    return this.makeStatusEmbeds()
+  }
+
+  makeStatusEmbeds() {
+    const firstEmbed = this.gamePresenter.makeStatusEmbed(this.index, this.isExpanded, "x")
+    const limit = this.descriptionLimitForEmbed(firstEmbed)
+    const description = this.bestStatusDescription(limit)
+    const parts = this.splitDescription(description, limit)
+
+    return parts.map((part, index) => {
+      const embed = this.gamePresenter.makeStatusEmbed(this.index, this.isExpanded, part)
+      if (index > 0) {
+        this.clearFields(embed)
+        this.setContinuationTitle(embed, embed)
+      }
+      return embed
+    })
+  }
+
+  bestStatusDescription(limit) {
+    const compact = this.gamePresenter.makeStatusDescription(this.index, false)
+    if (!this.isExpanded) return compact
+
+    const expanded = this.gamePresenter.makeStatusDescription(this.index, true)
+    return expanded.length <= limit ? expanded : compact
+  }
+
+  descriptionLimitForEmbed(embed) {
+    const overhead = this.embedContentLength(embed) - (embed.description?.length || 0)
+    return Math.max(1, Math.min(3800, 6000 - overhead))
+  }
+
+  embedContentLength(embed) {
+    const fields = embed.fields || []
+    const fieldsLength = fields.reduce((total, field) => {
+      return total + (field.name?.length || 0) + (field.value?.length || 0)
+    }, 0)
+    return (embed.title?.length || 0)
+      + (embed.description?.length || 0)
+      + (embed.footer?.text?.length || 0)
+      + fieldsLength
   }
   
   chunkEmbeds(embed) {
@@ -50,32 +86,69 @@ module.exports = class StatusCommand extends PaginatedCommand {
   
     if (desc.length <= limit) return [embed]
   
-    const lines = desc.split("\n")
-    let current = ""
-  
-    for (const line of lines) {
-      if ((current + line + "\n").length > limit) {
-        const clone = new Discord.MessageEmbed(embed)
-          .setDescription(current.trim())
-        if (embeds.length > 0) clone.setTitle(`${embed.title || ""} (cont.)`)
-        embeds.push(clone)
-        current = ""
-      }
-      current += line + "\n"
-    }
-  
-    if (current.trim()) {
-      const clone = new Discord.MessageEmbed(embed)
-        .setDescription(current.trim())
-      if (embeds.length > 0) clone.setTitle(`${embed.title || ""} (cont.)`)
-      clone.setFooter(embed.footer?.text)
-  
-      clone.setImage(embed.thumbnail?.url ?? null)
-      clone.setThumbnail(null)
+    for (const part of this.splitDescription(desc, limit)) {
+      const clone = new Discord.MessageEmbed(embed).setDescription(part)
+      if (embeds.length > 0) this.setContinuationTitle(clone, embed)
       embeds.push(clone)
+    }
+
+    const last = embeds[embeds.length - 1]
+    if (last) {
+      last.setFooter(embed.footer?.text)
+      last.setImage(embed.thumbnail?.url ?? null)
+      last.setThumbnail(null)
     }
   
     return embeds
+  }
+
+  splitDescription(desc, limit) {
+    const parts = []
+    let current = ""
+
+    for (const line of desc.split("\n")) {
+      const chunks = this.splitLongLine(line, limit)
+      for (const chunk of chunks) {
+        const next = current ? `${current}\n${chunk}` : chunk
+        if (next.length > limit) {
+          if (current) parts.push(current)
+          current = chunk
+        } else {
+          current = next
+        }
+      }
+    }
+
+    if (current) parts.push(current)
+    return parts
+  }
+
+  splitLongLine(line, limit) {
+    if (line.length <= limit) return [line]
+
+    const chunks = []
+    let remaining = line
+    while (remaining.length > limit) {
+      let index = remaining.lastIndexOf(" ", limit)
+      if (index < limit * 0.6) index = limit
+      chunks.push(remaining.substring(0, index).trim())
+      remaining = remaining.substring(index).trim()
+    }
+    if (remaining) chunks.push(remaining)
+    return chunks
+  }
+
+  setContinuationTitle(embed, original) {
+    const title = original.title ? `${original.title} (cont.)` : "(cont.)"
+    embed.setTitle(title.substring(0, 250))
+  }
+
+  clearFields(embed) {
+    if (typeof embed.setFields === "function") {
+      embed.setFields([])
+    } else if (typeof embed.spliceFields === "function") {
+      embed.spliceFields(0, embed.fields?.length || 0)
+    }
   }
 
   getSlashButtonLabel(actionId) {

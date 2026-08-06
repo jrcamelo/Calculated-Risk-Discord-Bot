@@ -11,6 +11,7 @@ module.exports = class TurnCommand extends BaseCommand {
   canDelete = false
   masterOnly = true
   needsGame = true
+  shouldCleanArgsLineBreaks = false
 
   async execute() {
     const now = Date.now()

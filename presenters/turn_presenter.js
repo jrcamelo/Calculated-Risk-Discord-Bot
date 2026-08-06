@@ -8,9 +8,9 @@ module.exports = class TurnPresenter {
     this.turn = turn
   }
 
-  makeStatusEmbed() {
+  makeStatusEmbed(description = this.makeDescription(true)) {
     let embed = new Discord.MessageEmbed()
-      .setDescription(this.makeDescription(false))
+      .setDescription(description)
       .addFields(this.makeFactionFields())
       .setFooter(this.makeStatusFooter())
     this.setGameTitle(embed)
@@ -18,9 +18,9 @@ module.exports = class TurnPresenter {
     return embed
   }
 
-  makeStatusEmbedCollapsed() {
+  makeStatusEmbedCollapsed(description = this.makeDescription(false)) {
     let embed = new Discord.MessageEmbed()
-      .setDescription(this.makeDescription(false))
+      .setDescription(description)
       .addFields(this.makeFactionFields())
       .setFooter(this.makeStatusFooter())
     this.setGameTitle(embed)
@@ -58,13 +58,21 @@ module.exports = class TurnPresenter {
   }
 
   makeStatusEmbedExtras(isExpanded) {
-    let embed = new Discord.MessageEmbed()
-      .addFields(this.makeFieldsWithIntentions())
-      .addFields(this.makeFactionFields())
-      .setFooter(this.makeStatusFooter())
-    this.setGameTitle(embed)
-    isExpanded ? this.setMupImage(embed) : this.setMupThumbnail(embed)
-    return embed
+    const fields = this.sanitizeFields([
+      ...this.makeFieldsWithIntentions(),
+      ...this.makeFactionFields(),
+    ])
+    const chunks = this.chunkFields(fields)
+    const embeds = chunks.map((chunk, index) => {
+      let embed = new Discord.MessageEmbed()
+        .addFields(chunk)
+        .setFooter(this.makeStatusFooter())
+      this.setGameTitle(embed)
+      if (index > 0) embed.setTitle(`${embed.title || this.game.name || "Status"} (cont.)`.substring(0, 250))
+      if (index === 0) isExpanded ? this.setMupImage(embed) : this.setMupThumbnail(embed)
+      return embed
+    })
+    return embeds.length === 1 ? embeds[0] : embeds
   }
 
   setGameTitle(embed) {
@@ -104,13 +112,61 @@ module.exports = class TurnPresenter {
     const factions = []
     for (let i = 0; i < this.turn.factionSlots.length; i++) {
       const faction = this.turn.factionSlots[i];
-      factions.push(`${i + 1}. ${faction}`)
+      const text = `${i + 1}. ${faction}`
+      factions.push(text.length > 1024 ? `${text.substring(0, 1021)}...` : text)
     }
-    if (factions.length > 0) {
-      return [{ name: "Unclaimed Factions", value: factions.join("\n") }]
-    } else {
-      return []
+    if (factions.length === 0) return []
+
+    const fields = []
+    let current = ""
+    for (const faction of factions) {
+      const next = current ? `${current}\n${faction}` : faction
+      if (next.length > 1024) {
+        fields.push({ name: fields.length ? "Unclaimed Factions (cont.)" : "Unclaimed Factions", value: current })
+        current = faction
+      } else {
+        current = next
+      }
     }
+    if (current) fields.push({ name: fields.length ? "Unclaimed Factions (cont.)" : "Unclaimed Factions", value: current })
+    return fields.slice(0, 25)
+  }
+
+  sanitizeFields(fields) {
+    return fields.map(field => ({
+      ...field,
+      name: this.truncateFieldText(field.name, 256) || "\u200B",
+      value: this.truncateFieldText(field.value, 1024) || "-",
+    }))
+  }
+
+  truncateFieldText(text, limit) {
+    text = String(text || "")
+    return text.length > limit ? `${text.substring(0, limit - 3)}...` : text
+  }
+
+  chunkFields(fields) {
+    const chunks = []
+    let current = []
+    let currentLength = 0
+    const limit = 5400
+
+    for (const field of fields) {
+      const fieldLength = this.fieldTextLength(field)
+      if (current.length && (current.length >= 25 || currentLength + fieldLength > limit)) {
+        chunks.push(current)
+        current = []
+        currentLength = 0
+      }
+      current.push(field)
+      currentLength += fieldLength
+    }
+    if (current.length) chunks.push(current)
+    return chunks.length ? chunks : [[{ name: "No players", value: "-" }]]
+  }
+
+  fieldTextLength(field) {
+    return (field.name?.length || 0) + (field.value?.length || 0)
   }
 
   makeLinkListEmbed(index) {

@@ -8,15 +8,20 @@ module.exports = class GamePresenter {
     this.game = game;
   }
 
-  makeStatusEmbed(turnIndex = this.game.turnNumber, isExpanded) {
-    if (!isExpanded) return this.makeStatusEmbedCollapsed(turnIndex);
+  makeStatusEmbed(turnIndex = this.game.turnNumber, isExpanded, description) {
+    if (!isExpanded) return this.makeStatusEmbedCollapsed(turnIndex, description);
     const turn = this.getTurn(turnIndex);
-    return new TurnPresenter(this.game, turn).makeStatusEmbed();
+    return new TurnPresenter(this.game, turn).makeStatusEmbed(description);
   }
 
-  makeStatusEmbedCollapsed(turnIndex = this.game.turnNumber) {
+  makeStatusEmbedCollapsed(turnIndex = this.game.turnNumber, description) {
     const turn = this.getTurn(turnIndex);
-    return new TurnPresenter(this.game, turn).makeStatusEmbedCollapsed();
+    return new TurnPresenter(this.game, turn).makeStatusEmbedCollapsed(description);
+  }
+
+  makeStatusDescription(turnIndex = this.game.turnNumber, isExpanded) {
+    const turn = this.getTurn(turnIndex);
+    return new TurnPresenter(this.game, turn).makeDescription(isExpanded);
   }
 
   makeStatusEmbedExtras(turnIndex = this.game.turnNumber, isExpanded) {
