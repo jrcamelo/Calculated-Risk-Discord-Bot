@@ -104,6 +104,7 @@ const SCHEMAS = {
   rolls: { options: [turnOption()] },
   status: { options: [turnOption()] },
   s: { options: [turnOption()] },
+  g: { options: [turnOption()] },
   who: { options: [] },
 
   announce: { options: [stringOption("message", "Message to add to history.", true)] },

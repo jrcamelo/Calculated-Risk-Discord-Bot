@@ -20,6 +20,7 @@ module.exports = class TurnPresenter {
 
   makeStatusEmbedCollapsed() {
     let embed = new Discord.MessageEmbed()
+      .setTitle(this.game.name.substring(0, 250))
       .setDescription(this.makeDescription(false))
       .addFields(this.makeFactionFields())
       .setFooter(this.makeStatusFooter())
@@ -38,6 +39,9 @@ module.exports = class TurnPresenter {
 
   makeDescription(isExpanded) {
     let description = ""
+    if (this.turn.description) {
+      description += this.turn.description + "\n\n"
+    }
     const rolls = this.turn.rollListToPlayerHash()
     for (let player of this.turn.playerHashToList()) {
       description += (new PlayerPresenter(player)).makeDescription(rolls[player.id], isExpanded) + "\n"
