@@ -28,17 +28,31 @@ module.exports = class ClaimCommand extends BaseCommand {
 
   getLatestPlayerData(serverFolderPath, channelId, userId) {
     const ongoingDir = path.join(serverFolderPath, channelId, 'ongoing');
-    if (fs.existsSync(ongoingDir)) {
-      const latestTurnDirName = this.getLatestTurn(ongoingDir);
-      if (latestTurnDirName) {
-        const playersFilePath = path.join(ongoingDir, latestTurnDirName, 'players.json');
-        if (fs.existsSync(playersFilePath)) {
-          const playersFileData = this.readPlayersFile(playersFilePath);
-          return playersFileData[userId];
-        }
+    const latestTurnDirName = this.getLatestTurn(ongoingDir);
+    if (latestTurnDirName) {
+      const playersFilePath = path.join(ongoingDir, latestTurnDirName, 'players.json');
+      if (fs.existsSync(playersFilePath)) {
+        const playersFileData = this.readPlayersFile(playersFilePath);
+        return playersFileData[userId];
       }
     }
     return null;
+  }
+
+  getExistingChannelIds() {
+    return new Set(this.server.channels.cache.keys());
+  }
+
+  getOngoingGameChannelIds(serverFolderPath) {
+    return getSubFolders(serverFolderPath).filter(channelId => {
+      return fs.existsSync(path.join(serverFolderPath, channelId, 'ongoing'));
+    });
+  }
+
+  getExistingOngoingGameChannelIds(serverFolderPath) {
+    const existingChannelIds = this.getExistingChannelIds();
+    return this.getOngoingGameChannelIds(serverFolderPath)
+      .filter(channelId => existingChannelIds.has(channelId));
   }
 
   async execute() {
@@ -46,7 +60,7 @@ module.exports = class ClaimCommand extends BaseCommand {
 
     if (fs.existsSync(serverFolderPath)) {
       const channelsWithUnrolled = [];
-      const channels = getSubFolders(serverFolderPath);
+      const channels = this.getExistingOngoingGameChannelIds(serverFolderPath);
     
       for (const channel of channels) {
         const playerData = this.getLatestPlayerData(serverFolderPath, channel, this.user.id);
