@@ -1,5 +1,6 @@
 const BaseCommand = require("./base_command")
 const RollPresenter = require("../presenters/roll_presenter")
+const { makeMessageLink } = require("../utils/discord")
 const SaveRollOnPlayerStatsTask = require('../tasks/server/set/SaveRollOnPlayerStats')
 const SaveRollOnServerTask = require('../tasks/server/set/SaveRollOnServer')
 const SaveMultipleRollsOnPlayerStatsTask = require('../tasks/server/set/SaveMultipleRollsOnPlayerStats')
@@ -108,7 +109,8 @@ module.exports = class BaseRollCommand extends BaseCommand {
     if (!this.isTest && this.turn && this.turn.everyoneHasRolled()) {
       text += "\n\n**All players have rolled this turn!**"
     }
-    await this.sendReply(text + (this.isTest ? " (test)" : ""))
+    await this.sendReply(this.makeRollReplyPayload(text + (this.isTest ? " (test)" : "")))
+    await this.updateSlashRollLinks([this.roll])
     if (this.roll.emote)
       this.reply.react(this.roll.emote)
     return this.reply
@@ -121,6 +123,33 @@ module.exports = class BaseRollCommand extends BaseCommand {
     if (!this.isTest && this.turn && this.turn.everyoneHasRolled()) {
       text += "\n\n**All players have rolled this turn!**"
     }
-    return await this.sendReply(text)
+    const reply = await this.sendReply(this.makeRollReplyPayload(text))
+    await this.updateSlashRollLinks(this.rolls)
+    return reply
+  }
+
+  makeRollReplyPayload(content) {
+    const payload = { content }
+    if (this.shouldAttachRollUploadToReply()) {
+      payload.files = [this.attachment]
+    }
+    return payload
+  }
+
+  shouldAttachRollUploadToReply() {
+    return this.message._isSlashCommand && this.attachment
+  }
+
+  async updateSlashRollLinks(rolls) {
+    if (!this.message._isSlashCommand || !rolls || !rolls.length) return
+
+    const replyMessage = this.reply?.message || this.reply
+    if (!replyMessage?.id) return
+
+    const link = makeMessageLink(replyMessage)
+    for (const roll of rolls) {
+      roll.messageLink = link
+    }
+    this.save()
   }
 }

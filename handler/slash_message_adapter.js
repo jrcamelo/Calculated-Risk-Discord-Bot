@@ -111,7 +111,8 @@ module.exports = class SlashMessageAdapter {
   }
 
   async editReply(content) {
-    return await this.interaction.editReply(this.normalizePayload(content))
+    const message = await this.interaction.editReply(this.normalizePayload(content))
+    return message || await this.interaction.fetchReply().catch(() => null)
   }
 
   async deleteReply() {
