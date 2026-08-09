@@ -138,7 +138,7 @@ module.exports = class BaseCommand {
     const options = {}
     if (this.canMention) {
       options.allowedMentions = { parse: ["users"] }
-      if (this.message._isSlashCommand) options.forceFollowUp = true
+      if (this.message._isSlashCommand) options.forceChannelSend = true
     } else {
       options.allowedMentions = { parse: [] }
     }
