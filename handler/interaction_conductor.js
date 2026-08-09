@@ -31,7 +31,9 @@ module.exports = class InteractionConductor {
         return
       }
 
-      await interaction.deferReply(command.ephemeral ? makeEphemeralOptions() : {}).catch(() => null)
+      if (this.shouldDefer(command)) {
+        await interaction.deferReply(command.ephemeral ? makeEphemeralOptions() : {}).catch(() => null)
+      }
       const channelId = interaction.channelId || interaction.channel?.id || "global"
       this.addToChannelQueue(channelId, { interaction, adapter, command })
     } catch (e) {
@@ -52,6 +54,10 @@ module.exports = class InteractionConductor {
     InteractionConductor.channelQueues[id].push(item)
   }
 
+  static shouldDefer(command) {
+    return !command.canMention
+  }
+
   static async readChannelQueue(id) {
     InteractionConductor.channelQueues[id].shift().then(async item => {
       await InteractionConductor.handleSlashCommand(item)
@@ -68,7 +74,11 @@ module.exports = class InteractionConductor {
       await command.execute()
     } catch (e) {
       console.error(`/${interaction.commandName} caused an error at ${new Date()}`, e)
-      await interaction.editReply("There was an error while running this command.").catch(() => null)
+      if (!interaction.deferred && !interaction.replied) {
+        await adapter.sendEphemeral("There was an error while running this command.").catch(() => null)
+      } else {
+        await interaction.editReply("There was an error while running this command.").catch(() => null)
+      }
     }
   }
 
