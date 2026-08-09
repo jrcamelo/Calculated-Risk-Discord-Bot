@@ -89,9 +89,15 @@ module.exports = class SlashMessageAdapter {
 
   async send(content, options) {
     const payload = this.normalizePayload(content, options)
+    const forceFollowUp = payload.forceFollowUp
+    delete payload.forceFollowUp
+
     let message
     if (!this._hasPrimaryReply) {
-      if (this.interaction.deferred) {
+      if (this.interaction.deferred && forceFollowUp) {
+        message = await this.interaction.followUp(payload)
+        await this.interaction.deleteReply().catch(() => null)
+      } else if (this.interaction.deferred) {
         message = await this.interaction.editReply(payload)
       } else if (!this.interaction.replied) {
         await this.interaction.reply(payload)

@@ -136,7 +136,12 @@ module.exports = class BaseCommand {
 
   async sendReply(content, overrideDeletable = false) {
     const options = {}
-    if (!this.canMention) options.allowedMentions = { parse: [] }
+    if (this.canMention) {
+      options.allowedMentions = { parse: ["users"] }
+      if (this.message._isSlashCommand) options.forceFollowUp = true
+    } else {
+      options.allowedMentions = { parse: [] }
+    }
     if (this.message._isSlashCommand && this.ephemeral) options.ephemeral = true
     this.reply = await this.doSendReply(content, options)
     await this.afterReply({ overrideDeletable })
