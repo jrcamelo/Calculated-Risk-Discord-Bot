@@ -1,6 +1,7 @@
 const Discord = require('../utils/discord_compat');
 const PlayerPresenter = require('./player_presenter');
 const RollPresenter = require('./roll_presenter');
+const UploadStorage = require('../utils/upload_storage');
 
 module.exports = class TurnPresenter {
   constructor(game, turn) {
@@ -81,15 +82,20 @@ module.exports = class TurnPresenter {
   }
 
   setMupImage(embed) {
-    if (this.hasMup()) embed.setImage(this.turn.mup)
+    if (this.hasMup()) embed.setImage(this.mupEmbedUrl())
   }
 
   setMupThumbnail(embed) {
-    if (this.hasMup()) embed.setThumbnail(this.turn.mup)
+    if (this.hasMup()) embed.setThumbnail(this.mupEmbedUrl())
   }
 
   hasMup() {
     return typeof this.turn.mup === "string" && this.turn.mup.trim().length > 0
+  }
+
+  mupEmbedUrl() {
+    if (UploadStorage.isLocalUpload(this.turn.mup)) return UploadStorage.attachmentUrl(this.turn.mup)
+    return this.turn.mup
   }
 
   makeStatusFooter() {
@@ -251,11 +257,11 @@ module.exports = class TurnPresenter {
     return ` <${bonus}>`
   }
 
-  makeRollHistory(index, intentions) {
-    index = index % (Math.ceil(this.turn._rolls.length / 10) * 10)
+  makeRollHistory(index, intentions, step = 10) {
+    index = index % (Math.ceil(this.turn._rolls.length / step) * step)
 
     let description = "";
-    for (let i = index; i < index + 10; i++) {
+    for (let i = index; i < index + step; i++) {
       if (i < this.turn._rolls.length) {
         const roll = this.turn._rolls[i]
         const presenter = new RollPresenter(roll, null, this.turn._players)
@@ -263,7 +269,7 @@ module.exports = class TurnPresenter {
         description += text + "\n";
       }
     }
-    if (description) description = `**${index + 1}~${index + 10}/${this.turn._rolls.length} - Turn ${this.turn.number}/${this.game.turnNumber}**\n${description}`
+    if (description) description = `**${index + 1}~${Math.min(index + step, this.turn._rolls.length)}/${this.turn._rolls.length} - Turn ${this.turn.number}/${this.game.turnNumber}**\n${description}`
     return description || "No rolls"
   }
 

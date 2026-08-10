@@ -70,11 +70,12 @@ module.exports = class GamePresenter {
     );
   }
 
-  makeRollHistory(turnIndex = this.game.turnNumber, index = 0, intentions) {
+  makeRollHistory(turnIndex = this.game.turnNumber, index = 0, intentions, step = 10) {
     const turn = this.getTurn(turnIndex);
     return new TurnPresenter(this.game, turn).makeRollHistory(
       index,
-      intentions
+      intentions,
+      step
     );
   }
 

@@ -3,6 +3,8 @@ const Jimp = require('jimp');
 const sharp = require('sharp');
 const fse = require('fs-extra');
 const ImageDownloader = require('image-downloader');
+const path = require('path');
+const UploadStorage = require('./upload_storage');
 
 module.exports = class GifMaker {
   constructor(serverId, gameId, mups, delay = 1000) {
@@ -50,16 +52,19 @@ module.exports = class GifMaker {
     const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
     for (let i = 0; i < this.links.length; i++) {
       const link = this.links[i];      
-      const path = new URL(link).pathname.split('?')[0];
-      const extension = path.split('.').pop();
+      const pathname = UploadStorage.isLocalUpload(link)
+        ? link
+        : new URL(link).pathname.split('?')[0];
+      const extension = pathname.split('.').pop().toLowerCase();
 
       if (imageExtensions.includes(extension)) {
-        const options = {
-          url: link,
-          dest: `${this.getDownloadFolderPath()}${i}.jpg`
-        }
+        const dest = `${this.getDownloadFolderPath()}${i}.jpg`
         try {
-          await ImageDownloader.image(options)
+          if (UploadStorage.isLocalUpload(link)) {
+            await fse.copy(path.resolve(process.cwd(), link), dest)
+          } else {
+            await ImageDownloader.image({ url: link, dest })
+          }
         }  catch(error) {
           console.log(`An error occurred while downloading ${link}: ${error.message}`);
         }

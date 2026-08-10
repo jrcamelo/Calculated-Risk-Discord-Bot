@@ -14,6 +14,7 @@ module.exports = class TurnEditCommand extends BaseCommand {
   shouldCleanArgsLineBreaks = false
 
   async execute() {
+    await this.saveSlashAttachmentToUploads()
     this.game.editTurn(this.attachment, this.arg);
     if (this.saveOrReturnWarning()) return
     const status = new StatusCommand(this.message, this.args)

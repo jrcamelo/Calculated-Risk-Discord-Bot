@@ -3,6 +3,7 @@ const discordUtils = require("../utils/discord")
 const Database = require("../database")
 const { EmbedBuilder, PermissionFlagsBits } = require("../utils/discord_compat")
 const SlashComponents = require("../handler/slash_components")
+const UploadStorage = require("../utils/upload_storage")
 
 module.exports = class BaseCommand {
   // Command Settings
@@ -71,6 +72,7 @@ module.exports = class BaseCommand {
     this.mentionedUser = this.getMentionedUser()
     if (this.mentionedUser && this.turn)
       this.mentionedPlayer = this.turn.getPlayer(this.mentionedUser)
+    this.attachmentObject = this.getMessageAttachmentObject()
     this.attachment = this.getMessageAttachment()
     if (this.ignoreFirstArg) 
       this.args.shift();
@@ -366,10 +368,32 @@ module.exports = class BaseCommand {
   }
   
   getMessageAttachment() {
-    if (this.message.attachments.size > 0) {
-      return this.message.attachments.values().next().value.url;
-    }
+    const attachment = this.getMessageAttachmentObject()
+    if (attachment) return attachment.url
     return null;
+  }
+
+  getMessageAttachmentObject() {
+    if (this.message.attachments.size > 0) {
+      return this.message.attachments.values().next().value
+    }
+    return null
+  }
+
+  slashAttachmentFileName(defaultName = "attachment.png") {
+    const name = this.attachmentObject?.name || this.attachmentObject?.filename || defaultName
+    return String(name).replace(/[\\/]/g, "_") || defaultName
+  }
+
+  async saveSlashAttachmentToUploads() {
+    if (!this.message._isSlashCommand || !this.attachmentObject) return this.attachment
+    this.attachment = await UploadStorage.saveUrl(
+      this.attachmentObject.url,
+      this.serverId,
+      this.channel.id,
+      this.slashAttachmentFileName("attachment.png")
+    )
+    return this.attachment
   }
 
   /* -------------------------------------------------------------------------- */

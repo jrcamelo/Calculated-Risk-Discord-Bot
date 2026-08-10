@@ -16,6 +16,7 @@ module.exports = class GameEndCommand extends BaseCommand {
   canMention = true
 
   async execute() {
+    await this.saveSlashAttachmentToUploads()
     if (this.attachment || this.arg) {
       const mup = this.attachment || this.turn.mup
       this.game.nextTurn(mup, this.arg)

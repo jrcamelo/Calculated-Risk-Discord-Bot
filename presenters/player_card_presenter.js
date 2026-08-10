@@ -1,5 +1,6 @@
 const Jimp = require('jimp')
 const fse = require('fs-extra')
+const sharp = require('sharp')
 const GetPlayerStats = require('../tasks/server/get/GetPlayerStats')
 const PlayerStats = require('../models/player_stats')
 
@@ -44,7 +45,10 @@ module.exports = class PlayerCardPresenter {
   }
 
   getAvatarUrl() {
-    return this.user.avatarURL({ format: 'png'})
+    if (this.user.displayAvatarURL) {
+      return this.user.displayAvatarURL({ extension: "png", size: 128 })
+    }
+    return this.user.avatarURL({ format: 'png', size: 128 })
   }
 
   getResultPath() {
@@ -70,7 +74,20 @@ module.exports = class PlayerCardPresenter {
     this.bar = await Jimp.read(BAR_PATH)
     this.card = await Jimp.read(CARD_PATH)
     this.avatarMask = await Jimp.read(MASK_PATH)
-    this.avatar = await Jimp.read(this.getAvatarUrl())
+    this.avatar = await this.readAvatar()
+  }
+
+  async readAvatar() {
+    const url = this.getAvatarUrl()
+    try {
+      return await Jimp.read(url)
+    } catch (error) {
+      if (!String(error.message || "").includes("Unsupported MIME type")) throw error
+      const response = await fetch(url)
+      const buffer = Buffer.from(await response.arrayBuffer())
+      const png = await sharp(buffer).png().toBuffer()
+      return await Jimp.read(png)
+    }
   }
 
   async prepareAvatar() {

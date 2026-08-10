@@ -1,6 +1,7 @@
 const PaginatedCommand = require("../paginated_command")
 const GamePresenter = require("../../presenters/game_presenter")
 const Discord = require('../../utils/discord_compat');
+const UploadStorage = require("../../utils/upload_storage")
 
 module.exports = class StatusCommand extends PaginatedCommand {
   static aliases = ["Status", "Game"]
@@ -22,11 +23,11 @@ module.exports = class StatusCommand extends PaginatedCommand {
 
     this.gamePresenter = new GamePresenter(this.game)
 
-    await this.sendReply(this.makeReplyPayload(this.getReply()))
+    await this.sendReply(this.makeReplyPayloadWithFiles(this.getReply()))
   }
 
   async editReply() {
-    await this.reply.edit(this.makeReplyPayload(this.getReply()))
+    await this.reply.edit(this.makeReplyPayloadWithFiles(this.getReply()))
     await this.afterEdit()
   }
 
@@ -35,6 +36,24 @@ module.exports = class StatusCommand extends PaginatedCommand {
       return this.chunkEmbeds(this.gamePresenter.makeStatusEmbedExtras(this.index, this.isExpanded))
   
     return this.makeStatusEmbeds()
+  }
+
+  makeReplyPayloadWithFiles(reply) {
+    const payload = this.makeReplyPayload(reply)
+    const files = this.replyFiles()
+    if (!files.length) return payload
+    if (Array.isArray(payload)) return { embeds: payload, files }
+    if (payload && typeof payload.toJSON === "function") return { embeds: [payload], files }
+    if (payload && typeof payload === "object") return { ...payload, files }
+    return { content: String(payload), files }
+  }
+
+  replyFiles() {
+    const files = this.files ? [...this.files] : []
+    const turn = this.game.getTurn(this.index)
+    const mupFile = turn ? UploadStorage.filePayload(turn.mup) : null
+    if (mupFile && !files.some(file => file.name === mupFile.name)) files.push(mupFile)
+    return files
   }
 
   makeStatusEmbeds() {

@@ -20,6 +20,7 @@ module.exports = class GameStartCommand extends BaseCommand {
 
   async execute() {
     this.game = new Game(this.database, this.arg, this.user.id, this.user.username, this.channel.id)
+    await this.saveSlashAttachmentToUploads()
     if (this.attachment)
       this.game._turn.mup = this.attachment
     if (this.saveOrReturnWarning()) return

@@ -19,8 +19,8 @@ module.exports = class TurnEditOldCommand extends BaseCommand {
     if (isNaN(turnNumber) || turnNumber < 0 || turnNumber > this.game.turnNumber) {
       return this.replyDeletable("Invalid turn number.")
     }
+    await this.saveSlashAttachmentToUploads()
     this.game.editOldTurnAndSave(this.attachment, this.arg, +turnNumber);
-    // if (this.saveOrReturnWarning()) return
     return this.replyDeletable(`Turn ${turnNumber} has been updated.`)
   }
 }

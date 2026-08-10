@@ -20,6 +20,7 @@ module.exports = class ForceRollCommand extends BaseCommand {
   needsMentionedPlayer = true  
   canMention = true
   playerOnly = false
+  ignoreFirstArg = true
 
   async execute() {
     this.gameTime = this.game.startedAt

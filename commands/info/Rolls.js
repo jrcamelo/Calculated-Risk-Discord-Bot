@@ -29,11 +29,22 @@ module.exports = class HistoryCommand extends PaginatedCommand {
   }
 
   getReply() {
-    let text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, this.isShowingExtras)
-    if (this.isShowingExtras && text.length > 2000) {
-      this.isShowingExtras = false
-      text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, this.isShowingExtras)
+    if (!this.isShowingExtras) {
+      this.step = 10
+      return this.gamePresenter.makeRollHistory(this.turnIndex, this.index, false, this.step)
     }
+
+    for (const step of [10, 5, 3, 2, 1]) {
+      const text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, true, step)
+      if (text.length <= 2000) {
+        this.step = step
+        return text
+      }
+    }
+
+    this.isShowingExtras = false
+    this.step = 10
+    const text = this.gamePresenter.makeRollHistory(this.turnIndex, this.index, false, this.step)
     return text
   }
 
