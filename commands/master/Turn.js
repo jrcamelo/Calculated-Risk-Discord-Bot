@@ -1,5 +1,5 @@
 const BaseCommand = require("../base_command")
-const StatusCommand = require("../info/StatusShorter")
+const StatusCommand = require("../info/Status")
 const PingCommand = require("./PlayerPing")
 
 module.exports = class TurnCommand extends BaseCommand {

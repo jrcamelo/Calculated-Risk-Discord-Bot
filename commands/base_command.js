@@ -1,6 +1,7 @@
 const emotes = require("../utils/emotes")
 const discordUtils = require("../utils/discord")
 const Database = require("../database")
+const fse = require("fs-extra")
 const { EmbedBuilder, PermissionFlagsBits } = require("../utils/discord_compat")
 const SlashComponents = require("../handler/slash_components")
 const UploadStorage = require("../utils/upload_storage")
@@ -187,9 +188,24 @@ module.exports = class BaseCommand {
     const options = {
       files: [image]
     }
-    this.reply = await this.doSendReply("", options)
-    await this.afterReply()
-    return this.reply
+    try {
+      this.reply = await this.doSendReply("", options)
+      await this.afterReply()
+      return this.reply
+    } finally {
+      this.deleteUploadedImage(image)
+    }
+  }
+
+  deleteUploadedImage(image) {
+    if (typeof image !== "string") return
+    if (UploadStorage.isLocalUpload(image)) return
+    try {
+      fse.removeSync(image)
+    } catch (e) {
+      console.log("ERROR: Delete uploaded image")
+      console.log(e)
+    }
   }
 
 

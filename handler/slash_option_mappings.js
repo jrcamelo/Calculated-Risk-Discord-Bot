@@ -76,7 +76,7 @@ function rollOptions(hasLimit = false, hasMultiple = false, limitFirst = false) 
   if (hasLimit && limitFirst) options.push(integerOption("limit", "Maximum roll value.", true))
   if (hasMultiple) options.push(integerOption("multiple", "Number of rolls.", true))
   if (hasLimit && !limitFirst) options.push(integerOption("limit", "Maximum roll value.", true))
-  options.push(stringOption("intention", "Roll intention.", false))
+  options.push(stringOption("intention", "Roll intention.", true))
   options.push(attachmentOption("attachment", "Image/file to attach to the intention.", false))
   return options
 }
@@ -134,7 +134,7 @@ const SCHEMAS = {
   revive: { options: [userOption("player", "Player to revive.", true)] },
   setnote: { options: repeatedUserText("player", "note", "Player note", 5, false), buildArgs: interaction => buildRepeatedUserTextArgs(interaction, "player", "note", 5) },
   poll: { options: [stringOption("question", "Poll question.", false)] },
-  forceroll: { options: [userOption("player", "Player to roll for.", true), stringOption("intention", "Roll intention.", false)] },
+  forceroll: { options: [userOption("player", "Player to roll for.", true), stringOption("intention", "Roll intention.", true)] },
   setmaxallies: { options: [integerOption("limit", "Ally cap. Blank is unlimited; 0 disables alliances.", false)] },
   setmaxnaps: { options: [integerOption("limit", "NAP cap. Blank is unlimited; 0 disables NAPs.", false)] },
   slot: { options: repeatedStrings("faction", "Faction slot", 10), buildArgs: interaction => buildRepeatedStringArgs(interaction, "faction", 10) },
@@ -161,14 +161,14 @@ const SCHEMAS = {
   roll: { options: rollOptions(false, false) },
   rolld: { options: rollOptions(true, false, true) },
   rolldx: { options: rollOptions(true, true, true) },
-  rolldnd: { options: [stringOption("expression", "DnD roll expression, like 2d20+5.", true), stringOption("intention", "Roll intention.", false), attachmentOption("attachment", "Image/file to attach to the intention.", false)] },
+  rolldnd: { options: [stringOption("expression", "DnD roll expression, like 2d20+5.", true), stringOption("intention", "Roll intention.", true), attachmentOption("attachment", "Image/file to attach to the intention.", false)] },
   rollid: { options: rollOptions(false, false) },
   rollx: { options: rollOptions(false, true) },
   rollxd: { options: rollOptions(true, true, false) },
   testroll: { options: rollOptions(false, false) },
   testrolldice: { options: rollOptions(true, false, true) },
   testrolldx: { options: rollOptions(true, true, true) },
-  testrolldnd: { options: [stringOption("expression", "DnD roll expression, like 2d20+5.", true), stringOption("intention", "Roll intention.", false), attachmentOption("attachment", "Image/file to attach to the intention.", false)] },
+  testrolldnd: { options: [stringOption("expression", "DnD roll expression, like 2d20+5.", true), stringOption("intention", "Roll intention.", true), attachmentOption("attachment", "Image/file to attach to the intention.", false)] },
   testrollid: { options: rollOptions(false, false) },
   testrollx: { options: rollOptions(false, true) },
   testrollxd: { options: rollOptions(true, true, false) },
