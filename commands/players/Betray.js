@@ -11,7 +11,7 @@ module.exports = class PlayerBetrayAllyCommand extends BaseCommand {
   aliveOnly = true
   needsMention = true
   needsMentionedPlayer = true
-  canMention = false
+  canMention = true
 
   async execute() {
     this.changes = false

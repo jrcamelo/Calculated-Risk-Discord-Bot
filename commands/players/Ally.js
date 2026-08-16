@@ -10,7 +10,7 @@ module.exports = class PlayerAllyCommand extends BaseCommand {
   playerOnly = true
   aliveOnly = true
   needsMention = true
-  canMention = false
+  canMention = true
 
   async execute() {
     this.changes = false

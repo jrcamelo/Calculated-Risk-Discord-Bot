@@ -12,6 +12,7 @@ module.exports = class PlayerAddCommand extends BaseCommand {
 
   needsGame = true
   needsMention = true
+  canMention = true
 
   cropName(name) {
     if (name && name.length > 50) {

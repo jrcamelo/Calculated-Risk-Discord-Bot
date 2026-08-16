@@ -11,7 +11,7 @@ module.exports = class PlayerCedeCommand extends BaseCommand {
   playerOnly = true
   aliveOnly = true
   needsMention = true
-  canMention = false
+  canMention = true
   ignoreFirstArg = true
 
   async execute() {

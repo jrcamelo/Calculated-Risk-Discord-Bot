@@ -11,7 +11,7 @@ module.exports = class PlayerNAPCommand extends BaseCommand {
   playerOnly = true
   aliveOnly = true
   needsMention = true
-  canMention = false
+  canMention = true
 
   async execute() {
     this.changes = false

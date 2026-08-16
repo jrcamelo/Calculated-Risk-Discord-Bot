@@ -10,7 +10,7 @@ module.exports = class PlayerForceBreakCommand extends BaseCommand {
   masterOnly = true
   needsMention = true
   needsMentionedPlayer = true
-  canMention = false
+  canMention = true
 
   async execute() {
     this.changes = false

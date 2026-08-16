@@ -107,7 +107,7 @@ const SCHEMAS = {
   g: { options: [turnOption()] },
   who: { options: [] },
 
-  announce: { options: [stringOption("message", "Message to add to history.", true)] },
+  announce: { options: [stringOption("message", "Message to add to history.", false), attachmentOption("attachment", "Image/file to add to history.", false)] },
   betrayallalliances: { options: [] },
   breakallpacts: { options: [] },
   close: { options: [] },
@@ -154,7 +154,7 @@ const SCHEMAS = {
   nap: { options: targets(10) },
   break: { options: targets(10) },
   ragequit: { options: [] },
-  say: { options: [stringOption("message", "Message to add to history.", true)] },
+  say: { options: [stringOption("message", "Message to add to history.", false), attachmentOption("attachment", "Image/file to add to history.", false)] },
   skip: { options: [] },
   vote: { options: [stringOption("vote", "Your vote.", true)] },
 
