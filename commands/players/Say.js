@@ -28,7 +28,7 @@ module.exports = class PlayerSayCommand extends BaseCommand {
   }
 
   makeMessageText() {
-    const message = this.arg || "{Attachment}"
+    const message = this.arg || "<Attachment>"
     if (!this.message._isSlashCommand && this.attachment) return `${message} ${this.attachment}`
     return message
   }
