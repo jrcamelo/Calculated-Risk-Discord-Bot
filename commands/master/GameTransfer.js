@@ -7,7 +7,7 @@ module.exports = class GameTransferCommand extends BaseCommand {
   static category = "Master"
 
   canDelete = false
-  masterOnly = true
+  masterOnly = false
   acceptModerators = true
   acceptAdmins = true
 
@@ -15,6 +15,15 @@ module.exports = class GameTransferCommand extends BaseCommand {
   needsMention = true
   
   canMention = true
+
+  async validate() {
+    const validationError = await super.validate()
+    if (validationError) return validationError
+
+    if (!this.isMaster() && !this.isModerator() && !this.isAdmin()) {
+      return `Only the current Master <@!${this.game.masterId}> or a server moderator/admin can transfer this game.`
+    }
+  }
 
   async execute() {
     const oldMasterId = this.game.masterId
