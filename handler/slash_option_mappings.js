@@ -122,7 +122,7 @@ const SCHEMAS = {
   ban: { options: [userOption("player", "Player to ban.", false), stringOption("user_id", "Raw user id for a player no longer in server.", false)] },
   baninactive: { options: [] },
   forcebetray: { options: [userOption("player_a", "First player.", true), userOption("player_b", "Second player.", true)] },
-  setbonus: { options: repeatedUserText("player", "bonus", "Bonus value/text", 5, true), buildArgs: interaction => buildRepeatedUserTextArgs(interaction, "player", "bonus", 5) },
+  setbonus: { options: repeatedUserText("player", "bonus", "Bonus value/text; blank removes it", 5, false), buildArgs: interaction => buildRepeatedUserTextArgs(interaction, "player", "bonus", 5) },
   forcebreak: { options: [userOption("player_a", "First player.", true), userOption("player_b", "Second player.", true)] },
   cleardiplomacy: { options: [userOption("player", "Player to clear.", false), stringOption("user_id", "Raw user id for a player no longer in server.", false)] },
   kick: { options: [userOption("player", "Player to kick.", false), stringOption("user_id", "Raw user id for a player no longer in server.", false)] },

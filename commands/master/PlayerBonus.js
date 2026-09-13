@@ -2,8 +2,8 @@ const BaseCommand = require("../base_command")
 
 module.exports = class PlayerBonusCommand extends BaseCommand {
   static aliases = ["SetBonus", "Bonus", "B"]
-  static description = "Sets a bonus for a players. \nAccepts many players with | (Aliases: B)"
-  static argsDescription = "<@User> <Bonus> | <@User> <Bonus>"
+  static description = "Sets or removes player bonuses. \nAccepts many players with | (Aliases: B)"
+  static argsDescription = "<@User> [Bonus] | <@User> [Bonus]"
   static category = "Master"
 
   canDelete = false
@@ -20,7 +20,11 @@ module.exports = class PlayerBonusCommand extends BaseCommand {
         resultMessage += `**${mention}** is not a valid player.\n`
       } else {
         player.setBonus(arg)
-        resultMessage += `**${mention}** now has a bonus of **${player.bonus}**.\n`
+        if (player.bonus) {
+          resultMessage += `**${mention}** now has a bonus of **${player.bonus}**.\n`
+        } else {
+          resultMessage += `**${mention}** no longer has a bonus.\n`
+        }
       }
     }
     if (this.saveOrReturnWarning()) return
